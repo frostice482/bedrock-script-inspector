@@ -90,6 +90,7 @@ const include = [
         ],
         tsconfig: 'pack/tsconfig.json'
     })
+    await fsp.writeFile('pack/scripts/debugger/dropper.js', '//')
 
     console.log('building server scripts')
     await fsp.rm('server/app', { force: true, recursive: true })
@@ -108,13 +109,16 @@ const include = [
 
     const zip = new ZipFile()
 
+    // includes
     console.log('bundling')
     for (const incl of include)
         for (const entry of await files(incl))
             zip.addFile(entry, entry)
     
+    zip.addEmptyDirectory('pack/subpacks')
+    
+    // stream out
     const zipstr = fs.createWriteStream('build.zip')
     zip.outputStream.pipe(zipstr)
-
     zip.outputStream.once('end', () => console.log('done'))
 })()
