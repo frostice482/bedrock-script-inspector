@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+@import url('tabs.css');
+@import url('jsoninspect.css');
+@import url('misc.css');
+
+:root {
+    --border-bare: rgba(255, 255, 255, 0.05);
+    --border-weak: rgba(255, 255, 255, 0.2);
+    --border-mid: rgba(255, 255, 255, 0.4);
+    --border-strong: rgba(255, 255, 255, 0.6);
+}
+
+body {
+    margin: 0;
+
+    background: #07070f;
+
+    color: white;
+    font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    padding: 8px;
+
+    border-bottom: 3px solid var(--border-mid);
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+#nav > * {
+    margin-right: 5px;
+}
+
+#nav > *:is(:hover, .active) {
+    border-color: var(--border-strong);
+}
+
+#nav > *:is(:hover, .active) > i.fa-solid {
+    color: yellow;
+}
+
+#tabs {
+    padding: 4px;
+    padding-top: 8px;
+    box-sizing: border-box;
+}
+
+#overlay-block {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+
+    z-index: 3;
+}
+
+
+h1, h2, h3, h4, h5, h6 { margin: 0; }
+
+button,
+input[type="button"] {
+    padding: 0;
+
+    border: none;
+    background: none;
+    border-radius: 0;
+
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+:is(button, input[type="button"]):not(.raw) {
+    border: 2px solid var(--border-weak);
+    border-radius: 5px;
+}
+
+:is(button, input[type="button"]):not(.nopadding) {
+    padding: 4px;
+}
+
+:is(input[type="button"], button):not(:disabled):hover {
+    cursor: pointer;
+    border-color: var(--border-strong);
+}
+
+code,
+.code {
+    font-size: 1.3em;
+    font-family: monospace;
+    white-space: pre;
+}
+
+input:is([type="text"], [type="password"], [type="number"]), textarea {
+    box-sizing: border-box;
+
+    background: 0;
+    border: 2px solid var(--border-weak);
+    border-radius: 5px;
+
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+:is(input, button):disabled,
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    user-select: none;
+}
+
+:is(input, textarea):invalid {
+    border-color: yellow;
+}
+
+menu {
+    margin: 0;
+    padding: 0;
+}
+
+select {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+
+    color: white;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+table {
+    border-spacing: 0;
+}
+
+td {
+    padding: 2px 6px;
+}

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html class="fill">
+    <head>
+        <title>Bedrock Script Inspector</title>
+        <base href="/app/">
+        
+        <link rel="icon" href="icon.svg">
+        <link rel="stylesheet" href="style/main.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css" integrity="sha512-pZlKGs7nEqF4zoG0egeK167l6yovsuL8ap30d07kA5AJUq+WysFlQ02DLXAmN3n0+H3JVz5ni8SJZnrOaYXWBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" integrity="sha512-rO+olRTkcf304DQBxSWxln8JXCzTHlKnIdnMUwYvQa9/Jd4cQaNkItIUj6Z4nvW1dqK0SKXLbn9h4KwZTNtAyw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.28/dist/uPlot.min.css ">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js" integrity="sha512-H69VMoQ814lKjFuFwLImb4OwoK8Rm8fcvsqZexaxjp/VkJfEnrt5TO7oaOdNlMf/j51QUctfLTe8+rgozW7l2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.28/dist/uPlot.iife.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ace.js" integrity="sha512-hWCQiPFpU0dM1jkN2dkt/OrdSXO4KN5y2utMvF0ZkacWmRvbOlEygqBW0YiJwq/nn6iywh4XnMGMG6ESQYM7WA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+        <script type="module" src="scripts/index.js"></script>
+    </head>
+    <body class="fill noflow">
+        <header>
+            <!-- Icon -->
+            <img src="icon.svg" style="height: 2.5em">
+            <!-- Navigator -->
+            <menu id="nav">
+                <button tab="bds" class="active"> <i class="fa-solid fa-terminal"></i> <span>bds</span> </button>
+                <button tab="stats"> <i class="fa-solid fa-chart-bar"></i> <span>stats</span> </button>
+                <button tab="console"> <i class="fa-solid fa-info"></i> <span>console</span> </button>
+                <button tab="eval"> <i class="fa-solid fa-code"></i> <span>eval</span> </button>
+                <button tab="events"> <i class="fa-solid fa-list"></i> <span>events</span> </button>
+                <button tab="runs"> <i class="fa-solid fa-list"></i> <span>runs</span> </button>
+                <button tab="properties"> <i class="fa-solid fa-database"></i> <span>properties</span> </button>
+                <button tab="timing"> <i class="fa-solid fa-stopwatch"></i> <span>timing</span> </button>
+                <button tab="inspector"> <i class="fa-solid fa-magnifying-glass"></i> <span>inspector</span> </button>
+            </menu>
+
+            <div class="flex-fill"></div>
+
+            <!-- Status -->
+            <span id="status" style="color: gray">connecting</span>
+            <!-- Version -->
+            v1.0.0
+        </header>
+        <div id="tabs" class="fill noflow">
+            <!-- Tab: BDS -->
+            <div id="tab-bds" class="fill gap8 flex-col">
+                <!-- Filters -->
+                <div class="flex-row gap8">
+                    <!-- Levels -->
+                    <div class="fs-row">
+                        <b>filter</b>
+                        <div id="bds-fi-levels" class="inline">
+                            <input type="checkbox" filter="unknown" checked> unknown
+                            <input type="checkbox" filter="log" checked> log
+                            <input type="checkbox" filter="info" checked> info
+                            <input type="checkbox" filter="warn" checked> warn
+                            <input type="checkbox" filter="error" checked> error
+                        </div>
+                    </div>
+                    <!-- Display -->
+                    <div class="fs-row">
+                        <b>display</b>
+                        <div id="bds-fi-displays" class="inline">
+                            <input type="checkbox" filter="timestamp"> timestamp
+                            <input type="checkbox" filter="level"> level
+                            <input type="checkbox" filter="category"> category
+                        </div>
+                    </div>
+                    <!-- Category -->
+                    <div class="fs-row">
+                        <b>category</b>
+                        <input id="bds-fi-cat" type="text">
+                    </div>
+                </div>
+
+                <!-- Log -->
+                <div id="bds-log-cnt" class="flow-y flex-fill">
+                    <table id="bds-log" class="fill-x tfixed tseprow tsepcol">
+                        <colgroup>
+                            <col style="width: 12em;">
+                            <col style="width: 5em;">
+                            <col style="width: 6em;">
+                            <col style="width: 100%;">
+                        </colgroup>
+                        <thead class="thead">
+                            <tr>
+                                <td>timestamp</td>
+                                <td>level</td>
+                                <td>category</td>
+                                <td>message</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Console Input -->
+                <div class="flex-row gap8">
+                    <input id="bds-c-input" type="text" class="fill" placeholder="Enter a command, UP / DOWN for history, ENTER to send" disabled>
+                    <button id="bds-c-send" disabled>send</button>
+                    <button id="bds-i-hide" title="Show/Hide process info"><i class="fa-solid fa-angles-up"></i></button>
+                </div>
+
+                <!-- BDS Info -->
+                <div id="bds-info" class="flex-row" hidden>
+                    <div class="info-pair">
+                        <b>PID</b> <span id="bds-i-pid">...</span>
+                        <b>status</b> <span id="bds-i-status">...</span>
+                        <b>exitcode</b> <span id="bds-i-code">...</span>
+                    </div>
+
+                    <div class="flex-fill"></div>
+                    <button id="bds-kill" disabled>end process</button>
+                </div>
+            </div>
+            <!-- Tab: Console -->
+            <div id="tab-console" class="fill gap8">
+                <!-- Filters -->
+                <div class="flex-row gap8" style="grid-area: opts;">
+                    <!-- Levels -->
+                    <div class="fs-row">
+                        <b>filter</b>
+                        <div id="console-fi-levels" class="inline">
+                            <input type="checkbox" filter="log" checked> log
+                            <input type="checkbox" filter="info" checked> info
+                            <input type="checkbox" filter="warn" checked> warn
+                            <input type="checkbox" filter="error" checked> error
+                        </div>
+                    </div>
+                    <!-- Display -->
+                    <div class="fs-row">
+                        <b>display</b>
+                        <div id="console-fi-displays" class="inline">
+                            <input type="checkbox" filter="level"> level
+                            <input type="checkbox" filter="stack"> stack
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Log -->
+                <div id="console-log-cnt" class="flow-y flex-fill" style="grid-area: list; min-height: 200px;">
+                    <table id="console-log" class="fill-x tseprow tsepcol">
+                        <colgroup>
+                            <col style="width: 0;">
+                            <col style="width: 100%;">
+                            <col style="width: 0;">
+                        </colgroup>
+                        <thead class="thead">
+                            <tr>
+                                <td>level</td>
+                                <td>message</td>
+                                <td>stack</td>
+                            </tr>
+                        </thead>
+                        <tbody class="code"></tbody>
+                    </table>
+                </div>
+
+                <!-- Resize handle -->
+                <div id="console-resize" class="line line-h line-dense resize-c self-center" style="grid-area: resz;"></div>
+                <!-- graphing show hide -->
+                <button id="console-graphing-hide" class="raw" style="grid-area: hide;"> <i class="fa-solid fa-angles-down"></i> </button>
+                
+                <!-- graphing -->
+                <div class="noflow" style="grid-area: grph;">
+                    <div id="console-graphing" class="flex-row" style="min-height: 200px; max-height: 100%;">
+                        <div class="flex-col gap8">
+                            <select id="console-gr-select" style="width: 200px"></select>
+                            <div class="flex-fill"></div>
+                            <button id="console-gr-pause">pause</button>
+                            <button id="console-gr-clear">clear</button>
+                            <button id="console-gr-delete">delete</button>
+                            <input id="console-gr-max" type="number" placeholder="max" min="0" value="100">
+                        </div>
+                        <div id="console-gr-content" class="fill-x noflow">
+                            <div id="console-gr-tooltip" class="fill flex-center">
+                                <span>Graphing Usage:</span>
+                                <code id="console-gr-prev">console.log("[[debugGraph]]", graph_name, {key: value, key2: value2, ...})</code>
+                                <table id="console-gr-vars">
+                                    <tr>
+                                        <td class="hljs-string">graph_name</td>
+                                        <td>string</td>
+                                        <td>Graph name</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="hljs-string">key</td>
+                                        <td>string</td>
+                                        <td>Key</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="hljs-string">value</td>
+                                        <td>number</td>
+                                        <td>Value data</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tab: Eval -->
+            <div id="tab-eval" class="fill flex-row gap8">
+                <div id="eval-side" class="gap8">
+                    <!-- Editor -->
+                    <div id="eval-editor" style="grid-area: edit; font-size: 1em; min-width: 700px;"></div>
+                    <!-- Object -->
+                    <div class="fs-row" style="grid-area: objc;">
+                        <b>object</b>
+                        <div id="eval-opts-insobj" class="inline">
+                            <input type="checkbox" opt="proto" checked> prototype
+                            <input type="checkbox" opt="getters" checked> getters
+                        </div>
+                    </div>
+                    <!-- function -->
+                    <div class="fs-row" style="grid-area: func">
+                        <b>function</b>
+                        <div id="eval-opts-insfn" class="inline">
+                            <input type="checkbox" opt="properties" checked> properties
+                            <input type="checkbox" opt="extend" checked> extend
+                            <input type="checkbox" opt="proto"> prototype
+                            <input type="checkbox" opt="content"> code
+                        </div>
+                    </div>
+                    <!-- Eval -->
+                    <div class="fs-row" style="grid-area: eval">
+                        <b>eval</b>
+                        <div id="eval-opts-eval" class="inline">
+                            <input type="checkbox" opt="async"> async
+                            <input type="checkbox" opt="store" checked> store
+                            <input type="checkbox" opt="root" checked> <span id="eval-opts-eval-refinsp-title">refinsp</span>
+                        </div>
+                    </div>
+                    <!-- Send -->
+                    <button id="eval-send" style="grid-area: send;" disabled><i class="fa-solid fa-angles-right"></i> evaluate</button>
+                    <!-- Stat (time) -->
+                    <span id="eval-stat" class="self-center" style="grid-area: stat;"></span>
+                </div>
+                <div class="flex-col gap8">
+                    <!-- Resize -->
+                    <div id="eval-resize" class="line line-v line-dense resize-c self-center"></div>
+                    <!-- Hide editor -->
+                    <button id="eval-hide" class="raw"><i class="fa-solid fa-angles-left"></i></button>
+                </div>
+                <div id="eval-res" class="code flow fill">
+                    <div class="fill center gap8" style="opacity: 0.25;">
+                        <i class="fa-solid fa-code" style="font-size: 5em;"></i>
+                        <span>eval output will appear here</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Events -->
+            <div id="tab-events" class="fill gap8">
+                <!-- Options -->
+                <div class="flex-row flex-wrap gap8" style="grid-area: opts;">
+                    <!-- Category -->
+                    <div class="fs-row">
+                        <b>category</b>
+                        <div id="events-fi-cat" class="inline">
+                            <input type="checkbox" filter="world" checked> world
+                            <input type="checkbox" filter="system" checked> system
+                        </div>
+                    </div>
+                    <!-- Type -->
+                    <div class="fs-row">
+                        <b>type</b>
+                        <div id="events-fi-type" class="inline">
+                            <input type="checkbox" filter="before" checked> before
+                            <input type="checkbox" filter="after" checked> after
+                        </div>
+                    </div>
+                    <!-- Name -->
+                    <div class="fs-row">
+                        <b>name</b>
+                        <input id="events-fi-name" type="text">
+                    </div>
+                    <!-- Listener -->
+                    <div class="fs-row">
+                        <b>listener</b>
+                        <div id="events-fi-listener" class="inline">
+                            <input type="checkbox" filter="subscribed" checked> subscribed
+                            <input type="checkbox" filter="unsubscribed" checked> unsubscribed
+                            <input type="checkbox" filter="disabled" checked> disabled
+                            <input type="checkbox" filter="enabled" checked> enabled
+                        </div>
+                    </div>
+                </div>
+                <!-- Event listeners -->
+                <div style="grid-area: list;" class="flow">
+                    <table id="events-listeners" class="fill-x tseprow2 tsepcol tinfo2">
+                        <thead class="thead">
+                            <tr>
+                                <td>category</td>
+                                <td>type</td>
+                                <td>name</td>
+                                <td>listener</td>
+                                <td>fid</td>
+                                <td>status</td>
+                            </tr>
+                        </thead>
+                        <tbody class="code"></tbody>
+                    </table>
+                    <!-- Detail template -->
+                    <template id="events-listeners-detail-template">
+                        <div class="fill-x flow-y" style="max-height: 500px">
+                            <table id="actlog" class="fill tseprow tsepcol">
+                                <thead class="thead">
+                                    <tr>
+                                        <td>tick</td>
+                                        <td>action</td>
+                                        <td>stack</td>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <button id="disable">disable</button>
+                        <button id="unsub">unsubscribe</button>
+                    </template>
+                </div>
+                <!-- Event logs -->
+                <div style="grid-area: log;" class="flow">
+                    <table id="events-log" class="fill-x tseprow2 tsepcol tinfo2">
+                        <thead class="thead">
+                            <tr>
+                                <td>category</td>
+                                <td>type</td>
+                                <td>name</td>
+                                <td>listeners</td>
+                                <td>time</td>
+                            </tr>
+                        </thead>
+                        <tbody class="code"></tbody>
+                    </table>
+                    <!-- Detail template -->
+                    <template id="events-log-detail-template">
+                        <table id="table" class="fill tseprow tsepcol">
+                            <thead class="thead">
+                                <tr>
+                                    <td>listener</td>
+                                    <td>fid</td>
+                                    <td>time</td>
+                                    <td>error</td>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div id="data">data: </div>
+                    </template>
+                </div>
+            </div>
+            <!-- Runs -->
+            <div id="tab-runs" class="fill flex-col gap8">
+                <!-- Options -->
+                <div class="flex-row flex-wrap gap8" style="align-items: center;">
+                    <!-- Type -->
+                    <div class="fs-row">
+                        <b>type</b>
+                        <div id="runs-fi-type" class="inline">
+                            <input type="checkbox" filter="run" checked> run
+                            <input type="checkbox" filter="interval" checked> runInterval
+                            <input type="checkbox" filter="timeout" checked> runTimeout
+                        </div>
+                    </div>
+                    <!-- Status -->
+                    <div class="fs-row">
+                        <b>status</b>
+                        <div id="runs-fi-status" class="inline">
+                            <input type="checkbox" filter="active" checked> active
+                            <input type="checkbox" filter="cleared" checked> cleared
+                            <input type="checkbox" filter="suspended" checked> suspended
+                        </div>
+                    </div>
+
+                    <div class="flex-fill"></div>
+
+                    <!-- Data -->
+                    <div id="runs-data"></div>
+                </div>
+                <!-- Run Functions -->
+                <div class="flow">
+                    <table id="runs-functions" class="fill-x tseprow2 tsepcol tinfo2">
+                        <thead class="thead">
+                            <tr>
+                                <td>type</td>
+                                <td>id</td>
+                                <td>interval</td>
+                                <td>function</td>
+                                <td>fid</td>
+                                <td>status</td>
+                                <td>avgtime</td>
+                            </tr>
+                        </thead>
+                        <tbody class="code"></tbody>
+                    </table>
+                    <!-- Detail template: Timeout -->
+                    <template id="runs-functions-detail-timeout-template">
+                        <!-- Add -->
+                        <div style="grid-area: addstk;">
+                            <b>Add stack:</b> <span id="addstack"> - </span>
+                        </div>
+                        <!-- Clear stack -->
+                        <div style="grid-area: clrstk;" class="flow-x">
+                            <b>Clear stack:</b> <span id="clearstack"> - </span>
+                        </div>
+                        <!-- Exec data -->
+                        <div style="grid-area: execdt;" id="execdata">
+                            (no data)
+                        </div>
+
+                        <!-- Action -->
+                        <div style="grid-area: action;">
+                            <button id="suspend">suspend</button>
+                            <button id="clear">clear</button>
+                        </div>
+                    </template>
+                    <!-- Detail template: Interval -->
+                    <template id="runs-functions-detail-interval-template">
+                        <!-- Add -->
+                        <div style="grid-area: addstk;" class="flow-x">
+                            <b>Add stack:</b> <span id="addstack"> - </span>
+                        </div>
+                        <!-- Clear stack -->
+                        <div style="grid-area: clrstk;" class="flow-x">
+                            <b>Clear stack:</b> <span id="clearstack"> - </span>
+                        </div>
+
+                        <!-- Canvas -->
+                        <div style="grid-area: plot; height: 375px;" id="plot" class="noflow"></div> 
+                        <!-- Errors -->
+                        <div style="grid-area: errlog; max-height: 400px;" class="flow-y">
+                            <table id="errlog" class="fill-x tseprow tsepcol">
+                                <thead class="thead">
+                                    <tr>
+                                        <td>tick</td>
+                                        <td>error</td>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div> 
+
+                        <!-- Action -->
+                        <div style="grid-area: action;">
+                            <button id="suspend">suspend</button>
+                            <button id="clear">clear</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <!-- Tab: Memory -->
+            <div id="tab-stats" class="fill gap8">
+                <div id="stats-mem" class="noflow" style="grid-area: memusg;" ></div>
+                <div id="stats-memcount" class="noflow" style="grid-area: memcnt;" ></div>
+                <div class="flow-y" style="grid-area: plilst;">
+                    <table id="stats-plugins" class="fill-x tfixed tseprow tsepcol">
+                        <colgroup>
+                            <col width="40%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="20%">
+                        </colgroup>
+                        <thead class="thead">
+                            <tr>
+                                <td>handle</td>
+                                <td>current</td>
+                                <td>peak</td>
+                                <td>total</td>
+                            </tr>    
+                        </thead>
+                    </table>
+                </div>
+                <select id="stats-plugin-select" class="fill" style="grid-area: plisel;"></select>
+            </div>
+            <!-- Tab: Properties -->
+            <div id="tab-properties" class="fill flex-col gap8">
+                <!-- Options -->
+                <div class="flex-row gap8" style="align-items: center;">
+                    <!-- Select -->
+                    <select id="props-select" style="width: 150px;"></select>
+                    <button id="props-add"> <i class="fa-solid fa-plus"></i> </button>
+                    <button id="props-delete"> <i class="fa-solid fa-minus"></i> </button>
+
+                    <div class="flex-fill"></div>
+
+                    <!-- Types -->
+                    <div class="fs-row">
+                        <b>type</b>
+                        <div class="inline">
+                            <input id="props-fi-type-string" type="checkbox" checked> string
+                            <input id="props-fi-type-number" type="checkbox" checked> number
+                            <input id="props-fi-type-boolean" type="checkbox" checked> boolean
+                            <input id="props-fi-type-vector" type="checkbox" checked> vector
+                        </div>
+                    </div>
+                    <!-- Names -->
+                    <div class="fs-row">
+                        <b>name</b>
+                        <input id="props-fi-name" type="text">
+                    </div>
+                    <!-- Limit -->
+                    <div class="fs-row">
+                        <b>limit</b>
+                        <input id="props-fi-limit" type="number" min="0" value="100" style="width: 80px">
+                    </div>
+                    
+                    <button id="props-fetch" disabled>fetch</button>
+
+                    <button id="props-add-prop" disabled>add property</button>
+                </div>
+
+                <!-- List -->
+                <div id="props-list-cnt" class="fill flow-y">
+                    <div id="props-list-tooltip" class="fill flex-center gap8">
+                        <i class="fa-solid fa-database" style="font-size: 5em;"></i>
+                        <div style="text-align: center;">
+                            Select tracking target on top left<br>
+                            Press (+) to add tracking<br>
+                            Press (+) to remove tracking<br>
+                            Press FETCH to get properties from filter
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Template -->
+                <template id="props-list-temp">
+                    <table id="t" class="fill-x tfixed tfoot tseprow2 tsepcol tinfo2 tinfonoclick">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="80px">
+                            <col width="80%">
+                            <col width="110px">
+                        </colgroup>
+                        <thead class="thead">
+                            <tr>
+                                <td>name</td>
+                                <td>type</td>
+                                <td>value</td>
+                                <td>action</td>
+                            </tr>
+                        </thead>
+                        <tbody class="code"></tbody>
+                    </table>
+                </template>
+
+                <!-- Log Template -->
+                <template id="props-log-temp">
+                    <table id="t" class="fill-x tfixed tfoot tseprow tsepcol">
+                        <colgroup>
+                            <col width="80px">
+                            <col width="60%">
+                            <col width="40%">
+                            <col width="80px">
+                        </colgroup>
+                        <thead class="thead">
+                            <tr>
+                                <td>type</td>
+                                <td>value</td>
+                                <td>stack</td>
+                                <td>action</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </template>
+
+                <!-- Add Popup -->
+                <template id="props-add-popup-temp">
+                    <div id="props-add-popup-cnt" class="popup gap8">
+                        <input id="input" type="text" style="grid-area: inpt;">
+                        <button id="addbtn" style="grid-area: addb;">add</button>
+
+                        <div class="line line-h" style="grid-area: line;"></div>
+
+                        <div class="flow-y" style="grid-area: list; max-height: 250px; scrollbar-gutter: stable">
+                            <table id="props-add-list" class="tseprow tsepcol">
+                                <thead class="thead">
+                                    <tr>
+                                        <td>id</td>
+                                        <td>type</td>
+                                        <td>nametag</td>
+                                        <td>properties</td>
+                                        <td>bytes</td>
+                                    </tr>
+                                </thead>
+                                <tbody class="code"></tbody>
+                            </table>
+                        </div>
+                        <button id="reload" style="grid-area: reld;">reload</button>
+                        <span id="stat" style="grid-area: stat; align-self: center;">please wait</span>
+                    </div>
+                </template>
+
+                <!-- New Prop -->
+                <template id="props-add-prop-temp">
+                    <tr id="t">
+                        <td>
+                            <input id="name" type="text" style="width: 100%" required>
+                        </td>
+                        <td>
+                            <select id="type" class="fill-x">
+                                <option value="string">str</option>
+                                <option value="number">num</option>
+                                <option value="boolean">bool</option>
+                                <option value="vector">vec</option>
+                                <option value="json">json</option>
+                            </select>
+                        </td>
+                        <td id="cnt"></td>
+                        <td>
+                            <button id="btn-set"><i class="fa-solid fa-check"></i></button>&nbsp;
+                            <button id="btn-cancel"><i class="fa-solid fa-x"></i></button>
+                        </td>
+                    </tr>
+                </template>
+            </div>
+            <!-- Tab: Timing -->
+            <div id="tab-timing" class="fill">
+                <div id="timing-plot" class="fill"></div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "lib": ["esnext", "dom"],
+        "target": "esnext",
+
+        "rootDir": "src",
+        "module": "esnext",
+        "moduleResolution": "node",
+
+        "outDir": "scripts",
+        "removeComments": true,
+        "allowJs": true,
+
+        "strict": true,
+        "noImplicitThis": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "skipLibCheck": true
+    },
+    "include": ["src", "../globaltypes"],
+    "exclude": ["scripts", "node_modules"]
+}

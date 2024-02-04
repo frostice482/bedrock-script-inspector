@@ -1,0 +1,165 @@
+/* BDS */
+
+#bds-log:not(.level-unknown) > tbody > tr.level-unknown { display: none; }
+#bds-log:not(.level-log) > tbody > tr.level-log { display: none; }
+#bds-log:not(.level-info) > tbody > tr.level-info { display: none; }
+#bds-log:not(.level-warn) > tbody > tr.level-warn { display: none; }
+#bds-log:not(.level-error) > tbody > tr.level-error { display: none; }
+
+#bds-log:not(._fi-display-timestamp) > * > tr > td:nth-child(1) { display: none; }
+#bds-log:not(._fi-display-timestamp) > colgroup > col:nth-child(1) { display: none; }
+#bds-log:not(._fi-display-level) > * > tr > td:nth-child(2) { display: none; }
+#bds-log:not(._fi-display-level) > colgroup > col:nth-child(2) { display: none; }
+#bds-log:not(._fi-display-category) > * > tr > td:nth-child(3) { display: none; }
+#bds-log:not(._fi-display-category) > colgroup > col:nth-child(3) { display: none; }
+
+/* Console */
+
+#tab-console {
+    display: grid;
+    grid-template-areas:
+        'opts opts'
+        'list list'
+        'resz hide'
+        'grph grph'
+    ;
+    grid-template-rows: auto 1fr auto auto;
+    grid-template-columns: 1fr auto;
+}
+
+#console-log:not(.level-log) > tbody > tr.level-log { display: none; }
+#console-log:not(.level-info) > tbody > tr.level-info { display: none; }
+#console-log:not(.level-warn) > tbody > tr.level-warn { display: none; }
+#console-log:not(.level-error) > tbody > tr.level-error { display: none; }
+
+#console-log:not(._fi-display-level) > * > tr > td:nth-child(1) { display: none; }
+#console-log:not(._fi-display-level) > colgroup > col:nth-child(1) { display: none; }
+#console-log:not(._fi-display-stack) > * > tr > td:nth-child(3) { display: none; }
+#console-log:not(._fi-display-stack) > colgroup > col:nth-child(3) { display: none; }
+
+#console-gr-vars > tbody > tr > td:nth-child(1) {
+    font-family: monospace;
+    font-size: 1.25em;
+}
+
+/* Inspector */
+
+
+
+/* Eval */
+
+#eval-side {
+    display: grid;
+    grid-template-areas:
+        'edit edit edit'
+        'objc eval send'
+        'func func stat'
+    ;
+    grid-template-rows: 1fr auto auto;
+}
+
+/* Events */
+
+#tab-events {
+    display: grid;
+    grid-template-areas:
+        'opts opts'
+        'list log'
+    ;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr 1fr;
+}
+
+:is(#events-log, #events-listeners):not(._fi-cat-world) > tbody > tr._fi-cat-world { display: none; }
+:is(#events-log, #events-listeners):not(._fi-cat-system) > tbody > tr._fi-cat-system { display: none; }
+:is(#events-log, #events-listeners):not(._fi-type-before) > tbody > tr._fi-type-before { display: none; }
+:is(#events-log, #events-listeners):not(._fi-type-after) > tbody > tr._fi-type-after { display: none; }
+
+#events-listeners:not(._fi-lis-subscribed) > tbody > tr._fi-lis-subscribed { display: none; }
+#events-listeners:not(._fi-lis-unsubscribed) > tbody > tr._fi-lis-unsubscribed { display: none; }
+#events-listeners:not(._fi-lis-disabled) > tbody > tr._fi-lis-disabled { display: none; }
+#events-listeners:not(._fi-lis-enabled) > tbody > tr._fi-lis-enabled { display: none; }
+
+#events-log > tbody > tr:nth-child(odd) > td:is(:nth-child(4), :nth-child(5)),
+#events-log > tbody > tr:nth-child(even) > td > div > table > tbody > tr > td:nth-child(3) {
+    background-repeat: no-repeat;
+}
+
+/* Properties */
+
+#props-list-cnt > table > tbody > tr > td:nth-child(4) {
+    font-size: 0.8em;
+}
+
+#props-list-cnt > table > tbody > tr > td:nth-child(4) > button:not(:hover) {
+    opacity: 0.4;
+}
+
+#props-add-popup-cnt {
+    display: grid;
+    grid-template-areas:
+        'inpt inpt addb'
+        'line line line'
+        'list list list'
+        'reld stat .   '
+    ;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+}
+
+#props-list-tooltip {
+    box-sizing: border-box;
+    border-top: 1px solid var(--border-mid);
+    opacity: 0.25;
+}
+
+#props-add-list > tbody > tr:hover {
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+/* Runs */
+
+.run-detail-timeout {
+    display: grid;
+    grid-template-areas:
+        'addstk execdt'
+        'clrstk execdt'
+        'action action'
+    ;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.run-detail-interval {
+    display: grid;
+    grid-template-areas:
+        'addstk clrstk'
+        'plot   plot  '
+        'errlog errlog'
+        'action action'
+    ;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+#runs-functions:not(._fi-status-active) > tbody > tr._fi-status-active { display: none; }
+#runs-functions:not(._fi-status-cleared) > tbody > tr._fi-status-cleared { display: none; }
+#runs-functions:not(._fi-status-suspended) > tbody > tr._fi-status-suspended { display: none; }
+
+#runs-functions:not(._fi-type-run) > tbody > tr._fi-type-run { display: none; }
+#runs-functions:not(._fi-type-interval) > tbody > tr._fi-type-interval { display: none; }
+#runs-functions:not(._fi-type-timeout) > tbody > tr._fi-type-timeout { display: none; }
+
+/* Stats */
+
+#tab-stats {
+    display: grid;
+    grid-template-areas:
+        'memusg plisel'
+        'memusg plilst'
+        'memcnt plilst'
+    ;
+    grid-template-rows: auto 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+}

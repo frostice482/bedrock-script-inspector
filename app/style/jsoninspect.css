@@ -1,0 +1,28 @@
+.ji-string {
+    color: lime;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+.ji-string-escape { color: yellow; }
+.ji-number { color: greenyellow }
+.ji-boolean { color: greenyellow }
+.ji-symbol { color: greenyellow }
+.ji-regex { color: red }
+.ji-null { color: gray }
+.ji-undefined { color: gray }
+.ji-object { margin-left: 2em; }
+.ji-object-btn { padding: 0px 4px; }
+.ji-object-tag { color: goldenrod }
+.ji-error { color: orangered }
+.ji-error-nothrow { color: lightcoral }
+.ji-function { color: yellow }
+.ji-class { color: cyan }
+.ji-circular { color: coral }
+
+.ji-stack {
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: 1px solid var(--border-strong);
+}
+.ji-stack > .ji-stack-native { color: darkslateblue; }
+.ji-stack > .ji-stack-inspector { color: gray; }

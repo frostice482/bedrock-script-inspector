@@ -1,0 +1,249 @@
+*[hidden] {
+    display: none !important;
+}
+
+/* Layout */
+
+.shrink {
+    min-width: 0;
+    min-height: 0;
+}
+
+.shrink-max {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.fill, .fill-x { width: 100%; }
+.fill, .fill-y { height: 100%; }
+.flex-fill { flex-grow: 1; }
+
+.inline { display: inline; }
+
+.only:not(:only-child) {
+    display: none;
+}
+
+/* Line */
+
+.line {
+    background: var(--border-mid);
+    border-radius: 3px;
+}
+
+.line-h {
+    width: 100%;
+    min-width: 0;
+    height: 4px;
+}
+
+.line-h.line-dense {
+    height: 6px;
+}
+
+.line-v {
+    height: 100%;
+    min-height: 0;
+    width: 4px;
+}
+
+.line-v.line-dense {
+    width: 6px;
+}
+
+/* Resize */
+
+.resize, .resize-h, .resize-v { overflow: auto; }
+.resize { resize: both; }
+.resize-h { resize: horizontal; }
+.resize-v { resize: vertical; }
+
+.resize-c:hover {
+    background-color: var(--border-strong);
+}
+
+.line-h:not(.line-v).resize-c:hover { cursor: row-resize; }
+.line-v:not(.line-h).resize-c:hover { cursor: col-resize; }
+.line-v.line-h.resize-c { cursor: nwse-resize; }
+
+/* Layer */
+
+.layer { display: grid; }
+.layer > * { grid-area: 1 / 1 / 1 / 1; }
+
+.abs { position: absolute; }
+.abs.unblocking { pointer-events: none; }
+.abs.unblocking > * { pointer-events: initial; }
+
+.popup {
+    position: absolute;
+    padding: 8px;
+    z-index: 3;
+
+    background: #05050a;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+}
+
+/* Overflow */
+
+.noflow { overflow: hidden; }
+.flow { overflow: auto; }
+.flow-x { overflow-y: hidden; }
+.flow-y { overflow-x: hidden; }
+
+/* Flow */
+
+.flex-row {
+    display: flex;
+    /* flex-direction: row; */
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.gap8 { gap: 8px }
+
+.center {
+    display: grid;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.flex-center {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.self-center {
+    justify-self: center;
+    align-self: center;
+}
+
+.info-pair > *:nth-child(odd) { margin-right: 4px; }
+.info-pair > *:nth-child(even) { margin-right: 16px; }
+
+/* Filter set */
+
+.fs-row {
+    padding: 4px 8px;
+
+    border: 2px solid var(--border-weak);
+    border-radius: 6px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.fs-row > :first-child {
+    padding-right: 8px;
+    margin-right: 8px;
+    border-right: 2px solid var(--border-weak);
+}
+
+/* Table */
+
+thead.thead > tr {
+    position: sticky;
+    top: 0;
+
+    background: black;
+
+    font-weight: bold;
+}
+
+thead.thead > tr > td {
+    border-bottom: 1px solid var(--border-strong);
+}
+
+tfoot.tfoot > tr {
+    position: sticky;
+    bottom: 0;
+
+    background: rgba(0, 0, 0, 0.6);
+}
+
+tfoot.tfoot > tr > td {
+    border-top: 1px solid var(--border-mid);
+}
+
+table.tsepcol > * > tr > td:not(:last-child) {
+    border-right: 1px solid var(--border-mid);
+}
+
+table.tseprow > * > tr:not(:last-child) > td {
+    border-bottom: 1px solid var(--border-bare);
+}
+
+table.tseprow2 > * > tr:nth-child(odd):not(:last-child) > td {
+    border-bottom: 1px solid var(--border-bare);
+}
+
+table.tfixed {
+    table-layout: fixed;
+}
+
+table.tinfo2:not(.tinfonoclick) > tbody > tr:nth-child(odd) {
+    cursor: pointer;
+}
+
+table.tinfo2 > tbody > tr:nth-child(even) > td {
+    padding: 10px;
+    padding-top: 0;
+}
+
+table.tinfo2 > tbody > tr:nth-child(even) > td > div {
+    padding: 10px;
+
+    border: 1px solid var(--border-strong);
+    border-top: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Levels */
+
+tr.level-info { background: rgba(128, 128, 255, 0.15); }
+tr.level-warn { background: rgba(255, 255, 128, 0.15); }
+tr.level-error { background: rgba(255, 128, 128, 0.15); }
+
+.text-level-info { color: rgb(128, 128, 255); }
+.text-level-warn { color: rgb(255, 255, 128); }
+.text-level-error { color: rgb(255, 128, 128);;}
+
+/* Error Notif */
+
+.enotif {
+    padding: 0 0.25em;
+    border-radius: 0.2em;
+    box-sizing: border-box;
+}
+
+.enotif:empty {
+    display: none;
+}
+
+.enotif-warn {
+    color: yellow;
+    background: rgba(255, 255, 64, 0.2);
+    border: 1px solid yellow;
+}
+
+.enotif-error {
+    color: red;
+    background: rgba(255, 64, 64, 0.2);
+    border: 1px solid red;
+}
