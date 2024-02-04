@@ -1,6 +1,6 @@
 <div align="center"> <img src="app/icon.svg" height=100px> </div>
 
-Bedrock Script Inspector is a powerful web-based inspector version of Minecraft Bedrock Script API inspector, providing extended debugging capabiliy for scripts. It utilizes native method wrapping which then will execute the interpreter and web inspector.
+Bedrock Script Inspector is a powerful web-based inspector version of Minecraft Bedrock Script API, providing extended debugging capabiliy for scripts. It utilizes native method wrapping which then will execute the interpreter and web inspector.
 
 Note that this is only usable in Bedrock Dedicated Server and not local-hosted worlds / realms because `@minecraft/server-net` is used to transfer and receive data and `@minecraft/server-admin` is used for autoloading.
 
