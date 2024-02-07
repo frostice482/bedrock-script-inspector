@@ -6,7 +6,7 @@ import BedrockManifestJson from "./types/manifest_json.js"
 export class BedrockPack {
     static async fromFile(filePath: string) {
         const manifest = await BedrockManifest.fromFile(filePath)
-        return new this(path.dirname(filePath), manifest)
+        return new this(path.dirname(path.resolve(filePath)), manifest)
     }
 
     constructor(dir: string, manifest: BedrockManifest | string | BedrockManifestJson.T | BedrockManifestJson.Header) {
@@ -28,7 +28,7 @@ export class BedrockPack {
                 break
 
             case 'symlink': 
-                await fsp.symlink(this.dir, path)
+                await fsp.symlink(this.dir, path, 'dir')
                 break
         }
 

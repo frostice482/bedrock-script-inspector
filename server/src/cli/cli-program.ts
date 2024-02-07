@@ -47,8 +47,8 @@ program.command('add-bds')
     .argument('<dir>', 'BDS Directory')
     .argument('[level]', 'World level-name to use')
     .option('-c, --copy', 'Copies the pack instead of creating symlink')
-    .action(async (dir, level) => {
-        exec(await import('./commands/bds/add.js').then(f => f.cliAddBds), [dir, level])
+    .action(async (dir, level, opts) => {
+        exec(await import('./commands/bds/add.js').then(f => f.cliAddBds), [dir, level, opts])
     })
 
 program.command('remove-bds')
