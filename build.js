@@ -79,7 +79,7 @@ const include = [
     })
 
     console.log('building pack scripts')
-    await buildBundleScript('pack/src', 'pack/scripts/debugger/index.js', true, {
+    await buildBundleScript('pack/src', 'pack/scripts/debugger/bundle.js', true, {
         external: [
             '@minecraft/server',
             '@minecraft/server-gametest',
@@ -91,6 +91,10 @@ const include = [
         tsconfig: 'pack/tsconfig.json'
     })
     await fsp.writeFile('pack/scripts/debugger/dropper.js', '//')
+    await fsp.writeFile('pack/scripts/debugger/index.js', [
+        "import './bundle.js'",
+        "import './dropper.js'"
+    ].join('\n'))
 
     console.log('building server scripts')
     await fsp.rm('server/app', { force: true, recursive: true })
