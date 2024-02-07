@@ -5,3 +5,4 @@ pack/subpacks
 pack/scripts
 server/app
 build.zip
+package-lock.json
