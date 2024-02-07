@@ -48,7 +48,10 @@ async function bdsInspector(bdsDir: string, port: number, authUser?: string, aut
 
     // process event
     bdsinspector.once('spawn', cp => interpreter.emit('bds_start', cp.pid ?? 0))
-    bdsinspector.once('close', code => interpreter.emit('bds_kill', code ?? -1))
+    bdsinspector.once('close', code => {
+        interpreter.emit('bds_kill', code ?? -1)
+        console.log('BDS exited with code', code)
+    })
     bdsinspector.on('log', data => interpreter.emit('log', data))
     
     // stat
