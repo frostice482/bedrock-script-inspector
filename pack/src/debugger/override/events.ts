@@ -244,7 +244,7 @@ export interface EventSignalData<T extends EventSignalAny = EventSignalAny> {
 const debugEventsOverride = {
     worldBefore: new EventsOverride(world.beforeEvents),
     worldAfter: new EventsOverride(world.afterEvents),
-    systemBefore: new EventsOverride(system.beforeEvents),
+    systemBefore: new EventsOverride({}),
     systemAfter: new EventsOverride(system.afterEvents),
 }
 
