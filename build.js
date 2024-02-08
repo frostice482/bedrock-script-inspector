@@ -1,6 +1,8 @@
 //@ts-check
 
+const crypto = require('crypto')
 const fsp = require('fs/promises')
+const path = require('path')
 const { build } = require('esbuild')
 
 /**
@@ -15,8 +17,15 @@ const { build } = require('esbuild')
 async function bundleBuild(entry, out, format, platform, tsconfig = undefined, more = {}) {
     console.time(entry)
 
+    const temp = crypto.randomBytes(8).toString('hex')
+    const isDir = out[0] === '^' && (out = out.slice(1), true)
+    const parRef = path.dirname(out)
+
+    // options
+    /** @type {import('esbuild').BuildOptions} */
     const opts = {
         entryPoints: [entry],
+        [isDir ? 'outdir' : 'outfile']: temp,
         format,
         platform,
         tsconfig,
@@ -25,10 +34,12 @@ async function bundleBuild(entry, out, format, platform, tsconfig = undefined, m
         minify: true
     }
 
-    if (out[0] === '^') opts.outdir = out.slice(1)
-    else opts.outfile = out
-
+    // build
     await build(Object.assign(opts, more))
+
+    await fsp.rm(isDir ? out : parRef, { force: true, recursive: true })
+    await fsp.mkdir(parRef, { recursive: true })
+    await fsp.rename(temp, out)
 
     console.timeEnd(entry)
 }
@@ -49,6 +60,5 @@ bundleBuild('pack/src/debugger/index.ts', 'pack/scripts/debugger/bundle.js', 'es
 })
 
 bundleBuild('server/src/**/*', '^server/app', 'cjs', 'node', 'server/tsconfig.json', {
-    external: ['*'],
-    minify: false
+    external: ['*']
 })
