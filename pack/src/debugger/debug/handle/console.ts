@@ -2,11 +2,11 @@ import BedrockType from "../../../../../globaltypes/bedrock.js";
 import jsonInspect from "../../lib/jsoninspect.js";
 import { getStackTrace } from "../../lib/util.js";
 import debugConsoleOverride from "../../override/console.js";
-import debugClient from "../client.js";
+import DebugClient from "../client.js";
 
 function emitter(level: BedrockType.Console.LogLevel) {
     return (data: any[]) => {
-        debugClient.send('console', {
+        DebugClient.send('console', {
             data: data.map(v => typeof v === 'string' ? v : jsonInspect.inspect(v)),
             stack: getStackTrace(4),
             level: level

@@ -7,29 +7,21 @@ import debugConsoleOverride from "../override/console.js"
 
 var rc = debugConsoleOverride
 
-export class DebugClient {
-    #connectURI = ''
-    #username?: string
-    #password?: string
-    #authHash?: string
+export namespace DebugClient {
+    export let connectURI = ''
+    export let authHash: string | undefined
 
-    get connected() { return this.#connectURI !== '' }
-    get connectAddress() { return this.#connectURI }
-    get connectUsername() { return this.#username }
-    get connectPassword() { return this.#password }
-    get connectAuthHash() { return this.#authHash }
+    export let queue: string[] = []
+    export let queueAutoUpdateSize = 10
 
-    queue: string[] = []
-    queueAutoUpdateSize = 10
+    export let enableDebug = false
+    export let enableLog = false
 
-    enableDebug = false
-    enableLog = false
+    export let _isUploading = false
 
-    #isUploading = false
-
-    async connect(address: string, username?: string, password?: string) {
-        if (this.connected) {
-            rc.rawWarn(`[inspector] Attempting to connect to ${address} while already connected to ${this.#connectURI}`)
+    export async function connect(address: string, username?: string, password?: string) {
+        if (connectURI) {
+            rc.rawWarn(`[inspector] Attempting to connect to ${address} while already connected to ${connectURI}`)
             return false
         }
 
@@ -43,19 +35,19 @@ export class DebugClient {
             await HttpUtil.head(addr + '/bedrock/connect', { Authorization: hash }).then(HttpUtil.throwIfError)
 
             // data
-            const qlen = this.queue.length,
-                data = '[' + this.queue.join(',') + ']'
+            const qlen = queue.length,
+                data = '[' + queue.join(',') + ']'
 
             // upload
             rc.rawInfo(`[inspector] Uploading initial data: ${data.length} len / ${qlen} datas`)
             await HttpUtil.post(addr + '/bedrock/connect', data, { Authorization: hash }).then(HttpUtil.throwIfError)
 
             // success
-            this.#connectURI = addr
-            this.#username = username
-            this.#password = password
-            this.#authHash = hash
-            this.queue.splice(0, qlen)
+            connectURI = addr
+            username = username
+            password = password
+            authHash = hash
+            queue.splice(0, qlen)
             rc.rawInfo('[inspector] Success')
 
             return true
@@ -65,29 +57,29 @@ export class DebugClient {
         }
     }
 
-    async send<K extends keyof BedrockType.CrossEvents>(name: K, data: BedrockType.CrossEvents[K], forceUpload = false) {
-        const q = this.queue, d = JSON.stringify([name, data])
+    export async function send<K extends keyof BedrockType.CrossEvents>(name: K, data: BedrockType.CrossEvents[K], forceUpload = false) {
+        const q = queue, d = JSON.stringify([name, data])
         q.push(d)
 
         const len = q.length
 
-        if (this.enableDebug) rc.rawLog(`[inspector] add: ${name} / ${d.length} len / ${len} datas`)
+        if (enableDebug) rc.rawLog(`[inspector] add: ${name} / ${d.length} len / ${len} datas`)
 
         // connected
-        if (this.#connectURI) {
+        if (connectURI) {
             // not connecting, forced to upload or queue size is greater
-            if (!this.#isUploading && (forceUpload || len >= this.queueAutoUpdateSize)) {
-                this.#isUploading = true
+            if (!_isUploading && (forceUpload || len >= queueAutoUpdateSize)) {
+                _isUploading = true
                 try {
                     // data
-                    const qlen = this.queue.length,
-                        data = '[' + this.queue.join(',') + ']'
+                    const qlen = queue.length,
+                        data = '[' + queue.join(',') + ']'
                     
                     // transfer
                     const t = Date.now()
 
-                    const transferres = await HttpUtil.post(this.#connectURI + '/bedrock/transfer', data, { Authorization: this.#authHash }).then(HttpUtil.throwIfError)
-                    this.queue.splice(0, qlen)
+                    const transferres = await HttpUtil.post(connectURI + '/bedrock/transfer', data, { Authorization: authHash }).then(HttpUtil.throwIfError)
+                    queue.splice(0, qlen)
 
                     const td = Date.now() - t
                     if (td > 2500) {
@@ -96,14 +88,14 @@ export class DebugClient {
                     }
 
                     // receive
-                    const message = JSON.parse(transferres.body) as ClientType.CrossEventData[]
-                    for (const [k, v] of message) this.message.emit(k, v)
+                    const recv = JSON.parse(transferres.body) as ClientType.CrossEventData[]
+                    for (const [k, v] of recv) message.emit(k, v)
 
                     // log
-                    if (this.enableLog) rc.rawLog(
+                    if (enableLog) rc.rawLog(
                         '[inspector] Transfer: '
                         + 'TX ' + data.length.toString().padStart(7) + ' / ' + qlen.toString().padStart(2)
-                        + ' - ' + 'RX ' + transferres.body.length.toString().padStart(7) + ' / ' + message.length.toString().padStart(2)
+                        + ' - ' + 'RX ' + transferres.body.length.toString().padStart(7) + ' / ' + recv.length.toString().padStart(2)
                     )
                 }
                 catch(e) {
@@ -111,7 +103,7 @@ export class DebugClient {
                     throw e
                 }
                 finally {
-                    this.#isUploading = false
+                    _isUploading = false
                 }
             }
         }
@@ -127,17 +119,17 @@ export class DebugClient {
         }
     }
 
-    async resolve<K extends BedrockType.ClientResponse.Values = BedrockType.ClientResponse.Values>(id: string, data: BedrockType.ClientResponse.List[K]) {
-        return HttpUtil.post(this.#connectURI + '/bedrock/resolve/' + id, JSON.stringify(data), { Authorization: this.#authHash }).then(HttpUtil.throwIfError)
+    export async function resolve<K extends BedrockType.ClientResponse.Values = BedrockType.ClientResponse.Values>(id: string, data: BedrockType.ClientResponse.List[K]) {
+        return HttpUtil.post(connectURI + '/bedrock/resolve/' + id, JSON.stringify(data), { Authorization: authHash }).then(HttpUtil.throwIfError)
     }
 
-    async disconnect() {
+    export async function disconnect() {
         try {
             rc.rawInfo(`[inspector] Disconnecting`)
-            await HttpUtil.post(this.#connectURI + '/bedrock/disconnect', '', { Authorization: this.#authHash }).then(HttpUtil.throwIfError)
+            await HttpUtil.post(connectURI + '/bedrock/disconnect', '', { Authorization: authHash }).then(HttpUtil.throwIfError)
 
-            this.#connectURI = ''
-            this.#username = this.#password = this.#authHash = undefined
+            connectURI = ''
+            authHash = undefined
             rc.rawInfo(`[inspector] Disconnected`)
         }
         catch(e) {
@@ -146,11 +138,7 @@ export class DebugClient {
         }
     }
 
-    readonly message = new TypedEventEmitter<ClientType.CrossEvents>()
+    export const message = new TypedEventEmitter<ClientType.CrossEvents>()
 }
 
-const debugClient = new DebugClient
-//debugClient.enableDebug = true
-//debugClient.enableLog = true
-
-export default debugClient
+export default DebugClient

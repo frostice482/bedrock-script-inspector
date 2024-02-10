@@ -1,6 +1,6 @@
 import { variables } from "@minecraft/server-admin";
 import debugConsoleOverride from "../override/console.js";
-import debugClient from "./client.js";
+import DebugClient from "./client.js";
 
 var rc = debugConsoleOverride
 
@@ -12,5 +12,5 @@ if (autoconnect) {
     const username = autoconnect.username
     const password = autoconnect.password
 
-    debugClient.connect(address, username, password)
+    DebugClient.connect(address, username, password)
 }

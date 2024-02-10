@@ -1,6 +1,6 @@
 import { ScriptEventSource } from "@minecraft/server";
 import debugEventsOverride from "../../../override/events.js";
-import debugClient from "../../client.js";
+import DebugClient from "../../client.js";
 
 const sig = debugEventsOverride.systemAfter.events.scriptEventReceive
 sig.rawSubscribe.call(sig.signal, ({ id, message, sourceType }) => {
@@ -9,10 +9,10 @@ sig.rawSubscribe.call(sig.signal, ({ id, message, sourceType }) => {
     
     switch (id) {
         case 'debug:connect':
-            debugClient.connect(data.address, data.username, data.password).catch(() => {})
+            DebugClient.connect(data.address, data.username, data.password).catch(() => {})
             break
         case 'debug:disconnect':
-            debugClient.disconnect().catch(() => {})
+            DebugClient.disconnect().catch(() => {})
             break
     }
 }, { namespaces: ['debug'] })

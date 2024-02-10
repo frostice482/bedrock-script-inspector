@@ -1,6 +1,6 @@
 import { system } from "@minecraft/server";
 import debugRunOverride from "../../override/run.js";
-import debugClient from "../client.js";
+import DebugClient from "../client.js";
 import BedrockType from "../../../../../globaltypes/bedrock.js";
 import jsonInspect from "../../lib/jsoninspect.js";
 
@@ -14,7 +14,7 @@ debugRunOverride.rawRunInterval.call(system, () => {
     const ct = Date.now(), dt = ct - lt
     lt = ct
 
-    debugClient.send('tick', {
+    DebugClient.send('tick', {
         tick: system.currentTick,
         time: Date.now(),
         delta: dt,

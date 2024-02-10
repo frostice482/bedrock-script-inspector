@@ -12,7 +12,7 @@ import debugConsoleOverride from '../../../override/console.js'
 import debugEventsOverride from '../../../override/events.js'
 import debugProxyOverride from '../../../override/proxy.js'
 import debugRunOverride from '../../../override/run.js'
-import debugClient from '../../client.js'
+import DebugClient from '../../client.js'
 import clientRequests from './request.js'
 import jsonInspect, { JsonInspectInstance, RootRefInspector } from '../../../lib/jsoninspect.js'
 
@@ -42,7 +42,7 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
         const ti = Date.now()
 
         // send
-        debugClient.resolve<'eval'>(id, {
+        DebugClient.resolve<'eval'>(id, {
             error: false,
             data: inspData,
             execTime: te - t1,
@@ -56,7 +56,7 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
         const inspData = insp.inspect(e)
         const ti = Date.now()
 
-        debugClient.resolve<'eval'>(id, {
+        DebugClient.resolve<'eval'>(id, {
             error: true,
             data: inspData,
             execTime: te - t1,
@@ -91,7 +91,7 @@ Object.setPrototypeOf(evalOverridesObj, null)
 
 const evalProps: any = {
     debugOverrides: evalOverridesObj,
-    debugClient: debugClient,
+    DebugClient: DebugClient,
 
     setInterval: mc.system.runInterval.bind(mc.system),
     setTimeout: mc.system.runTimeout.bind(mc.system),

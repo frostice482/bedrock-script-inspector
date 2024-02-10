@@ -4,20 +4,20 @@ import jsonInspect from "../../lib/jsoninspect.js";
 import { TimingResult } from "../../lib/timing.js";
 import { getTraceData } from "../../lib/util.js";
 import debugEventsOverride, { EventsOverride } from "../../override/events.js";
-import debugClient from "../client.js";
+import DebugClient from "../client.js";
 
 function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
     event.addEventListener('subscribe', ({ name, fid, listener }) =>
-        debugClient.send('event_listener_subscribe', getTraceData({ type, category, name, fid, fn: jsonInspect.fn(listener as Function) }, 8))
+        DebugClient.send('event_listener_subscribe', getTraceData({ type, category, name, fid, fn: jsonInspect.fn(listener as Function) }, 8))
     )
     event.addEventListener('unsubscribe', ({ name, fid }) =>
-        debugClient.send('event_listener_unsubscribe', getTraceData({ type, category, name, fid }, 8))
+        DebugClient.send('event_listener_unsubscribe', getTraceData({ type, category, name, fid }, 8))
     )
     event.addEventListener('disable', ({ name, fid }) =>
-        debugClient.send('event_listener_disable', { type, category, name, fid })
+        DebugClient.send('event_listener_disable', { type, category, name, fid })
     )
     event.addEventListener('enable', ({ name, fid }) =>
-        debugClient.send('event_listener_enable', { type, category, name, fid })
+        DebugClient.send('event_listener_enable', { type, category, name, fid })
     )
 
     event.addEventListener('data', ({ name, data, list, delta }) => {
@@ -25,7 +25,7 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
         const insData = jsonInspect.inspect(data)
         const instd = Date.now() - inst0
 
-        debugClient.send('event', {
+        DebugClient.send('event', {
             type, category, name,
             data: insData,
             delta: instd + delta,
@@ -47,7 +47,7 @@ eventEmitter(debugEventsOverride.worldAfter, 'world', 'after')
 eventEmitter(debugEventsOverride.systemBefore, 'system', 'before')
 eventEmitter(debugEventsOverride.systemAfter, 'system', 'after')
 
-debugClient.message.addEventListener('event_action', ({ action, id: { category, fid, name, type } }) => {
+DebugClient.message.addEventListener('event_action', ({ action, id: { category, fid, name, type } }) => {
     const eo: EventsOverride<any> = category === 'world'
         ? type === 'before'
             ? debugEventsOverride.worldBefore
