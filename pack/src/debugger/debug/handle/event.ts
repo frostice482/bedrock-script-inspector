@@ -1,7 +1,5 @@
 import BedrockType from "../../../../../globaltypes/bedrock.js";
-import getFid from "../../lib/fid.js";
 import jsonInspect from "../../lib/jsoninspect.js";
-import { TimingResult } from "../../lib/timing.js";
 import { getTraceData } from "../../lib/util.js";
 import DebugEventsOverride, { EventsOverride } from "../../override/events.js";
 import DebugClient from "../client.js";
@@ -29,15 +27,7 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
             type, category, name,
             data: insData,
             delta: instd + delta,
-            functions: Array.from(
-                list as Map<Function, TimingResult<void>>,
-                ([k, { delta, value, errored }]) => ({
-                    delta,
-                    error: errored ? jsonInspect.inspect(value) : undefined,
-                    fid: getFid(k),
-                    fn: jsonInspect.fn(k)
-                })
-            )
+            functions: list
         })
     })
 }

@@ -124,7 +124,7 @@ declare namespace BedrockType {
         }
 
         interface TickRun extends TimingData {
-            list: RunData[]
+            runs: RunData[]
             jobs: JobRunData[]
         }
 

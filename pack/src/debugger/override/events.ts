@@ -1,5 +1,7 @@
+import BedrockType from "../../../../globaltypes/bedrock.js"
 import getFid from "../lib/fid.js"
-import timing, { TimingResult } from "../lib/timing.js"
+import jsonInspect from "../lib/jsoninspect.js"
+import timing from "../lib/timing.js"
 import TypedEventEmitter from "../lib/typedevm.js"
 import { system, world } from '@minecraft/server'
 
@@ -172,14 +174,20 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
      * @param optsFilter Options filter
      */
     dispatch(data: _D['data'], optsFilter?: (opts: _D['options'] | undefined, listener: _D['listener']) => boolean) {
-        const list = new Map<_D['listener'], TimingResult<void>>()
+        const list: BedrockType.Events.DataFunctionExec[] = []
 
         const t0 = Date.now()
         for (const [listener, { options, disabled }] of this.listener) {
             if (disabled) continue
             if (optsFilter ? !optsFilter(options, listener) : false) continue
 
-            list.set(listener, timing(() => listener(data)))
+            const exec = timing(() => listener(data))
+            list.push({
+                fid: getFid(listener),
+                fn: jsonInspect.fn(listener),
+                delta: exec.delta,
+                error: exec.errored ? jsonInspect.inspect(exec.value) : undefined
+            })
         }
         const td = Date.now() - t0
 
@@ -209,7 +217,7 @@ export interface EventsOverrideSignalEvents<Sd extends EventSignalData> {
     enable: EventsOverrideSignalEventFunctionIdentifier<Sd>
 
     data: {
-        readonly list: Map<Sd['listener'], TimingResult<void>>
+        readonly list: BedrockType.Events.DataFunctionExec[]
         readonly data: Sd['data']
         readonly delta: number
     }

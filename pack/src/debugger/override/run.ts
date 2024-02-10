@@ -2,6 +2,7 @@ import { System } from "@minecraft/server"
 import BedrockType from "../../../../globaltypes/bedrock.js"
 import timing, { TimingResult } from "../lib/timing.js"
 import TypedEventEmitter from "../lib/typedevm.js"
+import jsonInspect from "../lib/jsoninspect.js"
 
 namespace DebugRunOverride {
     const proto = System.prototype
@@ -150,24 +151,30 @@ namespace DebugRunOverride {
     export function execAll() {
         const ct = localTick++
 
-        const runs = new Map<Run, ExecRunData>()
+        const runs: BedrockType.Tick.RunData[] = []
         for (const run of runList.values()) {
             if (run.suspended || run.nextTick > ct) continue
-            runs.set(run, run.exec())
+            const { res: { delta, errored, value }, sleep } = run.exec()
+            runs.push({
+                id: run.id,
+                sleep,
+                delta,
+                error: errored ? jsonInspect.inspect(value) : undefined
+            })
         }
 
-        const jobs = new Map<RunJob, ExecJobData>()
-        const activeJobs = new Map<RunJob, ExecJobData>()
+        const jobs: BedrockType.Tick.JobRunData[] = []
+        const activeJobs = new Map<RunJob, BedrockType.Tick.JobRunData>()
         const t = Date.now()
         for (const run of jobList.values()) {
             if (run.suspended) continue
-            const d: ExecJobData = {
+            const d: BedrockType.Tick.JobRunData = {
                 sleep: run.lastTime - t,
                 delta: 0,
                 count: 0,
-                freeze: false
+                id: run.id
             }
-            jobs.set(run, d)
+            jobs.push(d)
             activeJobs.set(run, d)
         }
 
@@ -194,13 +201,6 @@ namespace DebugRunOverride {
         clear: number
         suspend: number
         resume: number
-    }
-
-    export interface ExecJobData {
-        sleep: number
-        delta: number
-        count: number
-        freeze: boolean
     }
 
     export interface ExecRunData {
