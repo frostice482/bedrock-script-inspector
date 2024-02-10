@@ -110,13 +110,7 @@ declare namespace BedrockType {
     
         interface InfoWithFn extends Info, FunctionInfo {}
     
-        type Type = 'interval' | 'timeout' | 'run'
-    
-        interface RunData extends TimingData {
-            id: number
-            interval: number
-            error?: JSONInspectData
-        }
+        type Type = 'interval' | 'timeout' | 'run' | 'job'
         
         type ActionTrack = 'add' | 'clear'
         type ClientAction = 'clear' | 'suspend' | 'resume'
@@ -130,7 +124,20 @@ declare namespace BedrockType {
         }
 
         interface TickRun extends TimingData {
-            list: Run.RunData[]
+            list: RunData[]
+            jobs: JobRunData[]
+        }
+
+        interface RunData extends TimingData {
+            id: number
+            sleep: number
+            error?: JSONInspectData
+        }
+
+        interface JobRunData extends TimingData {
+            id: number
+            sleep: number
+            count: number
         }
     }
     type Tick = Tick.Data

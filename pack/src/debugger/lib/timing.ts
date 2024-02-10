@@ -3,35 +3,35 @@
  * @param fn Function to be executed
  * @returns Timing result
  */
-export default function timing<T>(fn: () => T): TimingResult {
+export default function timing<T>(fn: () => T): TimingResult<T> {
     const t0 = Date.now()
     
     try {
-        const res = fn()
+        const v = fn()
         return {
-            time: Date.now() - t0,
+            delta: Date.now() - t0,
             errored: false,
-            out: res
+            value: v
         }
     } catch(e) {
         return {
-            time: Date.now() - t0,
+            delta: Date.now() - t0,
             errored: true,
-            error: e
+            value: e
         }
     }
 }
 
-export type TimingResult = Readonly<{
-    time: number
-} & (TimingResultError | TimingResultSuccess)>
+export type TimingResult<T> = TimingSuccess<T> | TimingError
 
-export type TimingResultError = {
-    errored: true
-    error: unknown
+export interface TimingSuccess<T> {
+    delta: number
+    errored: false
+    value: T
 }
 
-export type TimingResultSuccess<T = unknown> = {
-    errored: false
-    out: T
+export interface TimingError {
+    delta: number
+    errored: true
+    value: any
 }

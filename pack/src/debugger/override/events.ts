@@ -172,7 +172,7 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
      * @param optsFilter Options filter
      */
     dispatch(data: _D['data'], optsFilter?: (opts: _D['options'] | undefined, listener: _D['listener']) => boolean) {
-        const list = new Map<_D['listener'], TimingResult>
+        const list = new Map<_D['listener'], TimingResult<void>>()
 
         const t0 = Date.now()
         for (const [listener, { options, disabled }] of this.listener) {
@@ -209,7 +209,7 @@ export interface EventsOverrideSignalEvents<Sd extends EventSignalData> {
     enable: EventsOverrideSignalEventFunctionIdentifier<Sd>
 
     data: {
-        readonly list: Map<Sd['listener'], TimingResult>
+        readonly list: Map<Sd['listener'], TimingResult<void>>
         readonly data: Sd['data']
         readonly delta: number
     }

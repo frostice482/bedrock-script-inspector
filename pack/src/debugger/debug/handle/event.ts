@@ -30,10 +30,10 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
             data: insData,
             delta: instd + delta,
             functions: Array.from(
-                list as Map<Function, TimingResult>,
-                ([k, v]) => ({
-                    delta: v.time,
-                    error: v.errored ? jsonInspect.inspect(v.error) : undefined,
+                list as Map<Function, TimingResult<void>>,
+                ([k, { delta, value, errored }]) => ({
+                    delta,
+                    error: errored ? jsonInspect.inspect(value) : undefined,
                     fid: getFid(k),
                     fn: jsonInspect.fn(k)
                 })
