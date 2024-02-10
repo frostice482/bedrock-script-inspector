@@ -465,9 +465,8 @@ class RowRunDataJob extends RowRunData {
                 {
                     label: 'count',
                     stroke: 'cyan',
-                    scale: 'y',
-                    show: false,
-                    value: (plot, xxx) => timeUnit(xxx)
+                    scale: 'y1',
+                    show: false
                 }
             ],
             axes: [
@@ -481,6 +480,7 @@ class RowRunDataJob extends RowRunData {
                 }, {
                     scale: 'y1',
                     stroke: 'white',
+                    side: 1,
                     grid: { show: false },
                     size: 50
                 }
@@ -516,7 +516,8 @@ class RowRunDataJob extends RowRunData {
             addStack,
             clearStack,
             avgTimeCell: this._avgTimeCell,
-            statusCell: this._detailCell
+            statusCell: this._detailCell,
+            clearErr: getIdThrow('clearerr', undefined, detailTemplate, true)
         }
         detailCnt.appendChild(detailTemplate)
 
@@ -528,7 +529,9 @@ class RowRunDataJob extends RowRunData {
         }
     }
 
-    readonly elm: Readonly<RunElmStd>
+    readonly elm: Readonly<RunElmStd & {
+        clearErr: HTMLElement
+    }>
 
     readonly plot: uPlotResizer
     readonly plotData = {
@@ -571,16 +574,17 @@ class RowRunDataJob extends RowRunData {
         this.elm.suspendBtn.textContent = v ? 'resume' : 'suspend'
     }
 
-    clear(tick?: number, stack?: string) {
+    clear(tick?: number, stack?: string, error?: JSONInspectData) {
         if (this._cleared) return
 
         this.elm.clearStack.replaceChildren('(' + tick + ')\n', formatStack(stack ?? ''))
         this.elm.suspendBtn.disabled = this.elm.clearBtn.disabled = true
+        if (error) this.elm.clearErr.append(JSONUninspector(error))
 
         super.clear()
     }
 
-    exec(data: BedrockType.Tick.JobRunData, tick: number) {
+    exec(data: BedrockType.Tick.JobRunData) {
         this.plotCurTime ||= Date.now() / 1000
         this.plotCurTime += data.sleep / 1000
         const deltaAvg = data.delta / data.count
@@ -591,6 +595,7 @@ class RowRunDataJob extends RowRunData {
         pushLimit(this.plotData.delaysAvgs2, this.delayAvg.pushAndAverage(deltaAvg), this.plotMaxData)
         pushLimit(this.plotData.delayAvg2Latest, this.delayAvg._prevLAvg, this.plotMaxData)
         pushLimit(this.plotData.sleeps, data.sleep, this.plotMaxData)
+        pushLimit(this.plotData.execPerTick, data.count, this.plotMaxData)
 
         this.timingUpdateState = this.detailUpdateState = true
     }
@@ -618,7 +623,7 @@ class RowRunDataJob extends RowRunData {
 
 //// process ////
 
-const { runs, runJobs, limits: { runs: runLimit } } = BedrockInspector.initData
+const { runs, runJobs: runJobsInit, limits: { runs: runLimit } } = BedrockInspector.initData
 
 for (const lis of runs) {
     const d = lis.type === 'interval' ? new RowRunDataInterval(lis) : new RowRunDataTimeout(lis)
@@ -635,7 +640,7 @@ for (const lis of runs) {
     }
 }
 
-for (const job of runJobs) {
+for (const job of runJobsInit) {
     const d = new RowRunDataJob(job)
     runsTbody.prepend(d.row, d.detailRow)
 
@@ -687,6 +692,20 @@ let notifErrorCount = 0
             if (!run.detailRow.hidden) run.updateDetail()
         }
 
+        for (const job of runListJobs.values()) {
+            if (!job.suspended && !job.cleared) {
+                const avg = job.delayAvg._prevAvg
+
+                runAvgTtl += avg
+                runAvgMax += avg
+                runCntTtl ++
+                runCntMax += 1
+            }
+
+            job.updateTiming()
+            if (!job.detailRow.hidden) job.updateDetail()
+        }
+
         dataElm.textContent = `active: ${runCntMax.toFixed(2)} (${runCntTtl}) - avg: ${runAvgTtl.toFixed(3)}ms (${runAvgMax.toFixed(3)}ms)`
     }
 
@@ -709,6 +728,10 @@ let notifErrorCount = 0
             }
             rd.exec(exec, tick)
         }
+
+        for (const job of run.jobs) {
+            runListJobs.get(job.id)?.exec(job)
+        }
     })
 
     BedrockInspector.bedrockEvents.addEventListener('run_add', ({ detail: data }) => {
@@ -724,7 +747,7 @@ let notifErrorCount = 0
         runsTbody.prepend(d.row, d.detailRow)
 
         runList.set(run.id, d)
-        if (runList.size > runLimit) {
+        if (runList.size + runListJobs.size > runLimit) {
             for (const [id, run] of runClearCache) {
                 run.row.remove()
                 run.detailRow.remove()
@@ -746,7 +769,7 @@ let notifErrorCount = 0
         runsTbody.prepend(d.row, d.detailRow)
 
         runListJobs.set(data.data, d)
-        if (runListJobs.size > runLimit) {
+        if (runList.size + runListJobs.size > runLimit) {
             for (const [id, run] of runClearCache) {
                 run.row.remove()
                 run.detailRow.remove()
@@ -765,20 +788,21 @@ let notifErrorCount = 0
     })
 
     BedrockInspector.bedrockEvents.addEventListener('job_clear', ({ detail: data }) => {
-        const run = runListJobs.get(data.data)
+        const { id, error } = data.data
+        const run = runListJobs.get(id)
         if (!run) return
 
-        runClearCache.set(data.data, run)
-        run.clear(data.tick, data.stack)
+        runClearCache.set(id, run)
+        run.clear(data.tick, data.stack, error)
     })
 
     BedrockInspector.bedrockEvents.addEventListener('run_suspend', ({ detail: data }) => {
-        const run = runList.get(data)
+        const run = runList.get(data) ?? runListJobs.get(data)
         if (run) run.suspended = true
     })
 
     BedrockInspector.bedrockEvents.addEventListener('run_resume', ({ detail: data }) => {
-        const run = runList.get(data)
+        const run = runList.get(data) ?? runListJobs.get(data)
         if (run) run.suspended = false
     })
 

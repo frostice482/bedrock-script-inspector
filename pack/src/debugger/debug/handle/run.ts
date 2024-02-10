@@ -19,8 +19,11 @@ DebugRunOverride.events.addEventListener('addJob', ({ id }) =>
 DebugRunOverride.events.addEventListener('clear', (id) => 
     DebugClient.send('run_clear', getTraceData(id, 7))
 )
-DebugRunOverride.events.addEventListener('clearJob', (id) => 
-    DebugClient.send('job_clear', getTraceData(id, 7))
+DebugRunOverride.events.addEventListener('clearJob', ({ id, error }) => 
+    DebugClient.send('job_clear', getTraceData({
+        id,
+        error: error ? jsonInspect.inspect(error) : undefined
+    }, 7))
 )
 DebugRunOverride.events.addEventListener('suspend', (id) => 
     DebugClient.send('run_suspend', id)

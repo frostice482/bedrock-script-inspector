@@ -16,7 +16,10 @@ declare namespace BedrockType {
         run_resume: number
 
         job_add: TraceData<number>
-        job_clear: TraceData<number>
+        job_clear: TraceData<{
+            id: number
+            error?: JSONInspectData
+        }>
 
         dp_change: DynamicProperty.Change
         dp_clear: DynamicProperty.Clear

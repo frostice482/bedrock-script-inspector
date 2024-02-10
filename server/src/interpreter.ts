@@ -67,7 +67,7 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
                             suspended: false
                         })
 
-                        if (this.runs.size > this.runsLimit) {
+                        if (this.runJobs.size + this.runs.size > this.runsLimit) {
                             for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
                             this.runClearCache.clear()
                         }
@@ -88,7 +88,7 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
                             suspended: false
                         })
 
-                        if (this.runs.size > this.runsLimit) {
+                        if (this.runJobs.size + this.runs.size > this.runsLimit) {
                             for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
                             this.runClearCache.clear()
                         }
@@ -96,10 +96,9 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
                         break
                     }
 
-                    case 'job_clear':
                     case 'run_clear': {
                         const id = data.data
-                        const run = this[name === 'job_clear' ? 'runJobs' : 'runs'].get(id)
+                        const run = this.runs.get(id)
                         if (!run) break
 
                         run.cleared = true
@@ -111,14 +110,27 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
                         break
                     }
 
+                    case 'job_clear': {
+                        const run = this.runJobs.get(data.data.id)
+                        if (!run) break
+
+                        run.cleared = true
+                        run.clearTick = data.tick
+                        run.clearStack = data.stack
+
+                        this.runClearCache.add(data.data.id)
+
+                        break
+                    }
+
                     case 'run_suspend': {
-                        const run = this.runs.get(data)
+                        const run = this.runs.get(data) ?? this.runJobs.get(data)
                         if (run) run.suspended = true
                         break
                     }
 
                     case 'run_resume': {
-                        const run = this.runs.get(data)
+                        const run = this.runs.get(data) ?? this.runJobs.get(data)
                         if (run) run.suspended = false
                         break
                     }
@@ -214,6 +226,7 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
         this.eventListeners.clear()
         this.eventLogs.splice(0)
         this.runs.clear()
+        this.runJobs.clear()
         
         this.runClearCache.clear()
         this.eventListenerClearCache.clear()

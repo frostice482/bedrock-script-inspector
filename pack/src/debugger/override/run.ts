@@ -10,10 +10,22 @@ namespace DebugRunOverride {
     export const rawRun = run, rawRunTimeout = runTimeout, rawRunInterval = runInterval, rawClearRun = clearRun, rawRunJob = runJob, rawClearJob = clearJob
 
     proto.run = (cb) => new Run(cb).id
-    proto.runTimeout = (cb, i) => new RunTimeout(cb, undefined, i).id
-    proto.runInterval = (cb, i) => new RunInterval(cb, undefined, i).id
+    proto.runTimeout = (cb, i) => {
+        const r = new RunTimeout(cb, undefined, i)
+        events.emit('add', r)
+        return r.id
+    }
+    proto.runInterval = (cb, i) => {
+        const r = new RunInterval(cb, undefined, i)
+        events.emit('add', r)
+        return r.id
+    }
     proto.clearRun = (id) => { runList.get(id)?.clear() }
-    proto.runJob = (gen) => new RunJob(gen).id
+    proto.runJob = (gen) => {
+        const r = new RunJob(gen)
+        events.emit('addJob', r)
+        return r.id
+    }
     proto.clearJob = (id) => { jobList.get(id)?.clear() }
 
     export class Run {
@@ -23,7 +35,6 @@ namespace DebugRunOverride {
             this.lastTime = Date.now()
             
             runList.set(id, this)
-            events.emit('add', this)
         }
 
         readonly id: number
@@ -56,7 +67,7 @@ namespace DebugRunOverride {
             return true
         }
 
-        exec(update = false): ExecRunData {
+        exec(update = true): ExecRunData {
             const sleep = Date.now() - this.lastTime
             const res = timing(this.fn)
 
@@ -99,7 +110,6 @@ namespace DebugRunOverride {
             this.lastTime = Date.now()
 
             jobList.set(id, this)
-            events.emit('addJob', this)
         }
 
         readonly id: number
@@ -120,33 +130,33 @@ namespace DebugRunOverride {
 
         lastTime: number
 
-        clear() {
+        clear(error?: any) {
             if (!jobList.delete(this.id)) return false
 
-            events.emit('clearJob', this.id)
+            this.gen.return(null)
+            events.emit('clearJob', { id: this.id, error })
             return true
         }
 
         exec() {
             this.lastTime = Date.now()
             const res = timing(this.genNextBound)
-            if (res.errored || res.value.done) {
-                this.clear()
-                return false
-            }
+            if (res.value.done) return (this.clear(), false)
+            if (res.errored) return (this.clear(res.value), false)
             return res.delta
         }
     }
 
-    export let idNew = 0
-    export let localTick = 0
+    export let idNew = 1
+    export let localTick = 1
+    export let jobTimeframe = 10
 
     export const runList = new Map<number, Run>()
     export const jobList = new Map<number, RunJob>()
     export const events = new TypedEventEmitter<Events>()
 
     export function execAll() {
-        const ct = localTick++
+        const ct = ++localTick
 
         const runs: BedrockType.Tick.RunData[] = []
         for (const run of runList.values()) {
@@ -166,7 +176,7 @@ namespace DebugRunOverride {
         for (const run of jobList.values()) {
             if (run.suspended) continue
             const d: BedrockType.Tick.JobRunData = {
-                sleep: run.lastTime - t,
+                sleep: t - run.lastTime,
                 delta: 0,
                 count: 0,
                 id: run.id
@@ -175,7 +185,7 @@ namespace DebugRunOverride {
             activeJobs.set(run, d)
         }
 
-        const maxTime = Date.now() + 10
+        const maxTime = Date.now() + jobTimeframe
         while (activeJobs.size && Date.now() <= maxTime) {
             for (const [job, data] of activeJobs) {
                 const res = job.exec()
@@ -197,7 +207,10 @@ namespace DebugRunOverride {
         add: Run
         addJob: RunJob
         clear: number
-        clearJob: number
+        clearJob: {
+            id: number
+            error?: any
+        }
         suspend: number
         resume: number
     }

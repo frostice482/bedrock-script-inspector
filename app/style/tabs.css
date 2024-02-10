@@ -146,11 +146,11 @@
 .run-detail-job {
     display: grid;
     grid-template-areas:
-        'addstk clrstk'
-        'plot   plot  '
-        'action action'
+        'addstk clrstk clrerr .'
+        'plot   plot   plot   plot  '
+        'action action action action'
     ;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr auto 100px;
     gap: 8px;
 }
 
@@ -161,6 +161,7 @@
 #runs-functions:not(._fi-type-run) > tbody > tr._fi-type-run { display: none; }
 #runs-functions:not(._fi-type-interval) > tbody > tr._fi-type-interval { display: none; }
 #runs-functions:not(._fi-type-timeout) > tbody > tr._fi-type-timeout { display: none; }
+#runs-functions:not(._fi-type-job) > tbody > tr._fi-type-job { display: none; }
 
 /* Stats */
 
