@@ -1,5 +1,5 @@
 import JSONInspectData, { JsonInspectOptions } from "../../../../globaltypes/jsoninspect.js"
-import debugProxyOverride, { ProxyData } from "../override/proxy.js"
+import DebugProxyOverride from "../override/proxy.js"
 import { toBase64 } from "./base64.js"
 import { getFunctionSource, getObjectProto } from "./util.js"
 
@@ -86,7 +86,7 @@ export class JsonInspectInstance {
             if (obj === null) return { type: 'null' }
 
             // proxy
-            if (debugProxyOverride.proxyList.has(obj)) return this.proxy(obj, debugProxyOverride.proxyList.get(obj)!, stack, refList)
+            if (DebugProxyOverride.proxyList.has(obj)) return this.proxy(obj, DebugProxyOverride.proxyList.get(obj)!, stack, refList)
 
             // known object types
             for (const proto of getObjectProto(obj)) {
@@ -263,7 +263,7 @@ export class JsonInspectInstance {
         }
     }
     
-    proxy(obj: any, data: ProxyData<any>, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Proxy {
+    proxy(obj: any, data: DebugProxyOverride.Data<any>, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Proxy {
         const newStack = stack.concat([obj])
         return {
             type: 'proxy',

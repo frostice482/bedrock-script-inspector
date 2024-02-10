@@ -1,7 +1,4 @@
 namespace DebugProxyOverride {
-    export const RawProxy = Proxy
-    export const proxyList = new WeakMap<object, Data>()
-
     export class ProxyWrapper<T extends object> {
         static revocable<T extends object>(object: T, handler: ProxyHandler<T>) {
             const { proxy, revoke: rawRevoke } = RawProxy.revocable(object, handler)
@@ -33,6 +30,9 @@ namespace DebugProxyOverride {
 
     //@ts-ignore
     Proxy = ProxyWrapper
+
+    export const RawProxy = Proxy
+    export const proxyList = new WeakMap<object, Data>()
 
     export interface Data<T extends object = object> {
         object: T
