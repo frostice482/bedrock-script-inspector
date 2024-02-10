@@ -17,10 +17,12 @@ const runsTable = getIdThrow('runs-functions', HTMLTableElement)
 const runsTbody = runsTable.tBodies.item(0) ?? runsTable.createTBody()
 
 const runList = new Map<number, RowRunData>()
+const runListJobs = new Map<number, RowRunDataJob>()
 const runClearCache = new Map<number, RowRunData>()
 
 const runDetailTimeoutTemp = getIdThrow('runs-functions-detail-timeout-template', HTMLTemplateElement).content
 const runDetailIntervalTemp = getIdThrow('runs-functions-detail-interval-template', HTMLTemplateElement).content
+const runDetailJobTemp = getIdThrow('runs-functions-detail-job-template', HTMLTemplateElement).content
 
 //// filter ////
 
@@ -111,7 +113,7 @@ abstract class RowRunData {
     protected _cleared = false
     get cleared() { return this._cleared }
 
-    abstract exec(data: BedrockType.Run.RunData, tick: number): void
+    abstract exec(data: any, tick: number): void
 
     clear(tick?: number, stack?: string) {
         this._cleared = true
@@ -182,11 +184,11 @@ class RowRunDataTimeout extends RowRunData {
         super.clear()
     }
 
-    exec(data: BedrockType.Run.RunData, tick: number) {
+    exec(data: BedrockType.Tick.RunData, tick: number) {
         const ed = this.elm.execData
         ed.textContent = [
             'tick  : ' + tick,
-            'delay : ' + data.interval + 'ms',
+            'delay : ' + data.sleep + 'ms',
             'time  : ' + data.delta + 'ms'
         ].join('\n')
 
@@ -306,16 +308,17 @@ class RowRunDataInterval extends RowRunData {
     }>
 
     readonly plot: uPlotResizer
-
-    readonly plotSLabels: number[] = []
-    readonly plotSDelays: number[] = []
-    readonly plotSDelaysAvgs: number[] = []
-    readonly plotSDelayAvgLatest: number[] = []
-    readonly plotSSleeps: number[] = []
+    readonly plotData = {
+        labels: <number[]>[],
+        delays: <number[]>[],
+        delaysAvgs: <number[]>[],
+        delayAvgLatest: <number[]>[],
+        sleeps: <number[]>[],
+    }
 
     readonly delayAvg = new ArrayAverage()
 
-    readonly plotUpdateData = [this.plotSLabels, this.plotSDelays, this.plotSDelaysAvgs, this.plotSDelayAvgLatest, this.plotSSleeps] as uPlot.AlignedData
+    readonly plotUpdateData = [this.plotData.labels, this.plotData.delays, this.plotData.delaysAvgs, this.plotData.delayAvgLatest, this.plotData.sleeps] as uPlot.AlignedData
 
     plotCurTime = 0
     plotMaxData = 20 * 90
@@ -344,15 +347,15 @@ class RowRunDataInterval extends RowRunData {
         super.clear()
     }
 
-    exec(data: BedrockType.Run.RunData, tick: number) {
+    exec(data: BedrockType.Tick.RunData, tick: number) {
         this.plotCurTime ||= Date.now() / 1000
-        this.plotCurTime += data.interval / 1000
+        this.plotCurTime += data.sleep / 1000
 
-        pushLimit(this.plotSLabels, this.plotCurTime, this.plotMaxData)
-        pushLimit(this.plotSDelays, data.delta, this.plotMaxData)
-        pushLimit(this.plotSDelaysAvgs, this.delayAvg.pushAndAverage(data.delta), this.plotMaxData)
-        pushLimit(this.plotSDelayAvgLatest, this.delayAvg._prevLAvg, this.plotMaxData)
-        pushLimit(this.plotSSleeps, data.interval, this.plotMaxData)
+        pushLimit(this.plotData.labels, this.plotCurTime, this.plotMaxData)
+        pushLimit(this.plotData.delays, data.delta, this.plotMaxData)
+        pushLimit(this.plotData.delaysAvgs, this.delayAvg.pushAndAverage(data.delta), this.plotMaxData)
+        pushLimit(this.plotData.delayAvgLatest, this.delayAvg._prevLAvg, this.plotMaxData)
+        pushLimit(this.plotData.sleeps, data.sleep, this.plotMaxData)
 
         if (data.error) pushLimit(this.errQueue, [tick, data.error], this.maxErrData)
 
@@ -391,9 +394,231 @@ class RowRunDataInterval extends RowRunData {
     }
 }
 
+class RowRunDataJob extends RowRunData {
+    constructor(data: BedrockInterpreterType.RunDataBasic) {
+        super({
+            id: data.id,
+            type: 'job',
+
+            interval: 0,
+            fid: -1,
+            fn: {
+                type: 'function',
+                name: '',
+                source: '',
+                isAsync: false,
+                isClass: false,
+                isGenerator: false
+            }
+        })
+
+        // container & template
+        const detailCnt = this._detailCell.appendChild(document.createElement('div'))
+        detailCnt.classList.add('run-detail-job')
+        const detailTemplate = runDetailJobTemp.cloneNode(true)
+
+        // plot
+        this.plot = new uPlotResizer(getIdThrow('plot', undefined, detailTemplate, true), {
+            width: 1280,
+            height: 720,
+            select: {
+                height: 0,
+                left: 0,
+                top: 0,
+                width: 0,
+                show: false,
+            },
+            series: [
+                {},
+                {
+                    label: 'delay',
+                    stroke: 'rgb(120, 60, 0)',
+                    scale: 'y',
+                    value: (plot, xxx) => timeUnit(xxx)
+                },
+                {
+                    label: 'delayavg',
+                    stroke: 'rgb(192, 96, 0)',
+                    scale: 'y',
+                    value: (plot, xxx) => timeUnit(xxx)
+                },
+                {
+                    label: 'delayavg2',
+                    stroke: 'yellow',
+                    scale: 'y',
+                    value: (plot, xxx) => timeUnit(xxx)
+                },
+                {
+                    label: 'delayavg2latest',
+                    stroke: 'lime',
+                    scale: 'y',
+                    show: false,
+                    value: (plot, xxx) => timeUnit(xxx)
+                },
+                {
+                    label: 'sleep',
+                    stroke: 'white',
+                    scale: 'y',
+                    show: false,
+                    value: (plot, xxx) => timeUnit(xxx)
+                },
+                {
+                    label: 'count',
+                    stroke: 'cyan',
+                    scale: 'y',
+                    show: false,
+                    value: (plot, xxx) => timeUnit(xxx)
+                }
+            ],
+            axes: [
+                { stroke: 'gray' },
+                {
+                    scale: 'y',
+                    stroke: 'white',
+                    grid: { stroke: '#222' },
+                    values: (plot, xxx) => xxx.map(timeUnit),
+                    size: 60
+                }, {
+                    scale: 'y1',
+                    stroke: 'white',
+                    grid: { show: false },
+                    size: 50
+                }
+            ]
+        })
+
+        // button
+        const suspendBtn = getIdThrow('suspend', HTMLButtonElement, detailTemplate, true)
+        suspendBtn.addEventListener('click', () =>
+            BedrockInspector.send('run_action', {
+                id: this.runData.id,
+                action: this._suspended ? 'resume' : 'suspend'
+            })
+        )
+
+        const clearBtn = getIdThrow('clear', HTMLButtonElement, detailTemplate, true)
+        clearBtn.addEventListener('click', () =>
+            BedrockInspector.send('run_action', {
+                id: this.runData.id,
+                action: 'clear'
+            })
+        )
+
+        this.detailRow.addEventListener('click', () => this.updateDetail())
+
+        // other
+        const addStack = getIdThrow('addstack', undefined, detailTemplate, true)
+        const clearStack = getIdThrow('clearstack', undefined, detailTemplate, true)
+
+        this.elm = {
+            suspendBtn,
+            clearBtn,
+            addStack,
+            clearStack,
+            avgTimeCell: this._avgTimeCell,
+            statusCell: this._detailCell
+        }
+        detailCnt.appendChild(detailTemplate)
+
+        // data
+        if ('suspended' in data) {
+            addStack.replaceChildren('(' + data.addTick + ')\n', formatStack(data.addStack))
+            if (data.suspended) this.suspended = true
+            if (data.cleared) this.clear(data.clearTick, data.clearStack)
+        }
+    }
+
+    readonly elm: Readonly<RunElmStd>
+
+    readonly plot: uPlotResizer
+    readonly plotData = {
+        labels: <number[]>[],
+        delays: <number[]>[],
+        delaysAvgs: <number[]>[],
+        delaysAvgs2: <number[]>[],
+        delayAvg2Latest: <number[]>[],
+        sleeps: <number[]>[],
+        execPerTick: <number[]>[],
+    }
+
+    readonly delayAvg = new ArrayAverage()
+
+    readonly plotUpdateData = [
+        this.plotData.labels,
+        this.plotData.delays,
+        this.plotData.delaysAvgs,
+        this.plotData.delaysAvgs2,
+        this.plotData.delayAvg2Latest,
+        this.plotData.sleeps,
+        this.plotData.execPerTick,
+    ] as uPlot.AlignedData
+
+    plotCurTime = 0
+    plotMaxData = 20 * 90
+
+    maxErrData = 30
+    errQueue: [number, JSONInspectData][] = []
+
+    timingUpdateState = false
+    detailUpdateState = false
+
+    get suspended() { return this._suspended }
+    set suspended(v) {
+        if (this._suspended === v) return
+        this._suspended = v
+
+        this._updateStatusCell()
+        this.elm.suspendBtn.textContent = v ? 'resume' : 'suspend'
+    }
+
+    clear(tick?: number, stack?: string) {
+        if (this._cleared) return
+
+        this.elm.clearStack.replaceChildren('(' + tick + ')\n', formatStack(stack ?? ''))
+        this.elm.suspendBtn.disabled = this.elm.clearBtn.disabled = true
+
+        super.clear()
+    }
+
+    exec(data: BedrockType.Tick.JobRunData, tick: number) {
+        this.plotCurTime ||= Date.now() / 1000
+        this.plotCurTime += data.sleep / 1000
+        const deltaAvg = data.delta / data.count
+
+        pushLimit(this.plotData.labels, this.plotCurTime, this.plotMaxData)
+        pushLimit(this.plotData.delays, data.delta, this.plotMaxData)
+        pushLimit(this.plotData.delaysAvgs, data.delta / data.count, this.plotMaxData)
+        pushLimit(this.plotData.delaysAvgs2, this.delayAvg.pushAndAverage(deltaAvg), this.plotMaxData)
+        pushLimit(this.plotData.delayAvg2Latest, this.delayAvg._prevLAvg, this.plotMaxData)
+        pushLimit(this.plotData.sleeps, data.sleep, this.plotMaxData)
+
+        this.timingUpdateState = this.detailUpdateState = true
+    }
+
+    updateTiming() {
+        if (!this.timingUpdateState) return false
+        this.timingUpdateState = false
+
+        const avg = this.delayAvg._prevAvg
+        this.elm.avgTimeCell.textContent = `${avg.toFixed(3).padStart(6)}ms (${this.delayAvg.length})`
+        this.elm.avgTimeCell.style.setProperty('background', runTimeBar(avg / (avg + 10)))
+
+        return true
+    }
+
+    updateDetail() {
+        if (!this.detailUpdateState) return false
+        this.detailUpdateState = false
+
+        this.plot.setData(this.plotUpdateData)
+
+        return true
+    }
+}
+
 //// process ////
 
-const { runs, limits: { runs: runLimit } } = BedrockInspector.initData
+const { runs, runJobs, limits: { runs: runLimit } } = BedrockInspector.initData
 
 for (const lis of runs) {
     const d = lis.type === 'interval' ? new RowRunDataInterval(lis) : new RowRunDataTimeout(lis)
@@ -407,6 +632,18 @@ for (const lis of runs) {
             d.elm.errLogTable.remove()
         }
         runClearCache.set(lis.id, d)
+    }
+}
+
+for (const job of runJobs) {
+    const d = new RowRunDataJob(job)
+    runsTbody.prepend(d.row, d.detailRow)
+
+    runListJobs.set(job.id, d)
+    if (d.cleared) {
+        d.plot.root.parentElement?.remove()
+        d.plot.destroy()
+        runClearCache.set(job.id, d)
     }
 }
 
@@ -462,7 +699,7 @@ let notifErrorCount = 0
 
 {
     BedrockInspector.bedrockEvents.addEventListener('tick', ({ detail: { tick, run } }) => {
-        for (const exec of run.list) {
+        for (const exec of run.runs) {
             const rd = runList.get(exec.id)
             if (!rd) continue
 
@@ -491,7 +728,29 @@ let notifErrorCount = 0
             for (const [id, run] of runClearCache) {
                 run.row.remove()
                 run.detailRow.remove()
-                runList.delete(id)
+                runList.delete(id) || runListJobs.delete(id)
+            }
+            runClearCache.clear()
+        }
+    })
+
+    BedrockInspector.bedrockEvents.addEventListener('job_add', ({ detail: data }) => {
+        const d = new RowRunDataJob({
+            id: data.data,
+            type: 'job',
+            addStack: data.stack,
+            addTick: data.tick,
+            cleared: false,
+            suspended: false
+        })
+        runsTbody.prepend(d.row, d.detailRow)
+
+        runListJobs.set(data.data, d)
+        if (runListJobs.size > runLimit) {
+            for (const [id, run] of runClearCache) {
+                run.row.remove()
+                run.detailRow.remove()
+                runListJobs.delete(id) || runListJobs.delete(id)
             }
             runClearCache.clear()
         }
@@ -499,6 +758,14 @@ let notifErrorCount = 0
 
     BedrockInspector.bedrockEvents.addEventListener('run_clear', ({ detail: data }) => {
         const run = runList.get(data.data)
+        if (!run) return
+
+        runClearCache.set(data.data, run)
+        run.clear(data.tick, data.stack)
+    })
+
+    BedrockInspector.bedrockEvents.addEventListener('job_clear', ({ detail: data }) => {
+        const run = runListJobs.get(data.data)
         if (!run) return
 
         runClearCache.set(data.data, run)

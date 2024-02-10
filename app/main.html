@@ -361,6 +361,7 @@
                             <input type="checkbox" filter="run" checked> run
                             <input type="checkbox" filter="interval" checked> runInterval
                             <input type="checkbox" filter="timeout" checked> runTimeout
+                            <input type="checkbox" filter="job" checked> job
                         </div>
                     </div>
                     <!-- Status -->
@@ -398,11 +399,13 @@
                     <template id="runs-functions-detail-timeout-template">
                         <!-- Add -->
                         <div style="grid-area: addstk;">
-                            <b>Add stack:</b> <span id="addstack"> - </span>
+                            <b>Add stack:</b>
+                            <span id="addstack"> - </span>
                         </div>
                         <!-- Clear stack -->
                         <div style="grid-area: clrstk;" class="flow-x">
-                            <b>Clear stack:</b> <span id="clearstack"> - </span>
+                            <b>Clear stack:</b>
+                            <span id="clearstack"> - </span>
                         </div>
                         <!-- Exec data -->
                         <div style="grid-area: execdt;" id="execdata">
@@ -419,11 +422,13 @@
                     <template id="runs-functions-detail-interval-template">
                         <!-- Add -->
                         <div style="grid-area: addstk;" class="flow-x">
-                            <b>Add stack:</b> <span id="addstack"> - </span>
+                            <b>Add stack:</b>
+                            <span id="addstack"> - </span>
                         </div>
                         <!-- Clear stack -->
                         <div style="grid-area: clrstk;" class="flow-x">
-                            <b>Clear stack:</b> <span id="clearstack"> - </span>
+                            <b>Clear stack:</b>
+                            <span id="clearstack"> - </span>
                         </div>
 
                         <!-- Canvas -->
@@ -440,6 +445,30 @@
                                 <tbody></tbody>
                             </table>
                         </div> 
+
+                        <!-- Action -->
+                        <div style="grid-area: action;">
+                            <button id="suspend">suspend</button>
+                            <button id="clear">clear</button>
+                        </div>
+                    </template>
+                    <!-- Detail template: Job -->
+                    <template id="runs-functions-detail-job-template">
+                        <!-- Add -->
+                        <div style="grid-area: addstk;" class="flow-x">
+                            <b>Add stack:</b>
+                            <span id="addstack"> - </span>
+                        </div>
+                        <!-- Clear stack -->
+                        <div style="grid-area: clrstk;" class="flow-x">
+                            <b>Clear stack:</b>
+                            <span id="clearstack"> - </span>
+                            <br>
+                            <span id="clearerr" class=""></span>
+                        </div>
+
+                        <!-- Canvas -->
+                        <div style="grid-area: plot; height: 375px;" id="plot" class="noflow"></div> 
 
                         <!-- Action -->
                         <div style="grid-area: action;">

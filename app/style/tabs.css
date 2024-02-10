@@ -143,6 +143,17 @@
     gap: 8px;
 }
 
+.run-detail-job {
+    display: grid;
+    grid-template-areas:
+        'addstk clrstk'
+        'plot   plot  '
+        'action action'
+    ;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
 #runs-functions:not(._fi-status-active) > tbody > tr._fi-status-active { display: none; }
 #runs-functions:not(._fi-status-cleared) > tbody > tr._fi-status-cleared { display: none; }
 #runs-functions:not(._fi-status-suspended) > tbody > tr._fi-status-suspended { display: none; }
