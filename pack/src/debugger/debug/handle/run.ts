@@ -1,23 +1,36 @@
 import { getTraceData } from "../../lib/util.js";
-import debugRunOverride, { runList } from "../../override/run.js";
+import DebugRunOverride from "../../override/run.js";
 import DebugClient from "../client.js";
 import jsonInspect from "../../lib/jsoninspect.js";
+import getFid from "../../lib/fid.js";
 
-debugRunOverride.addEventListener('addRun', ({ id, type, interval, fid, fn }) => 
-    DebugClient.send('run_add', getTraceData({ id, type, interval, fid, fn: jsonInspect.fn(fn) }, 6))
+DebugRunOverride.events.addEventListener('add', ({ id, type, fn, interval }) => 
+    DebugClient.send('run_add', getTraceData({
+        id,
+        type,
+        interval,
+        fid: getFid(fn),
+        fn: jsonInspect.fn(fn)
+    }, 6))
 )
-debugRunOverride.addEventListener('clearRun', (int) => 
-    DebugClient.send('run_clear', getTraceData(int.id, 7))
+DebugRunOverride.events.addEventListener('addJob', ({ id }) => 
+    DebugClient.send('job_add', getTraceData(id, 6))
 )
-debugRunOverride.addEventListener('suspend', (int) => 
-    DebugClient.send('run_suspend', int.id)
+DebugRunOverride.events.addEventListener('clear', (id) => 
+    DebugClient.send('run_clear', getTraceData(id, 7))
 )
-debugRunOverride.addEventListener('resume', (int) => 
-    DebugClient.send('run_resume', int.id)
+DebugRunOverride.events.addEventListener('clearJob', (id) => 
+    DebugClient.send('job_clear', getTraceData(id, 7))
+)
+DebugRunOverride.events.addEventListener('suspend', (id) => 
+    DebugClient.send('run_suspend', id)
+)
+DebugRunOverride.events.addEventListener('resume', (id) => 
+    DebugClient.send('run_resume', id)
 )
 
 DebugClient.message.addEventListener('run_action', ({ id, action }) => {
-    const ri = runList.get(id)
+    const ri = DebugRunOverride.runList.get(id) ?? DebugRunOverride.jobList.get(id)
     if (!ri) return
 
     switch (action) {

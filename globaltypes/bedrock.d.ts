@@ -15,6 +15,9 @@ declare namespace BedrockType {
         run_suspend: number
         run_resume: number
 
+        job_add: TraceData<number>
+        job_clear: TraceData<number>
+
         dp_change: DynamicProperty.Change
         dp_clear: DynamicProperty.Clear
 
@@ -107,7 +110,7 @@ declare namespace BedrockType {
             type: Type
             interval: number
         }
-    
+        
         interface InfoWithFn extends Info, FunctionInfo {}
     
         type Type = 'interval' | 'timeout' | 'run' | 'job'

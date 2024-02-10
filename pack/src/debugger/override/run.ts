@@ -43,6 +43,7 @@ namespace DebugRunOverride {
 
         lastTime: number
         nextTick = 0
+        interval = 0
 
         protected _execUpdate() {
             this.clear()
@@ -68,13 +69,11 @@ namespace DebugRunOverride {
     export class RunTimeout extends Run {
         constructor(fn: Fn, id?: number, timeout = 1) {
             super(fn, id)
-            this.timeout = timeout
+            this.interval = timeout
             this.nextTick = timeout + localTick
         }
 
         readonly type: BedrockType.Run.Type = 'timeout'
-
-        timeout: number
     }
 
     export class RunInterval extends Run {
@@ -85,8 +84,6 @@ namespace DebugRunOverride {
         }
 
         readonly type: BedrockType.Run.Type = 'interval'
-
-        interval: number
 
         protected _execUpdate() {
             this.lastTime = Date.now()
@@ -102,7 +99,7 @@ namespace DebugRunOverride {
             this.lastTime = Date.now()
 
             jobList.set(id, this)
-            events.emit('add', this)
+            events.emit('addJob', this)
         }
 
         readonly id: number
@@ -126,7 +123,7 @@ namespace DebugRunOverride {
         clear() {
             if (!jobList.delete(this.id)) return false
 
-            events.emit('clear', this.id)
+            events.emit('clearJob', this.id)
             return true
         }
 
@@ -197,8 +194,10 @@ namespace DebugRunOverride {
     export type Fn = () => void
 
     export interface Events {
-        add: Run | RunJob
+        add: Run
+        addJob: RunJob
         clear: number
+        clearJob: number
         suspend: number
         resume: number
     }
