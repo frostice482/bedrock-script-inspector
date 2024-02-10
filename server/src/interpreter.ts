@@ -68,16 +68,38 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
                         })
 
                         if (this.runs.size > this.runsLimit) {
-                            for (const id of this.runClearCache) this.runs.delete(id)
+                            for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
                             this.runClearCache.clear()
                         }
 
                         break
                     }
 
+                    case 'job_add': {
+                        const { stack, tick, data: id } = data
+                        this.runJobs.set(id, {
+                            id,
+                            type: 'job',
+                            
+                            addStack: stack,
+                            addTick: tick,
+
+                            cleared: false,
+                            suspended: false
+                        })
+
+                        if (this.runs.size > this.runsLimit) {
+                            for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
+                            this.runClearCache.clear()
+                        }
+
+                        break
+                    }
+
+                    case 'job_clear':
                     case 'run_clear': {
                         const id = data.data
-                        const run = this.runs.get(id)
+                        const run = this[name === 'job_clear' ? 'runJobs' : 'runs'].get(id)
                         if (!run) break
 
                         run.cleared = true
@@ -166,6 +188,7 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
     eventListeners = new Map<string, BedrockInterpreterType.EventListener>()
     eventLogs: BedrockType.Events.Data[] = []
     runs = new Map<number, BedrockInterpreterType.RunData>()
+    runJobs = new Map<number, BedrockInterpreterType.RunDataBasic>()
 
     runClearCache = new Set<number>()
     eventListenerClearCache = new Set<string>()
@@ -213,7 +236,7 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
         const {
             consoleLimit, bdsConsoleLimit, eventListenersLimit, eventListenerLogLimit, eventLogLimit, runsLimit,
             connected, bdsConnected, bdsPid, bdsExit,
-            consoles, bdsConsoles, eventListeners, eventLogs, runs
+            consoles, bdsConsoles, eventListeners, eventLogs, runs, runJobs
         } = this
 
         return {
@@ -223,6 +246,7 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
             eventListeners: Array.from(eventListeners.values()),
             eventLogs,
             runs: Array.from(runs.values()),
+            runJobs: Array.from(runJobs.values()),
             limits: {
                 bdsConsole: bdsConsoleLimit,
                 console: consoleLimit,

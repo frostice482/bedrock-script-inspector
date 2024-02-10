@@ -32,6 +32,7 @@ declare namespace BedrockInterpreterType {
             eventListeners: EventListener[]
             eventLogs: BedrockType.Events.Data[]
             runs: RunData[]
+            runJobs: RunDataBasic[]
     
             connected: boolean
             bdsConnected: boolean
@@ -75,7 +76,10 @@ declare namespace BedrockInterpreterType {
     type EventListener = EventListener.Data
 
     // run
-    interface RunData extends BedrockType.Run.InfoWithFn {
+    interface RunDataBasic {
+        id: number
+        type: BedrockType.Run.Type
+
         suspended: boolean
         cleared: boolean
 
@@ -85,6 +89,8 @@ declare namespace BedrockInterpreterType {
         clearTick?: number
         clearStack?: string
     }
+
+    interface RunData extends BedrockType.Run.InfoWithFn, RunDataBasic {}
 
     // stats
     namespace WatchdogStats {
