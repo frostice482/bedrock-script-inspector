@@ -28,9 +28,6 @@ namespace DebugProxyOverride {
         }
     }
 
-    //@ts-ignore
-    Proxy = ProxyWrapper
-
     export const RawProxy = Proxy
     export const proxyList = new WeakMap<object, Data>()
 
@@ -39,6 +36,9 @@ namespace DebugProxyOverride {
         handler: ProxyHandler<T>
         revoke?: () => void
     }
+    
+    //@ts-ignore
+    Proxy = ProxyWrapper
 }
 
 export default DebugProxyOverride
