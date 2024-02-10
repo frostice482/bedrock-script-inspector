@@ -357,7 +357,12 @@ class RowRunDataInterval extends RowRunData {
         pushLimit(this.plotData.delayAvgLatest, this.delayAvg._prevLAvg, this.plotMaxData)
         pushLimit(this.plotData.sleeps, data.sleep, this.plotMaxData)
 
-        if (data.error) pushLimit(this.errQueue, [tick, data.error], this.maxErrData)
+        if (data.error) {
+            pushLimit(this.errQueue, [tick, data.error], this.maxErrData)
+
+            if (this.detailRow.hidden) this.row.classList.add('level-error')
+            if (tab.hidden) notifErrorCount++
+        }
 
         this.timingUpdateState = this.detailUpdateState = true
     }
@@ -579,7 +584,13 @@ class RowRunDataJob extends RowRunData {
 
         this.elm.clearStack.replaceChildren('(' + tick + ')\n', formatStack(stack ?? ''))
         this.elm.suspendBtn.disabled = this.elm.clearBtn.disabled = true
-        if (error) this.elm.clearErr.append(JSONUninspector(error))
+
+        if (error) {
+            this.elm.clearErr.append(JSONUninspector(error))
+            
+            if (this.detailRow.hidden) this.row.classList.add('level-error')
+            if (tab.hidden) notifErrorCount++
+        }
 
         super.clear()
     }
@@ -721,11 +732,7 @@ let notifErrorCount = 0
         for (const exec of run.runs) {
             const rd = runList.get(exec.id)
             if (!rd) continue
-
-            if (exec.error) {
-                if (rd.detailRow.hidden) rd.row.classList.add('level-error')
-                if (tab.hidden) notifErrorCount++
-            }
+            
             rd.exec(exec, tick)
         }
 
