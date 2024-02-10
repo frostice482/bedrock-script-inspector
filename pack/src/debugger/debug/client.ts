@@ -3,9 +3,9 @@ import type ClientType from "../../../../globaltypes/client.js"
 import { toBase64 } from "../lib/base64.js"
 import HttpUtil from "../lib/http.js"
 import TypedEventEmitter from "../lib/typedevm.js"
-import debugConsoleOverride from "../override/console.js"
+import DebugConsoleOverride from "../override/console.js"
 
-var rc = debugConsoleOverride
+var rc = DebugConsoleOverride
 
 export namespace DebugClient {
     export let connectURI = ''

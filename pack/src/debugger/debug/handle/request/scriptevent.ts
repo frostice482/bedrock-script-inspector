@@ -1,8 +1,8 @@
 import { ScriptEventSource } from "@minecraft/server";
-import debugEventsOverride from "../../../override/events.js";
+import DebugEventsOverride from "../../../override/events.js";
 import DebugClient from "../../client.js";
 
-const sig = debugEventsOverride.systemAfter.events.scriptEventReceive
+const sig = DebugEventsOverride.systemAfter.events.scriptEventReceive
 sig.rawSubscribe.call(sig.signal, ({ id, message, sourceType }) => {
     if (sourceType !== ScriptEventSource.Server) return
     const data = JSON.parse(message)

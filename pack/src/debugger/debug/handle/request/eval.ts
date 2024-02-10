@@ -8,8 +8,8 @@ import HttpUtil from '../../../lib/http.js'
 import { getStackTrace } from '../../../lib/util.js'
 
 import debugDynamicPropertyOverride from '../../../override/dprop.js'
-import debugConsoleOverride from '../../../override/console.js'
-import debugEventsOverride from '../../../override/events.js'
+import DebugConsoleOverride from '../../../override/console.js'
+import DebugEventsOverride from '../../../override/events.js'
 import debugProxyOverride from '../../../override/proxy.js'
 import debugRunOverride from '../../../override/run.js'
 import DebugClient from '../../client.js'
@@ -81,8 +81,8 @@ const evalContext = new Map<PropertyKey, any>([
 ])
 
 const evalOverridesObj: any = {
-    console: debugConsoleOverride,
-    events: debugEventsOverride,
+    console: DebugConsoleOverride,
+    events: DebugEventsOverride,
     proxy: debugProxyOverride,
     run: debugRunOverride,
     prop: debugDynamicPropertyOverride,

@@ -46,11 +46,8 @@ export class RunDataInternal {
 
         debugRunOverride.emit(v ? 'suspend' : 'resume', this)
 
-        const ct = localTick
         if (!v && localTick >= this.nextLocalTick) {
-            this.exec(true)
-            
-            const nt = this.nextLocalTick, i = this.interval
+            const ct = localTick, nt = this.nextLocalTick, i = this.interval
             if (nt < ct) this.nextLocalTick = ct + i - (ct - nt) % i
         }
     }
@@ -66,13 +63,6 @@ export class RunDataInternal {
     exec(update = false) {
         const ct = Date.now()
         const res = timing(this.fn), interval = ct - this.lastExec
-
-        debugRunOverride.emit('run', {
-            run: this,
-            data: res,
-            interval,
-            update
-        })
 
         if (update) {
             if (this.type !== RunTypeEnum.Interval) this.clear()
@@ -99,17 +89,27 @@ let nextId = 1
 let localTick = 1
 
 const systemProto = Object.getPrototypeOf(system) as System
-const { run: rawRun, runInterval: rawRunInterval, runTimeout: rawRunTimeout, clearRun: rawClearRun } = systemProto
+const {
+    run: rawRun,
+    runInterval: rawRunInterval,
+    runTimeout: rawRunTimeout,
+    clearRun: rawClearRun,
+    runJob: rawRunJob,
+    clearJob: rawClearJob
+} = systemProto
 
 systemProto.run = (cb) => new RunDataInternal(cb, RunTypeEnum.Run).id
 systemProto.runInterval = (cb, i) => new RunDataInternal(cb, RunTypeEnum.Interval, i).id
 systemProto.runTimeout = (cb, i) => new RunDataInternal(cb, RunTypeEnum.Timeout, i).id
 systemProto.clearRun = (id) => runList.get(id)?.clear()
+systemProto.runJob = (gen) => new RunDataInternal(gen.next.bind(gen), RunTypeEnum.Job).id
+systemProto.clearJob = (id) => runList.get(id)?.clear()
 
 export enum RunTypeEnum {
     Interval = 'interval',
     Timeout = 'timeout',
     Run = 'run',
+    Job = 'job',
 }
 
 export class DebugRunOverrideConstructor extends TypedEventEmitter<RunOverrideEvents> {
@@ -125,6 +125,8 @@ export class DebugRunOverrideConstructor extends TypedEventEmitter<RunOverrideEv
     set localTick(v) { localTick = v }
 
     rawRun = rawRun
+    rawRunJob = rawRunJob
+    rawClearJob = rawClearJob
     rawRunInterval = rawRunInterval
     rawRunTimeout = rawRunTimeout
     rawClearRun = rawClearRun
@@ -158,4 +160,10 @@ export interface RunOverrideEvents {
     clearRun: RunDataInternal
     suspend: RunDataInternal
     resume: RunDataInternal
+}
+
+declare module '@minecraft/server' {
+    interface System {
+        runJob(gen: Generator): number
+    }
 }

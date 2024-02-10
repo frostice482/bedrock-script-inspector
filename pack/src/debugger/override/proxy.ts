@@ -1,46 +1,44 @@
-const RawProxy = Proxy
-const proxyList = new WeakMap<object, ProxyData>()
+namespace DebugProxyOverride {
+    export const RawProxy = Proxy
+    export const proxyList = new WeakMap<object, Data>()
 
-class ProxyWrapper<T extends object> {
-    static revocable<T extends object>(object: T, handler: ProxyHandler<T>) {
-        const { proxy, revoke: rawRevoke } = RawProxy.revocable(object, handler)
+    export class ProxyWrapper<T extends object> {
+        static revocable<T extends object>(object: T, handler: ProxyHandler<T>) {
+            const { proxy, revoke: rawRevoke } = RawProxy.revocable(object, handler)
 
-        const revoke = () => {
-            rawRevoke()
-            proxyList.delete(proxy)
+            const revoke = () => {
+                rawRevoke()
+                proxyList.delete(proxy)
+            }
+
+            proxyList.set(proxy, {
+                object,
+                handler,
+                revoke
+            })
+
+            return { proxy, revoke }
         }
 
-        proxyList.set(proxy, {
-            object,
-            handler,
-            revoke
-        })
+        constructor(object: T, handler: ProxyHandler<T>) {
+            const proxy = new RawProxy(object, handler)
+            proxyList.set(proxy, {
+                object,
+                handler,
+            })
 
-        return { proxy, revoke }
+            return proxy
+        }
     }
 
-    constructor(object: T, handler: ProxyHandler<T>) {
-        const proxy = new RawProxy(object, handler)
-        proxyList.set(proxy, {
-            object,
-            handler,
-        })
+    //@ts-ignore
+    Proxy = ProxyWrapper
 
-        return proxy
+    export interface Data<T extends object = object> {
+        object: T
+        handler: ProxyHandler<T>
+        revoke?: () => void
     }
 }
 
-//@ts-ignore
-Proxy = ProxyWrapper
-
-const debugProxyOverride = {
-    RawProxy,
-    proxyList
-}
-export default debugProxyOverride
-
-export interface ProxyData<T extends object = object> {
-    object: T
-    handler: ProxyHandler<T>
-    revoke?: () => void
-}
+export default DebugProxyOverride

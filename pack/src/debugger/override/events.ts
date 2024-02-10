@@ -62,11 +62,11 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
     /** Raw Signal.unsubscribe, unbound */
     readonly rawUnsubscribe: S['unsubscribe']
 
-    #listeners = new Map<_D['listener'], EventsOverrideSignalListenerData<_D>>()
-    #fidlist = new Map<number, _D['listener']>()
+    protected _signalListeners = new Map<_D['listener'], EventsOverrideSignalListenerData<_D>>()
+    protected _fidlist = new Map<number, _D['listener']>()
 
     /** Signal listener list, readonly */
-    readonly listener: ReadonlyMap<_D['listener'], Readonly<EventsOverrideSignalListenerData<_D>>> = this.#listeners
+    readonly listener: ReadonlyMap<_D['listener'], Readonly<EventsOverrideSignalListenerData<_D>>> = this._signalListeners
 
     /**
      * Adds event listener to the signal
@@ -82,12 +82,12 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
             fid
         })
 
-        this.#listeners.set(listener, {
+        this._signalListeners.set(listener, {
             options,
             disabled: false,
             fid
         })
-        this.#fidlist.set(fid, listener)
+        this._fidlist.set(fid, listener)
 
         return listener
     }
@@ -98,7 +98,7 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
      */
     unsubscribe(listener: _D['listener'] | number) {
         if (typeof listener === 'number') {
-            const x = this.#fidlist.get(listener)
+            const x = this._fidlist.get(listener)
             if (!x) return false
             listener = x
         }
@@ -110,8 +110,8 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
             fid
         })
 
-        this.#listeners.delete(listener)
-        this.#fidlist.delete(getFid(listener))
+        this._signalListeners.delete(listener)
+        this._fidlist.delete(getFid(listener))
 
         return true
     }
@@ -122,12 +122,12 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
      */
     disableListener(listener: _D['listener'] | number) {
         if (typeof listener === 'number') {
-            const x = this.#fidlist.get(listener)
+            const x = this._fidlist.get(listener)
             if (!x) return false
             listener = x
         }
 
-        const data = this.#listeners.get(listener)
+        const data = this._signalListeners.get(listener)
         if (!data || data.disabled) return false
         data.disabled = true
 
@@ -143,12 +143,12 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
      */
     enableListener(listener: _D['listener'] | number) {
         if (typeof listener === 'number') {
-            const x = this.#fidlist.get(listener)
+            const x = this._fidlist.get(listener)
             if (!x) return false
             listener = x
         }
 
-        const data = this.#listeners.get(listener)
+        const data = this._signalListeners.get(listener)
         if (!data || !data.disabled) return false
         data.disabled = false
 
@@ -162,7 +162,7 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
      * Cleares event listeners of the signal
      */
     clear() {
-        for (const listener of this.#listeners.keys())
+        for (const listener of this._signalListeners.keys())
             this.unsubscribe(listener)
     }
 
@@ -241,11 +241,11 @@ export interface EventSignalData<T extends EventSignalAny = EventSignalAny> {
     readonly data: Parameters<Parameters<T['subscribe']>[0]>[0]
 }
 
-const debugEventsOverride = {
-    worldBefore: new EventsOverride(world.beforeEvents),
-    worldAfter: new EventsOverride(world.afterEvents),
-    systemBefore: new EventsOverride({}),
-    systemAfter: new EventsOverride(system.afterEvents),
+namespace DebugEventsOverride {
+    export const worldBefore = new EventsOverride(world.beforeEvents)
+    export const worldAfter = new EventsOverride(world.afterEvents)
+    export const systemBefore = new EventsOverride({})
+    export const systemAfter = new EventsOverride(system.afterEvents)
 }
 
-export default debugEventsOverride
+export default DebugEventsOverride

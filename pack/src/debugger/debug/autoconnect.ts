@@ -1,8 +1,8 @@
 import { variables } from "@minecraft/server-admin";
-import debugConsoleOverride from "../override/console.js";
+import DebugConsoleOverride from "../override/console.js";
 import DebugClient from "./client.js";
 
-var rc = debugConsoleOverride
+var rc = DebugConsoleOverride
 
 const autoconnect = variables.get('debug_autoconnect')
 if (autoconnect) {

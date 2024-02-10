@@ -3,7 +3,7 @@ import getFid from "../../lib/fid.js";
 import jsonInspect from "../../lib/jsoninspect.js";
 import { TimingResult } from "../../lib/timing.js";
 import { getTraceData } from "../../lib/util.js";
-import debugEventsOverride, { EventsOverride } from "../../override/events.js";
+import DebugEventsOverride, { EventsOverride } from "../../override/events.js";
 import DebugClient from "../client.js";
 
 function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
@@ -42,19 +42,19 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
     })
 }
 
-eventEmitter(debugEventsOverride.worldBefore, 'world', 'before')
-eventEmitter(debugEventsOverride.worldAfter, 'world', 'after')
-eventEmitter(debugEventsOverride.systemBefore, 'system', 'before')
-eventEmitter(debugEventsOverride.systemAfter, 'system', 'after')
+eventEmitter(DebugEventsOverride.worldBefore, 'world', 'before')
+eventEmitter(DebugEventsOverride.worldAfter, 'world', 'after')
+eventEmitter(DebugEventsOverride.systemBefore, 'system', 'before')
+eventEmitter(DebugEventsOverride.systemAfter, 'system', 'after')
 
 DebugClient.message.addEventListener('event_action', ({ action, id: { category, fid, name, type } }) => {
     const eo: EventsOverride<any> = category === 'world'
         ? type === 'before'
-            ? debugEventsOverride.worldBefore
-            : debugEventsOverride.worldAfter
+            ? DebugEventsOverride.worldBefore
+            : DebugEventsOverride.worldAfter
         : type === 'before'
-            ? debugEventsOverride.systemBefore
-            : debugEventsOverride.systemAfter
+            ? DebugEventsOverride.systemBefore
+            : DebugEventsOverride.systemAfter
  
     const ev = eo.events[name]
     if (!ev) return
