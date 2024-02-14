@@ -118,10 +118,7 @@ const evalProps: any = {
 
     $: (data: string) => {
         // TODO: search in every dimension (1.20.70.21)
-        const w = mc.world
-        return w.getEntity(data)
-            ?? w.scoreboard.getObjective(data)
-            ?? overworld.getEntities({ closest: 1, name: data, type: 'minecraft:player' })[0]
+        return overworld.getEntities({ closest: 1, name: data, type: 'minecraft:player' })[0]
             ?? overworld.getEntities({ closest: 1, type: data })[0]
     }
 }
