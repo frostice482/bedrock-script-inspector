@@ -91,7 +91,7 @@ Object.setPrototypeOf(evalOverridesObj, null)
 
 const overworld = mc.world.getDimension('overworld')
 const nether = mc.world.getDimension('nether')
-const end = mc.world.getDimension('end')
+const end = mc.world.getDimension('the_end')
 
 const dims = [overworld, nether, end]
 dims
