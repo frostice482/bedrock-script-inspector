@@ -89,6 +89,13 @@ const evalOverridesObj: any = {
 }
 Object.setPrototypeOf(evalOverridesObj, null)
 
+const overworld = mc.world.getDimension('overworld')
+const nether = mc.world.getDimension('nether')
+const end = mc.world.getDimension('end')
+
+const dims = [overworld, nether, end]
+dims
+
 const evalProps: any = {
     debugOverrides: evalOverridesObj,
     DebugClient: DebugClient,
@@ -104,6 +111,19 @@ const evalProps: any = {
     JsonInspectInstance,
     RootRefInspector,
     trace: getStackTrace,
+
+    overworld,
+    nether,
+    end,
+
+    $: (data: string) => {
+        // TODO: search in every dimension (1.20.70.21)
+        const w = mc.world
+        return w.getEntity(data)
+            ?? w.scoreboard.getObjective(data)
+            ?? overworld.getEntities({ closest: 1, name: data, type: 'minecraft:player' })[0]
+            ?? overworld.getEntities({ closest: 1, type: data })[0]
+    }
 }
 Object.setPrototypeOf(evalProps, null)
 
