@@ -38,7 +38,7 @@ program.command('server')
     .addOption(optAuthUser)
     .addOption(optAuthPass)
     .action(async (port, opts) => {
-        exec(await import('./commands/start_server.js').then(f => f.default), [port, opts])
+        exec(await import('./commands/start_server.js').then(f => f.cliStartServer), [port, opts])
     })
 
 program.command('add-bds')

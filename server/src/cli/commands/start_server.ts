@@ -1,7 +1,7 @@
 import chalk = require('chalk')
 import { DeepPartialReadonly } from '../../../../globaltypes/types.js'
 
-export default async function cliStartServer(port: number, opts?: DeepPartialReadonly<CLIStartServerOptions>) {
+export async function cliStartServer(port: number, opts?: DeepPartialReadonly<CLIStartServerOptions>) {
     const { authUser, authPass } = opts ?? {}
 
     // command data
