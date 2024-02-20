@@ -33,5 +33,5 @@ export interface TimingSuccess<T> {
 export interface TimingError {
     delta: number
     errored: true
-    value: any
+    value: unknown
 }

@@ -24,7 +24,7 @@ export function* iterateObject<T extends object>(obj: T): Iterable<readonly [key
  * Gets iterable key-value pair from an object / iterable
  * @param list Object
  */
-export function iteratePair<T extends ReadonlyObjectOrIterable<string, any>>(list: T): T extends Iterable<infer R> ? Iterable<R> : Iterable<readonly [keyof T, T[keyof T]]> {
+export function iteratePair<T extends ReadonlyObjectOrIterable<string, unknown>>(list: T): T extends Iterable<infer R> ? Iterable<R> : Iterable<readonly [keyof T, T[keyof T]]> {
     //@ts-ignore
     return Symbol.iterator in list ? list : iterateObject(list)
 }
@@ -38,7 +38,7 @@ export function getFunctionSource(fn: Function) {
     return fn.fileName ? fn.fileName + ':' + fn.lineNumber : '<native>'
 }
 
-export function* getObjectProto(obj: any, includeInitial = false, includeNull = false) {
+export function* getObjectProto(obj: unknown, includeInitial = false, includeNull = false) {
     if (includeInitial) yield obj
     while (obj) {
         obj = Object.getPrototypeOf(obj)

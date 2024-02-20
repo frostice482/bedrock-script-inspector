@@ -1,13 +1,13 @@
 declare var __date_clock: () => number
-declare var print: (...data: any[]) => void
+declare var print: (...data: unknown[]) => void
 declare var console: Console
 declare class InternalError extends Error {}
 
 interface Console {
-    log(...data: any[]): void
-    info(...data: any[]): void
-    warn(...data: any[]): void
-    error(...data: any[]): void
+    log(...data: unknown[]): void
+    info(...data: unknown[]): void
+    warn(...data: unknown[]): void
+    error(...data: unknown[]): void
 }
 
 interface Function {

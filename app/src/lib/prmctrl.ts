@@ -1,4 +1,4 @@
-export class PromiseController<T = any> {
+export class PromiseController<T = unknown> {
     constructor() {
         this.promise = new Promise((res, rej) => {
             this.resolve = res
@@ -8,5 +8,5 @@ export class PromiseController<T = any> {
 
     readonly promise: Promise<T>
     declare resolve: (value: T | PromiseLike<T>) => void
-    declare reject: (reason?: any) => void
+    declare reject: (reason?: unknown) => void
 }

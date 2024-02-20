@@ -141,8 +141,8 @@ namespace DebugRunOverride {
         exec() {
             this.lastTime = Date.now()
             const res = timing(this.genNextBound)
-            if (res.value.done) return (this.clear(), false)
             if (res.errored) return (this.clear(res.value), false)
+            if (res.value.done) return (this.clear(), false)
             return res.delta
         }
     }

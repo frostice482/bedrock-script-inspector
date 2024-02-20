@@ -29,7 +29,7 @@ export async function listenServer(port: number, authUsername?: string, authPass
     if (route) await import('./routes/index.js')
     
     // error handling
-    server.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    server.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
         console.error(chalk.yellowBright('Server error!'), err)
 
         if (res.headersSent) return res.destroy()

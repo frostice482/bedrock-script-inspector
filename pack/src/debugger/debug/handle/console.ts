@@ -5,7 +5,7 @@ import DebugConsoleOverride from "../../override/console.js";
 import DebugClient from "../client.js";
 
 function emitter(level: BedrockType.Console.LogLevel) {
-    return (data: any[]) => {
+    return (data: unknown[]) => {
         DebugClient.send('console', {
             data: data.map(v => typeof v === 'string' ? v : jsonInspect.inspect(v)),
             stack: getStackTrace(4),

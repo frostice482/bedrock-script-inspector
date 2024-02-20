@@ -21,7 +21,7 @@ export class JsonInspectInstance {
         proto: false
     }
 
-    static ignoreProtoDefault = new Set<any>([
+    static ignoreProtoDefault = new Set<unknown>([
         Object,
         Error,
         Array, // handled
@@ -45,7 +45,7 @@ export class JsonInspectInstance {
         Promise
     ].map(v => v.prototype))
 
-    static functionProtoDefault = new Set<any>([
+    static functionProtoDefault = new Set<unknown>([
         Function,
         AsyncFC,
         GeneratorFC,
@@ -57,7 +57,7 @@ export class JsonInspectInstance {
     ignoreProto = new Set(JsonInspectInstance.ignoreProtoDefault)
     functionProto = new Set(JsonInspectInstance.functionProtoDefault)
 
-    inspect(obj: any, stack: any[] = [], refList?: RootRefInspector, ignoreRef = false): JSONInspectData {
+    inspect(obj: any, stack: unknown[] = [], refList?: RootRefInspector, ignoreRef = false): JSONInspectData {
         try {
             // circular
             if (stack.includes(obj)) return {
@@ -112,7 +112,7 @@ export class JsonInspectInstance {
         }
     }
 
-    inspectRoot(obj: any): JSONInspectData.I_RootRef {
+    inspectRoot(obj: unknown): JSONInspectData.I_RootRef {
         const refs = new RootRefInspector
         const entry = this.inspect(obj, undefined, refs)
 
@@ -123,7 +123,7 @@ export class JsonInspectInstance {
         }
     }
 
-    objectEntries(obj: any, descriptors: PropertyDescriptorMap = Object.getOwnPropertyDescriptors(obj), stack: any[] = [], refList?: RootRefInspector) {
+    objectEntries(obj: unknown, descriptors: PropertyDescriptorMap = Object.getOwnPropertyDescriptors(obj), stack: unknown[] = [], refList?: RootRefInspector) {
         const entries: JSONInspectData.T_ObjectEntry[] = []
         const opts = this.objectOptions
 
@@ -161,11 +161,11 @@ export class JsonInspectInstance {
         return entries
     }
 
-    shouldProto(proto: any) {
+    shouldProto(proto: unknown) {
         return this.objectOptions.proto && !this.ignoreProto.has(proto) ? proto ? true : null : undefined
     }
 
-    objectBasic(obj: any, proto = obj, ignores?: Iterable<PropertyKey> | true, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_ObjectBasic {
+    objectBasic(obj: unknown, proto = obj, ignores?: Iterable<PropertyKey> | true, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_ObjectBasic {
         const newStack = stack.concat([proto])
 
         // descriptors & entries
@@ -211,7 +211,7 @@ export class JsonInspectInstance {
         return { properties: entries, name, proto: nextProtoInspect }
     }
 
-    fn(obj: Function, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Function {
+    fn(obj: Function, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Function {
         const opts = this.functionOptions, newStack = stack.concat([obj])
         const descriptors = Object.getOwnPropertyDescriptors(obj) as PropertyDescriptorMap
 
@@ -263,7 +263,7 @@ export class JsonInspectInstance {
         }
     }
     
-    proxy(obj: any, data: DebugProxyOverride.Data<any>, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Proxy {
+    proxy(obj: unknown, data: DebugProxyOverride.Data<{}>, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Proxy {
         const newStack = stack.concat([obj])
         return {
             type: 'proxy',
@@ -273,7 +273,7 @@ export class JsonInspectInstance {
         }
     }
 
-    error(obj: Error, isThrown = false, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Error {
+    error(obj: Error, isThrown = false, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Error {
         const newStack = stack.concat([obj])
 
         const descriptors = Object.getOwnPropertyDescriptors(obj) as PropertyDescriptorMap
@@ -295,11 +295,11 @@ export class JsonInspectInstance {
         }
     }
 
-    array(obj: Array<any>, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Array {
+    array(obj: Array<unknown>, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Array {
         const newStack = stack.concat([obj])
 
         // descriptors
-        const descriptors = Object.getOwnPropertyDescriptors(obj) as any as PropertyDescriptorMap
+        const descriptors = Object.getOwnPropertyDescriptors(obj) as unknown as PropertyDescriptorMap
         delete descriptors.length
 
         // values, removing element from descriptors
@@ -340,7 +340,7 @@ export class JsonInspectInstance {
         }
     }
 
-    set(obj: Set<any>, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Set {
+    set(obj: Set<unknown>, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Set {
         const { name, properties, proto } = this.objectBasic(obj, undefined, undefined, stack, refList)
         const newStack = stack.concat([obj])
 
@@ -356,7 +356,7 @@ export class JsonInspectInstance {
         }
     }
 
-    map(obj: Map<any, any>, stack: any[] = [], refList?: RootRefInspector): JSONInspectData.I_Map {
+    map(obj: Map<unknown, unknown>, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Map {
         const { name, properties, proto } = this.objectBasic(obj, undefined, undefined, stack, refList)
         const newStack = stack.concat([obj])
 
@@ -375,9 +375,9 @@ export class JsonInspectInstance {
 
 export class RootRefInspector {
     insRefs: JSONInspectData[] = []
-    objectRefs = new Map<any, JSONInspectData.I_Ref>()
+    objectRefs = new Map<unknown, JSONInspectData.I_Ref>()
 
-    ref(obj: any) {
+    ref(obj: unknown) {
         const { insRefs, objectRefs } = this
 
         let objRef = objectRefs.get(obj)
