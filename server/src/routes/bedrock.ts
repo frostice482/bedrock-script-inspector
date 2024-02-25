@@ -42,5 +42,7 @@ server.post('/bedrock/resolve/:id',
         
         cliReqs.get(id)?.resolve(data)
         cliReqs.delete(id)
+
+        res.end()
     }
 )
