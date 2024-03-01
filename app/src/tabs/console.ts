@@ -12,6 +12,7 @@ const tab = getIdThrow('tab-console')
 
 //// table log ////
 
+const logContainer = getIdThrow('console-log-cnt')
 const logTable = getIdThrow('console-log', HTMLTableElement)
 const logTbody = logTable.tBodies.item(0) ?? logTable.createTBody()
 
@@ -312,11 +313,17 @@ let notifWarnCnt = 0
         if (!logQueue.length || !forceFocus && (tab.hidden || document.hidden)) return
     
         // remove extra elements
-        for (let delCnt = logTable.rows.length + logQueue.length - logLimit; delCnt > 0; delCnt--) logTbody.rows.item(logTbody.rows.length - 1)?.remove()
+        for (let delCnt = logTable.rows.length + logQueue.length - logLimit; delCnt > 0; delCnt--) logTbody.rows.item(0)?.remove()
+
+        // scroll
+        const scroll = logContainer.scrollTop + logContainer.clientHeight >= logContainer.scrollHeight
     
         // prepend log (reverse) & clear
-        logTbody.prepend.apply(logTbody, logQueue.reverse().map(row))
+        logTbody.append.apply(logTbody, logQueue.map(row))
         logQueue.splice(0)
+
+        // scroll
+        if (scroll) logContainer.scroll(0, logContainer.scrollHeight)
     }
 
     function updateNotif() {
