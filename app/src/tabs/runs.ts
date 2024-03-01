@@ -192,7 +192,11 @@ class RowRunDataTimeout extends RowRunData {
             'time  : ' + data.delta + 'ms'
         ].join('\n')
 
-        if (data.error) ed.append('\n\n', JSONUninspector(data.error))
+        if (data.error) {
+            ed.append('\n\n', JSONUninspector(data.error))
+            if (this.detailRow.hidden) this.row.classList.add('level-error')
+            if (tab.hidden) notifErrorCount++
+        }
     }
 }
 
