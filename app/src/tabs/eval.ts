@@ -12,6 +12,7 @@ const editorCnt = getIdThrow('eval-editor')
 const editor = ace.edit(editorCnt)
 editor.setTheme("ace/theme/cloud9_night");
 editor.session.setMode("ace/mode/javascript")
+editor.session.setUseWorker(false)
 
 editor.setValue(sessionStorage.getItem('evalcode') || [
     '/* ',
