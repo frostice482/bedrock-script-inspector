@@ -32,16 +32,36 @@ export function errNotif(level: string, content?: string) {
     return e
 }
 
+const stackElipsis = document.createElement('button')
+stackElipsis.classList.add('raw', 'nopadding')
+stackElipsis.textContent = '...'
+stackElipsis.style.color = 'white'
+
 export function formatStack(stack: string) {
     const c = document.createElement('div')
-    c.classList.add('ji-stack')
+    c.classList.add('ji-stack', 'ji-stack-close')
+
+    let opened = false
+
+    const eo = stackElipsis.cloneNode(true)
+    eo.addEventListener('click', () => {
+        if (opened = !opened) {
+            c.classList.remove('ji-stack-close')
+            c.lastElementChild?.append(eo)
+        } else {
+            c.classList.add('ji-stack-close')
+            c.firstElementChild?.append(eo)
+        }
+    })
 
     for (const [stk, source] of stack.matchAll(/(?<=^ *at ).*?\((.*?)\)(?=\r?\n)/gm)) {
+        if (source?.startsWith('debugger')) continue
         const x = c.appendChild(document.createElement('div'))
         x.textContent = stk
         if (source === 'native') x.classList.add('ji-stack-native')
-        if (source?.startsWith('debugger')) x.classList.add('ji-stack-inspector')
     }
+
+    c.firstElementChild?.append(eo)
 
     return c
 }

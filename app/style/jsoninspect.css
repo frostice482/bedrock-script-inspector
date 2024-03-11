@@ -24,5 +24,8 @@
     padding-left: 10px;
     border-left: 1px solid var(--border-strong);
 }
+.ji-stack-close > :not(:first-child) {
+    display: none;
+}
 .ji-stack > .ji-stack-native { color: darkslateblue; }
 .ji-stack > .ji-stack-inspector { color: gray; }
