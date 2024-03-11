@@ -71,7 +71,7 @@ program.command('start-bds')
     .addOption(optAuthUser)
     .addOption(optAuthPass)
     .action(async (dir, port, opts) => {
-        exec(await import('./commands/bds/start.js').then(f => f.startBds), [dir, port, opts])
+        exec(await import('./commands/bds/start.js').then(f => f.startBdsServer), [dir, port, opts])
     })
 
 program.parse()
