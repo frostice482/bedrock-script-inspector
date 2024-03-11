@@ -376,7 +376,7 @@ namespace JSONUninspector {
             if (val.content) {
                 const c = val.content
                 expandOnce.promise.then(() => {
-                    const code = hljs.highlight(c, { language: 'javascript' }).value
+                    const code = Prism.highlight(c, Prism.languages.javascript!, 'javascript')
                     const row = tbody.insertRow()
                     row.insertCell().append(e_fn_codeName.cloneNode(true))
                     row.insertCell().innerHTML = code

@@ -173,7 +173,9 @@ const autoColor: string[] = [
 
 const grOptsSelect = ConsoleGraphing.select
 {    
-    requestAnimationFrame(() => hljs.highlightElement(getIdThrow('console-gr-prev')))
+    const cgPrevCode = `console.log("[[debugGraph]]", graph_name, {key: value, key2: value2, ...})`
+    getIdThrow('console-gr-prev').innerHTML = Prism.highlight(cgPrevCode, Prism.languages.javascript!, 'javascript')
+
     handleResizer(ConsoleGraphing.container, 'console-resize', 0, -1)
 
     const optsSideHide = getIdThrow('console-graphing-hide')

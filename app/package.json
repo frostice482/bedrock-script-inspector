@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@types/ace": "^0.0.52",
-    "highlight.js": "^11.9.0",
+    "@types/prismjs": "^1.26.3",
     "tiny-glob": "^0.2.9",
     "uplot": "^1.6.28"
   }

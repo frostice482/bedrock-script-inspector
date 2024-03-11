@@ -1,5 +1,5 @@
-var hljs: typeof import('highlight.js').default
 var uPlot: typeof import('uplot')
+var Prism: typeof import('prismjs')
 
 declare namespace AceAjax {
     interface Ace {
