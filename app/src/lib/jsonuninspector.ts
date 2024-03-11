@@ -274,14 +274,13 @@ namespace JSONUninspector {
         }
         // expand: load data proto
         if (val?.proto) {
-            let proto: JSONInspectData.I_ObjectBasic
+            let proto: JSONInspectData
             if ('ref' in val.proto) {
                 const ref = val.proto.ref
                 if (!refList) throw new ReferenceError(`References not defined (referencing proto ${ref})`)
 
                 const v = refList[ref]
                 if (!v) throw new ReferenceError(`References not defined (referencing proto ${ref})`)
-                if (v.type !== 'object') throw new ReferenceError(`Expecting type "object" for ref proto ${ref}, got "${v.type}"`)
 
                 proto = v
             }
@@ -290,7 +289,7 @@ namespace JSONUninspector {
             expandOnce.promise.then(() => {
                 const row = body.insertRow()
                 row.insertCell().append(e_obj_baseProtoName.cloneNode(true))
-                row.insertCell().append(objectBase(proto, refList).container)
+                row.insertCell().append(JSONUninspector(proto, refList))
             })
         }
         // expand button
