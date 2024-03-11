@@ -87,7 +87,7 @@ const infoCode = getIdThrow('bds-i-code')
 
 const info = getIdThrow('bds-info')
 const infoBtnHide = getIdThrow('bds-i-hide', HTMLButtonElement)
-const infoBtnKill = getIdThrow('bds-kill', HTMLButtonElement)
+const infoBtnKill = getIdThrow('bds-kill-res', HTMLButtonElement)
 
 infoBtnHide.addEventListener('click', () => {
     info.hidden = !info.hidden
@@ -100,20 +100,30 @@ infoBtnHide.addEventListener('click', () => {
 })
 
 infoBtnKill.addEventListener('click', () => {
-    BedrockInspector.sendInt('kill', null)
+    BedrockInspector.sendInt(bdsStatus ? 'kill' : 'restart', null)
 })
 
 //// process ////
 
 const { bdsConsoles: initLog, limits: { bdsConsole: logLimit } } = BedrockInspector.initData
 if (initLog.length > logLimit) initLog.splice(logLimit)
+let bdsStatus = false
 
 {
     const { bdsConnected, bdsExit, bdsPid } = BedrockInspector.initData
-    if (bdsConnected) cmdInput.disabled = cmdSend.disabled = infoBtnKill.disabled = false
     if (bdsPid) infoPid.textContent = String(bdsPid)
-    if (bdsExit) infoCode.textContent = typeof bdsExit === 'number' ? bdsExit + ' hex 0x' + bdsExit.toString(16) : bdsExit
-    infoStatus.textContent = String(bdsConnected ? 'connected' : bdsExit ? 'stopped' : '...')
+
+    if (bdsConnected) {
+        cmdInput.disabled = cmdSend.disabled = false
+        bdsStatus = true
+        infoStatus.textContent = 'connected'
+        infoBtnKill.textContent = 'end process'
+    }
+    else if (bdsExit !== undefined) {
+        infoCode.textContent = typeof bdsExit === 'number' ? bdsExit + ' hex 0x' + bdsExit.toString(16) : bdsExit
+        infoStatus.textContent = 'stopped'
+        infoBtnKill.textContent = 'restart'
+    }
 }
 
 const logQueue: BedrockInterpreterType.BDSLog[] = initLog
@@ -124,16 +134,20 @@ const logQueue: BedrockInterpreterType.BDSLog[] = initLog
     BedrockInspector.events.addEventListener('bds_start', ({ detail: pid }) => {
         logTbody.replaceChildren()
 
-        cmdInput.disabled = cmdSend.disabled = infoBtnKill.disabled = false
-        infoPid.textContent = String(pid)
+        cmdInput.disabled = cmdSend.disabled = false
+        bdsStatus = true
         infoStatus.textContent = 'connected'
+        infoPid.textContent = String(pid)
         infoCode.textContent = '...'
+        infoBtnKill.textContent = 'end process'
     })
 
     BedrockInspector.events.addEventListener('bds_kill', ({ detail: code }) => {
-        cmdInput.disabled = cmdSend.disabled = infoBtnKill.disabled = true
+        cmdInput.disabled = cmdSend.disabled = true
+        bdsStatus = false
         infoStatus.textContent = 'stopped'
         infoCode.textContent = typeof code === 'number' ? code + ' hex 0x' + code.toString(16) : code
+        infoBtnKill.textContent = 'restart'
     })
 
     BedrockInspector.events.addEventListener('log', ({ detail: log }) => {
