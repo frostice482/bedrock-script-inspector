@@ -1,17 +1,17 @@
 import express = require('express')
 import http = require("http")
+import TypedEventEmitter from './lib/typedevm.js'
 
 const server = express()
+server.events = new TypedEventEmitter
 const httpServer = http.createServer(server)
-
 export { server, httpServer }
 
 export async function listenServer(port: number, authUsername?: string, authPassword?: string, route = true) {
     const chalk = await import('chalk')
-    const { interpreter } = await import('./interpreter.js')
 
     httpServer.listen(port, () => console.log('Server started on port', port))
-    interpreter.once('serverClose', () => httpServer.close())
+    server.events.once('close', () => httpServer.close())
 
     // authorization
     if (authUsername && authPassword) {

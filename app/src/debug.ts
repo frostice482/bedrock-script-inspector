@@ -12,7 +12,7 @@ namespace BedrockInspector {
         ws.send( JSON.stringify({ int: false, data: [name, data] }) )
     }
 
-    export function sendInt<K extends keyof ClientType.InterpreterEvents>(name: K, data: ClientType.InterpreterEvents[K]) {
+    export function sendInt<K extends keyof ClientType.DebugEvents>(name: K, data: ClientType.DebugEvents[K]) {
         ws.send( JSON.stringify({ int: true, data: [name, data] }) )
     }
 

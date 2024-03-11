@@ -6,6 +6,7 @@ import BedrockInterpreterType from "../../../globaltypes/interpreter.js";
 import { httpServer, server } from "../server.js";
 import ClientType from "../../../globaltypes/client.js";
 import { PromiseController } from "../lib/prmctrl.js";
+import TypedEventEmitter from '../lib/typedevm.js';
 
 // ws magic
 const wss = new ws.WebSocketServer({
@@ -20,13 +21,13 @@ const wss = new ws.WebSocketServer({
 wss.on('connection', (ws, req) => {
     ws.on('message', (data, binary) => {
         const transfer = JSON.parse(String(data)) as ClientType.EventTransferData
-        if (transfer.int) interpreter.emit('clientInterpreterEvent', transfer.data)
-        else cliForwards.push(transfer.data)
+        if (transfer.int) Client.debugEvents.emit(transfer.data[0], transfer.data[1])
+        else Client.eventSendQueue.push(transfer.data)
     })
 })
 
-interpreter.prependOnceListener('serverClose', () => {
-    for (const cli of wss.clients) cli.close()
+server.events.prependOnceListener('close', () => {
+    for (const cli of wss.clients) cli.terminate()
     wss.close()
 })
 
@@ -69,9 +70,9 @@ server.post('/client/request/:type',
         const id = crypto.randomBytes(15).toString('base64url')
         const prm = new PromiseController<string>()
 
-        cliReqs.set(id, prm)
+        Client.requests.set(id, prm)
 
-        cliForwards.push(['req', {
+        Client.eventSendQueue.push(['req', {
             id,
             name: req.params.type as any,
             data: req.body,
@@ -85,10 +86,14 @@ server.post('/client/request/:type',
 )
 
 interpreter.prependOnceListener('script_disconnect', () => {
-    for (const req of cliReqs.values()) req.reject(new ReferenceError('inspector closed'))
-    cliReqs.clear()
-    cliForwards.splice(0)
+    for (const req of Client.requests.values()) req.reject(new ReferenceError('inspector closed'))
+    Client.requests.clear()
+    Client.eventSendQueue.splice(0)
 })
 
-export const cliForwards: ClientType.CrossEventData[] = []
-export const cliReqs = new Map<string, PromiseController<string>>()
+namespace Client {
+    export const requests = new Map<string, PromiseController<string>>()
+    export const debugEvents = new TypedEventEmitter<{ [K in keyof ClientType.DebugEvents]: [ClientType.DebugEvents[K]] }>()
+    export const eventSendQueue: ClientType.CrossEventData[] = []
+}
+export default Client

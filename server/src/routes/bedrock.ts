@@ -1,7 +1,7 @@
 import express = require("express");
 import { server } from "../server.js";
 import { interpreter } from "../interpreter.js";
-import { cliForwards, cliReqs } from "./client.js";
+import Client from "./client.js";
 
 server.use('/bedrock', (req, res, next) => {
     res.contentType('text/plain')
@@ -31,7 +31,7 @@ server.post('/bedrock/transfer',
     express.json({ type: () => true, limit: 256 * 1048576 }),
     (req, res) => {
         interpreter.emit('bedrock_events', req.body)
-        res.json(cliForwards.splice(0))
+        res.json(Client.eventSendQueue.splice(0))
     }
 )
 
@@ -40,8 +40,8 @@ server.post('/bedrock/resolve/:id',
     (req, res) => {
         const id = req.params.id, data = req.body
         
-        cliReqs.get(id)?.resolve(data)
-        cliReqs.delete(id)
+        Client.requests.get(id)?.resolve(data)
+        Client.requests.delete(id)
 
         res.end()
     }

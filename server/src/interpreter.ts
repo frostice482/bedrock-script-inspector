@@ -8,7 +8,7 @@ function pushLimit<T>(arr: T[], elm: T, limit: number) {
     if (arr.length > limit) arr.shift()
 }
 
-export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof InterpreterEvents]: [InterpreterEvents[K]] }> {    
+export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof BedrockInterpreterType.CrossEvents]: [BedrockInterpreterType.CrossEvents[K]] }> {    
     constructor() {
         super()        
 
@@ -41,8 +41,6 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
             pushLimit(this.bdsConsoles, log, this.bdsConsoleLimit)
         })
 
-        this.prependListener('clientInterpreterEvent', ([name, data]) => this.clientEvents.emit(name, data))
-        
         this.prependListener('bedrock_events', events => {
             for (const pair of events) {
                 const [name, data] = pair
@@ -217,8 +215,6 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
     bdsPid: number | undefined
     bdsExit: number | string | undefined
 
-    readonly clientEvents = new TypedEventEmitter<{ [K in keyof ClientType.InterpreterEvents]: [ClientType.InterpreterEvents[K]] }>()
-
     reset() {
         if (!this.bdsConnected) this.resetBDS()
 
@@ -270,11 +266,6 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Inte
             }
         }
     }
-}
-
-export interface InterpreterEvents extends BedrockInterpreterType.CrossEvents {
-    clientInterpreterEvent: ClientType.InterpreterEventData
-    serverClose: null
 }
 
 export const interpreter = new InterpreterConstructor

@@ -28,19 +28,20 @@ declare namespace ClientType {
     type CrossEventData = Pair<CrossEvents>
 
     // interpreter events
-    interface InterpreterEvents {
+    interface DebugEvents {
         command: string
         kill: null
+        restart: null
         _: null
     }
-    type InterpreterEventData = Pair<InterpreterEvents>
+    type DebugEventData = Pair<DebugEvents>
 
     type EventTransferData = {
         int: false
         data: CrossEventData
     } | {
         int: true
-        data: InterpreterEventData
+        data: DebugEventData
     }
 
     // requests
