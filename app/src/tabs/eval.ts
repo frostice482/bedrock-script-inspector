@@ -26,6 +26,7 @@ const editor = CodeMirror(editorCnt, {
         ' * this - get debug variables',
         ' * $()  - get entity by name / type',
         ' * $_   - previous value',
+        ' * vars - set variables',
         ' * ',
         ' * -- Minecraft modules --',
         ' * mc      - @minecraft/server',

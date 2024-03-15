@@ -65,7 +65,11 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
     }
 })
 
+const evalSetVars = Object.create(null)
+
 const evalContext = new Map<PropertyKey, any>([
+    ['vars'     , evalSetVars],
+
     ['mc'        , mc],
     ['gt'        , gt],
     ['gametest'  , gt],
@@ -96,12 +100,9 @@ const evalOverridesObj: any = {
 }
 Object.setPrototypeOf(evalOverridesObj, null)
 
-export const evalSetVars: any = Object.create(null)
-
 export const evalProps: any = {
     debugOverrides: evalOverridesObj,
     DebugClient: DebugClient,
-    local: evalSetVars,
 
     setInterval: mc.system.runInterval.bind(mc.system),
     setTimeout: mc.system.runTimeout.bind(mc.system),
