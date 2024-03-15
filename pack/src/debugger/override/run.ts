@@ -4,6 +4,8 @@ import timing, { TimingResult } from "../lib/timing.js"
 import TypedEventEmitter from "../lib/typedevm.js"
 import jsonInspect from "../lib/jsoninspect.js"
 
+const { now } = Date
+
 namespace DebugRunOverride {
     const proto = System.prototype
     const { run, runTimeout, runInterval, clearRun, runJob, clearJob } = proto
@@ -32,7 +34,7 @@ namespace DebugRunOverride {
         constructor(fn: Fn, id = idNew++) {
             this.fn = fn
             this.id = id
-            this.lastTime = Date.now()
+            this.lastTime = now()
             
             runList.set(id, this)
         }
@@ -68,7 +70,7 @@ namespace DebugRunOverride {
         }
 
         exec(update = true): ExecRunData {
-            const sleep = Date.now() - this.lastTime
+            const sleep = now() - this.lastTime
             const res = timing(this.fn)
 
             if (update) this._execUpdate()
@@ -97,7 +99,7 @@ namespace DebugRunOverride {
         readonly type: BedrockType.Run.Type = 'interval'
 
         protected _execUpdate() {
-            this.lastTime = Date.now()
+            this.lastTime = now()
             this.nextTick = this.interval + localTick
         }
     }
@@ -107,7 +109,7 @@ namespace DebugRunOverride {
             this.id = id
             this.gen = gen
             this.genNextBound = gen.next.bind(gen)
-            this.lastTime = Date.now()
+            this.lastTime = now()
 
             jobList.set(id, this)
         }
@@ -139,7 +141,7 @@ namespace DebugRunOverride {
         }
 
         exec() {
-            this.lastTime = Date.now()
+            this.lastTime = now()
             const res = timing(this.genNextBound)
             if (res.errored) return (this.clear(res.value), false)
             if (res.value.done) return (this.clear(), false)
@@ -172,7 +174,7 @@ namespace DebugRunOverride {
 
         const jobs: BedrockType.Tick.JobRunData[] = []
         const activeJobs = new Map<RunJob, BedrockType.Tick.JobRunData>()
-        const t = Date.now()
+        const t = now()
         for (const run of jobList.values()) {
             if (run.suspended) continue
             const d: BedrockType.Tick.JobRunData = {
@@ -185,8 +187,8 @@ namespace DebugRunOverride {
             activeJobs.set(run, d)
         }
 
-        const maxTime = Date.now() + jobTimeframe
-        while (activeJobs.size && Date.now() <= maxTime) {
+        const maxTime = now() + jobTimeframe
+        while (activeJobs.size && now() <= maxTime) {
             for (const [job, data] of activeJobs) {
                 const res = job.exec()
                 if (res === false) {

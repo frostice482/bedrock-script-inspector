@@ -3,10 +3,12 @@ import DebugProxyOverride from "../override/proxy.js"
 import { toBase64 } from "./base64.js"
 import { getFunctionSource, getObjectProto } from "./util.js"
 
+const { getOwnPropertyDescriptors, assign, getPrototypeOf } = Object
+
 const AsyncFC = (async function() {}).constructor as Function
 const GeneratorFC = (function*() {}).constructor as GeneratorFunctionConstructor
 const AsyncGeneratorFC = (async function*() {}).constructor as AsyncGeneratorFunctionConstructor
-const TypedArrayFC = Object.getPrototypeOf(Uint8Array) as Uint8ArrayConstructor
+const TypedArrayFC = getPrototypeOf(Uint8Array) as Uint8ArrayConstructor
 
 export class JsonInspectInstance {
     static objectOptionsDefault: JsonInspectOptions.IObject = {
@@ -107,7 +109,7 @@ export class JsonInspectInstance {
             o.type = 'object'
             return o
         } catch(e) {
-            const err = e instanceof Error ? e : Object.assign( Error(typeof e === 'string' ? e : JSON.stringify(e)), { stack: '' } )
+            const err = e instanceof Error ? e : assign( Error(typeof e === 'string' ? e : JSON.stringify(e)), { stack: '' } )
             return this.error(err, true, stack, refList)
         }
     }
@@ -123,7 +125,7 @@ export class JsonInspectInstance {
         }
     }
 
-    objectEntries(obj: unknown, descriptors: PropertyDescriptorMap = Object.getOwnPropertyDescriptors(obj), stack: unknown[] = [], refList?: RootRefInspector) {
+    objectEntries(obj: unknown, descriptors: PropertyDescriptorMap = getOwnPropertyDescriptors(obj), stack: unknown[] = [], refList?: RootRefInspector) {
         const entries: JSONInspectData.T_ObjectEntry[] = []
         const opts = this.objectOptions
 
@@ -152,7 +154,7 @@ export class JsonInspectInstance {
                         : null
                     : this.inspect(value, stack, refList)
             } catch(e) {
-                const err = e instanceof Error ? e : Object.assign( Error(typeof e === 'string' ? e : JSON.stringify(e)), { stack: '' } )
+                const err = e instanceof Error ? e : assign( Error(typeof e === 'string' ? e : JSON.stringify(e)), { stack: '' } )
                 valueData = this.error(err, true, stack, refList)
             }
 
@@ -172,14 +174,14 @@ export class JsonInspectInstance {
         let descriptors: PropertyDescriptorMap
         if (ignores === true) descriptors = {}
         else {
-            descriptors = Object.getOwnPropertyDescriptors(proto)
+            descriptors = getOwnPropertyDescriptors(proto)
             if (ignores) for (const k in ignores) delete descriptors[k]
         }
 
         const entries = this.objectEntries(obj, descriptors, newStack, refList)
 
         // proto
-        const nextProto = Object.getPrototypeOf(proto)
+        const nextProto = getPrototypeOf(proto)
         let nextProtoInspect
         if (this.shouldProto(nextProto)) {
             if (refList) {
@@ -213,7 +215,7 @@ export class JsonInspectInstance {
 
     fn(obj: Function, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Function {
         const opts = this.functionOptions, newStack = stack.concat([obj])
-        const descriptors = Object.getOwnPropertyDescriptors(obj) as PropertyDescriptorMap
+        const descriptors = getOwnPropertyDescriptors(obj) as PropertyDescriptorMap
 
         // function info
         const name = descriptors.name?.value
@@ -234,7 +236,7 @@ export class JsonInspectInstance {
         const entries = opts.properties ? this.objectEntries(obj, descriptors, newStack, refList) : []
 
         // extends
-        const newProto = Object.getPrototypeOf(obj)
+        const newProto = getPrototypeOf(obj)
         let fExtends
         if (opts.extend && typeof newProto === 'function' && !this.functionProto.has(newProto)) {
             if (refList) {
@@ -276,7 +278,7 @@ export class JsonInspectInstance {
     error(obj: Error, isThrown = false, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Error {
         const newStack = stack.concat([obj])
 
-        const descriptors = Object.getOwnPropertyDescriptors(obj) as PropertyDescriptorMap
+        const descriptors = getOwnPropertyDescriptors(obj) as PropertyDescriptorMap
         delete descriptors.name
         delete descriptors.message
         delete descriptors.stack
@@ -299,7 +301,7 @@ export class JsonInspectInstance {
         const newStack = stack.concat([obj])
 
         // descriptors
-        const descriptors = Object.getOwnPropertyDescriptors(obj) as unknown as PropertyDescriptorMap
+        const descriptors = getOwnPropertyDescriptors(obj) as unknown as PropertyDescriptorMap
         delete descriptors.length
 
         // values, removing element from descriptors
@@ -324,7 +326,7 @@ export class JsonInspectInstance {
     }
 
     typedArray(obj: Uint8Array): JSONInspectData.I_TypedArray {
-        return Object.assign(this.arrayBuffer(obj.buffer), {
+        return assign(this.arrayBuffer(obj.buffer), {
             type: 'typedarray',
             length: obj.length,
             bytesPerElement: obj.BYTES_PER_ELEMENT

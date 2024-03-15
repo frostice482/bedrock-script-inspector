@@ -80,6 +80,13 @@ const evalContext = new Map<PropertyKey, any>([
     ['globalThis', globalThis]
 ])
 
+const overworld = mc.world.getDimension('overworld')
+const nether = mc.world.getDimension('nether')
+const end = mc.world.getDimension('the_end')
+
+const dims = [overworld, nether, end]
+dims
+
 const evalOverridesObj: any = {
     console: DebugConsoleOverride,
     events: DebugEventsOverride,
@@ -89,16 +96,12 @@ const evalOverridesObj: any = {
 }
 Object.setPrototypeOf(evalOverridesObj, null)
 
-const overworld = mc.world.getDimension('overworld')
-const nether = mc.world.getDimension('nether')
-const end = mc.world.getDimension('the_end')
+export const evalSetVars: any = Object.create(null)
 
-const dims = [overworld, nether, end]
-dims
-
-const evalProps: any = {
+export const evalProps: any = {
     debugOverrides: evalOverridesObj,
     DebugClient: DebugClient,
+    local: evalSetVars,
 
     setInterval: mc.system.runInterval.bind(mc.system),
     setTimeout: mc.system.runTimeout.bind(mc.system),
@@ -124,7 +127,7 @@ const evalProps: any = {
 }
 Object.setPrototypeOf(evalProps, null)
 
-const evalProxy = new Proxy(evalProps, {
+export const evalProxy = new Proxy(evalProps, {
     get(t, p) {
         // eval properties
         if (p in t) return t[p]
@@ -137,7 +140,7 @@ const evalProxy = new Proxy(evalProps, {
     },
     set(t, p, v) {
         //@ts-ignore
-        globalThis[p] = v
+        evalSetVars[p] = v
         return true
     },
     deleteProperty(t, p) {

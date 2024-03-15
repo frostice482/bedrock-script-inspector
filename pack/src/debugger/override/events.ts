@@ -5,6 +5,8 @@ import timing from "../lib/timing.js"
 import TypedEventEmitter from "../lib/typedevm.js"
 import { system, world } from '@minecraft/server'
 
+const { now } = Date
+
 /**
  * Overrides events
  */
@@ -176,7 +178,7 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
     dispatch(data: _D['data'], optsFilter?: (opts: _D['options'] | undefined, listener: _D['listener']) => boolean) {
         const list: BedrockType.Events.DataFunctionExec[] = []
 
-        const t0 = Date.now()
+        const t0 = now()
         for (const [listener, { options, disabled }] of this.listener) {
             if (disabled) continue
             if (optsFilter ? !optsFilter(options, listener) : false) continue
@@ -189,7 +191,7 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
                 error: exec.errored ? jsonInspect.inspect(exec.value) : undefined
             })
         }
-        const td = Date.now() - t0
+        const td = now() - t0
 
         this.emit('data', {
             data,

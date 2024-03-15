@@ -1,6 +1,8 @@
 import { system } from "@minecraft/server"
 import BedrockType from "../../../../globaltypes/bedrock.js"
 
+const { now } = Date
+
 /**
  * Gets current stack trace
  * @param deleteCount Number of stack to delete from the topmost
@@ -49,14 +51,14 @@ export function* getObjectProto(obj: unknown, includeInitial = false, includeNul
 export function getTimeData(): BedrockType.TimeData {
     return {
         tick: system.currentTick,
-        time: Date.now()
+        time: now()
     }
 }
 
 export function getTraceData<T>(data: T, stackDel = 2): BedrockType.TraceData<T> {
     return {
         tick: system.currentTick,
-        time: Date.now(),
+        time: now(),
         stack: getStackTrace(2),
         data
     }

@@ -3,23 +3,25 @@ import DebugRunOverride from "../../override/run.js";
 import DebugClient from "../client.js";
 import BedrockType from "../../../../../globaltypes/bedrock.js";
 
-let lt = Date.now()
+const { now } = Date
+
+let lt = now()
 let runPrev: BedrockType.Tick.TickRun = { delta: 0, runs: [], jobs: [] }
 
 DebugRunOverride.rawRunInterval.call(system, () => {
-    const ct = Date.now(), dt = ct - lt
+    const ct = now(), dt = ct - lt
     lt = ct
 
     DebugClient.send('tick', {
         tick: system.currentTick,
-        time: Date.now(),
+        time: now(),
         delta: dt,
         run: runPrev
     }, true)
 
-    const t0 = Date.now()
+    const t0 = now()
     const { jobs, runs } = DebugRunOverride.execAll()
-    const delta = Date.now() - t0
+    const delta = now() - t0
 
     runPrev = { delta, jobs, runs }
 })

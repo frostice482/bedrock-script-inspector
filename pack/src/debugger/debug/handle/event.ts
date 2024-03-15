@@ -4,6 +4,8 @@ import { getTraceData } from "../../lib/util.js";
 import DebugEventsOverride, { EventsOverride } from "../../override/events.js";
 import DebugClient from "../client.js";
 
+const { now } = Date
+
 function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
     event.addEventListener('subscribe', ({ name, fid, listener }) =>
         DebugClient.send('event_listener_subscribe', getTraceData({ type, category, name, fid, fn: jsonInspect.fn(listener as Function) }, 8))
@@ -19,9 +21,9 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
     )
 
     event.addEventListener('data', ({ name, data, list, delta }) => {
-        const inst0 = Date.now()
+        const inst0 = now()
         const insData = jsonInspect.inspect(data)
-        const instd = Date.now() - inst0
+        const instd = now() - inst0
 
         DebugClient.send('event', {
             type, category, name,
