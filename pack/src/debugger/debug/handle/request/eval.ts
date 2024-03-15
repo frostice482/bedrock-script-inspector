@@ -89,7 +89,6 @@ const nether = mc.world.getDimension('nether')
 const end = mc.world.getDimension('the_end')
 
 const dims = [overworld, nether, end]
-dims
 
 const evalOverridesObj: any = {
     console: DebugConsoleOverride,
@@ -121,9 +120,11 @@ export const evalProps: any = {
     end,
 
     $: (data: string) => {
-        // TODO: search in every dimension (1.20.70.21)
-        return overworld.getEntities({ closest: 1, name: data, type: 'minecraft:player' })[0]
-            ?? overworld.getEntities({ closest: 1, type: data })[0]
+        for (const dim of dims) {
+            const [player] = dim.getPlayers({ closest: 1, name: data })
+            if (player) return player
+        }
+        return overworld.getEntities({ closest: 1, type: data })[0]
     }
 }
 Object.setPrototypeOf(evalProps, null)
