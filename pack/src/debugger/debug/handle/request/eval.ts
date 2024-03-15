@@ -107,7 +107,7 @@ export const evalProps: any = {
     setInterval: mc.system.runInterval.bind(mc.system),
     setTimeout: mc.system.runTimeout.bind(mc.system),
     setImmediate: mc.system.run.bind(mc.system),
-    job: (gen: Generator | GeneratorFunction) => mc.system.runJob(typeof gen === 'function' ? gen() : gen),
+    job: (gen: Generator<void, void, void> | {(): Generator<void, void, void>}) => mc.system.runJob(typeof gen === 'function' ? gen() : gen),
     clearRun: mc.system.clearRun.bind(mc.system),
 
     http: HttpUtil,
