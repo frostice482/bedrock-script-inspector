@@ -16,6 +16,7 @@ import DebugClient from '../../client.js'
 import clientRequests from './request.js'
 import jsonInspect, { JsonInspectInstance, RootRefInspector } from '../../../lib/jsoninspect.js'
 
+const { now } = Date
 const asyncFC = (async function() {}).constructor as FunctionConstructor
 
 clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, code, opts, store, root } }) => {
@@ -125,6 +126,16 @@ export const evalProps: any = {
             if (player) return player
         }
         return overworld.getEntities({ closest: 1, type: data })[0]
+    },
+
+    measure(fn: () => void, time = 1000) {
+        let c = 0
+        const maxTime = now() + time
+        while (now() < maxTime) {
+            fn()
+            c++
+        }
+        return time / c
     }
 }
 Object.setPrototypeOf(evalProps, null)
