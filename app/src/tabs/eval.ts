@@ -20,7 +20,6 @@ const editor = CodeMirror(editorCnt, {
         '/* ',
         ' * Enter a JS code to evaluate to Script API',
         ' * Ctrl+UP / Ctrl+DOWN for history, Ctrl+ENTER to evaluate',
-        ' * Async eval mode -- requires "return" keyword to get the value',
         ' * ',
         ' * -- Debug variables --',
         ' * this - get debug variables',
@@ -108,6 +107,12 @@ refInspDesc.textContent = [
     'may be inaccurate.'
 ].join('\n')
 
+const asyncModeDesc = document.createElement('div')
+asyncModeDesc.classList.add('popup')
+asyncModeDesc.style.whiteSpace = 'pre'
+asyncModeDesc.textContent = 'Enabling async will require `return` keyword to output the result'
+
+new RelativePopupHandle(new RelativePopup(getIdThrow('eval-opts-eval-async-title'), asyncModeDesc, undefined, 'topcenter'), 'hover')
 new RelativePopupHandle(new RelativePopup(getIdThrow('eval-opts-eval-refinsp-title'), refInspDesc, undefined, 'topcenter'), 'hover')
 
 // send
