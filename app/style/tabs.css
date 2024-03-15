@@ -58,6 +58,18 @@
     grid-template-rows: 1fr auto auto;
 }
 
+#eval-editor {
+    grid-area: edit;
+    font-size: 1em;
+    min-width: 700px;
+    border-radius: 5px;
+}
+
+#eval-editor > * {
+
+    font-size: 1.2em;
+}
+
 /* Events */
 
 #tab-events {

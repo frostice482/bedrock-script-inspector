@@ -7,15 +7,16 @@
         <link rel="icon" href="icon.svg">
         <link rel="stylesheet" href="style/main.css">
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/codemirror.min.css" integrity="sha512-xIf9AdJauwKIVtrVRZ0i4nHP61Ogx9fSRAkCLecmE2dL/U8ioWpDvFCAy4dcfecN72HHB9+7FfQj3aiO68aaaw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/theme/tomorrow-night-eighties.min.css" integrity="sha512-aTRY/QIrMwrbWg/XXBy6jfUsSnOBons3re69HeEfdUpoKVdx2qmxrIDSsXaQZhmdllZ0rhICUxojIiJyDxRqdg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css" integrity="sha512-pZlKGs7nEqF4zoG0egeK167l6yovsuL8ap30d07kA5AJUq+WysFlQ02DLXAmN3n0+H3JVz5ni8SJZnrOaYXWBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-dark.min.css" integrity="sha512-y6rcKLYkttB9ZUBaz0IsncWFo1VoqISrcMY6J1i6Nb9WB9jRrpll8zjt5e1/naZHyXFoR/1VlH72+2VJ1Uzh7A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.28/dist/uPlot.min.css ">
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js" integrity="sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-okaidia.min.css" integrity="sha512-5HvW0a7ihK3ro2KhwEksDHXgIezsTeZybZDIn8d8Y015Ny+t7QWSIjnlCTjFzlK7Klb604HLGjsNqU/i5mJLjQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/codemirror.min.js" integrity="sha512-hc0zo04EIwTzKLvp2eycDTeIUuvoGYYmFIjYx7DmfgQeZPC5N27sPG2wEQPq8d8fCTwuguLrI1ffatqxyTbHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/addon/edit/closebrackets.min.js" integrity="sha512-+xi2SgGCBFIGog8JZv+X1dte+mhaJ6i73ZV2icqQk+onxz+ZkrSgtXdNfvqX2YYzwMsGAqpcjyIxvC9ytAXXPw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/mode/javascript/javascript.min.js" integrity="sha512-isTDQTpVc8nKKMQmhm0b6fccRPjzo2g0q6l2VLy9/jDn5s8bEUu9WuSGkkAfN/NCwI3+Qi5wEVCaPRoWvT6YPw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.28/dist/uPlot.iife.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ace.js" integrity="sha512-hWCQiPFpU0dM1jkN2dkt/OrdSXO4KN5y2utMvF0ZkacWmRvbOlEygqBW0YiJwq/nn6iywh4XnMGMG6ESQYM7WA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <script type="module" src="scripts/index.js"></script>
     </head>
@@ -175,7 +176,7 @@
                         <div id="console-gr-content" class="fill-x noflow">
                             <div id="console-gr-tooltip" class="fill flex-center">
                                 <span>Graphing Usage:</span>
-                                <code id="console-gr-prev"></code>
+                                <code id="console-gr-prev">console.log("[[debugGraph]]", graph_name, {key: value, key2: value2, ...})</code>
                                 <table id="console-gr-vars">
                                     <tr>
                                         <td class="hljs-string">graph_name</td>
@@ -202,7 +203,7 @@
             <div id="tab-eval" class="fill flex-row gap8">
                 <div id="eval-side" class="gap8">
                     <!-- Editor -->
-                    <div id="eval-editor" style="grid-area: edit; font-size: 1em; min-width: 700px; border-radius: 5px;"></div>
+                    <div id="eval-editor" class="noflow"></div>
                     <!-- Object -->
                     <div class="fs-row" style="grid-area: objc;">
                         <b>object</b>

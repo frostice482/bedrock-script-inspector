@@ -16,6 +16,12 @@
 .ji-error { color: orangered }
 .ji-error-nothrow { color: lightcoral }
 .ji-function { color: yellow }
+.ji-function-code {
+    width: 800px;
+    height: 500px;
+    overflow: auto;
+    resize: both;
+}
 .ji-class { color: cyan }
 .ji-circular { color: coral }
 

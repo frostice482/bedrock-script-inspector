@@ -1,78 +1,68 @@
 import BedrockInspector from "../debug.js";
-import inputHistory from "../lib/inputhistory.js";
 import IteatorUtil from "../lib/iterator.js";
 import JSONUninspector from "../lib/jsonuninspector.js";
 import { getIdThrow } from "../lib/misc.js";
 import handleResizer from "../lib/handle_resizer.js";
 import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
+import inputHistory from "../lib/inputhistory.js";
 
 // editor
 
 const editorCnt = getIdThrow('eval-editor')
-const editor = ace.edit(editorCnt)
-editor.setTheme("ace/theme/cloud9_night");
-editor.session.setMode("ace/mode/javascript")
-editor.session.setUseWorker(false)
+const editor = CodeMirror(editorCnt, {
+    mode: 'text/javascript',
+    theme: 'tomorrow-night-eighties',
+    lineNumbers: true,
+    allowDropFileTypes: ['text/javascript'],
+    autoCloseBrackets: true,
+    tabSize: 4,
+    value: sessionStorage.getItem('evalcode') ?? [
+        '/* ',
+        ' * Enter a JS code to evaluate to Script API',
+        ' * Ctrl+UP / Ctrl+DOWN for history, Ctrl+ENTER to evaluate',
+        ' * Async eval mode -- requires "return" keyword to get the value',
+        ' * ',
+        ' * this - get available properties',
+        ' * $()  - get entity by name / type',
+        ' * $_   - previous value',
+        ' */',
+        '',
+        'console.log("Hello from inspector eval")'
+    ].join('\n')
+})
 
-editor.setValue(sessionStorage.getItem('evalcode') || [
-    '/* ',
-    ' * Enter a JS code to evaluate to the BDS server',
-    ' * Ctrl+UP / Ctrl+DOWN for history, Ctrl+ENTER to evaluate',
-    ' * Async eval mode -- requires "return" keyword to get the value',
-    ' * ',
-    ' * $_ - previous value',
-    ' */',
-    '',
-    'console.log("Hello from inspector eval")'
-].join('\n'))
+// history
 
 const history = new inputHistory()
+const doc = editor.getDoc()
 
-editor.keyBinding.addKeyboardHandler({ handleKeyboard: () => history.resetPointer() }, 0)
+editor.on('inputRead', () => history.resetPointer())
 
-editor.commands.addCommand({
-    name: 'Evaluate',
-    exec: () => {
-        const val = editor.getValue()
-        history.handleEnter(val)
-        if (!sendBtn.disabled) send(val)
-    },
-    bindKey: {
-        win: 'ctrl-enter',
-        mac: 'cmd-enter'
-    }
+editor.addKeyMap({
+    'Ctrl-Enter': handleEnter,
+    'Cmd-Enter': handleEnter,
+    'Ctrl-Up': () => handleHistory(true),
+    'Cmd-Up': () => handleHistory(true),
+    'Ctrl-Down': () => handleHistory(false),
+    'Cmd-Down': () => handleHistory(false),
 })
-editor.commands.addCommand({
-    name: 'History: Previous',
-    exec: () => handleHistory(true),
-    bindKey: {
-        win: 'ctrl-up',
-        mac: 'cmd-up'
-    }
-})
-editor.commands.addCommand({
-    name: 'History: Next',
-    exec: () => handleHistory(false),
-    bindKey: {
-        win: 'ctrl-down',
-        mac: 'cmd-down'
-    }
-})
+
+function handleEnter() {
+    const val = editor.getValue()
+    history.handleEnter(val)
+    if (!sendBtn.disabled) send(val)
+}
 
 function handleHistory(isUp: boolean) {
-    const doc = editor.session.doc
-    const val = editor.getValue()
+    const start = doc.indexFromPos(editor.getCursor('from'))
+    const end = doc.indexFromPos(editor.getCursor('to'))
 
-    const {start, end} = editor.selection.getRange()
-    const si = doc.positionToIndex(start), ei = doc.positionToIndex(end)
-    
-    const [v, ns, ne] = history.handleNav(isUp, val, si, ei)
-
-    const nrs = doc.indexToPosition(ns, 0)
-    const nre = doc.indexToPosition(ne, 0)
+    const [v, ns, ne] = history.handleNav(isUp, doc.getValue(), start, end)
 
     editor.setValue(v)
-    editor.selection.setRange(ace.Range.fromPoints(nrs, nre), false)
+
+    if (ns === ne) editor.setCursor(doc.posFromIndex(ns))
+    else editor.setSelection(doc.posFromIndex(ne), doc.posFromIndex(ns))
 }
 
 // sidebar resize & hide

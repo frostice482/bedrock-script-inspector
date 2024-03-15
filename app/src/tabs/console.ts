@@ -172,10 +172,7 @@ const autoColor: string[] = [
 //// graphing ////
 
 const grOptsSelect = ConsoleGraphing.select
-{    
-    const cgPrevCode = `console.log("[[debugGraph]]", graph_name, {key: value, key2: value2, ...})`
-    getIdThrow('console-gr-prev').innerHTML = Prism.highlight(cgPrevCode, Prism.languages.javascript!, 'javascript')
-
+{
     handleResizer(ConsoleGraphing.container, 'console-resize', 0, -1)
 
     const optsSideHide = getIdThrow('console-graphing-hide')

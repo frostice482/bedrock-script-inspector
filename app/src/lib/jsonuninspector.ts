@@ -333,6 +333,13 @@ namespace JSONUninspector {
     e_fn_codeName.classList.add('ji-null')
     e_fn_codeName.textContent = '[code]'
 
+    const e_fn_codeBtn = document.createElement('button')
+    e_fn_codeBtn.textContent = 'show'
+
+    const e_fn_codeCnt = document.createElement('div')
+    e_fn_codeCnt.hidden = true
+    e_fn_codeCnt.classList.add('ji-function-code')
+
     const e_fn_extName = document.createElement('span')
     e_fn_extName.classList.add('ji-null')
     e_fn_extName.textContent = '[extend]'
@@ -373,12 +380,31 @@ namespace JSONUninspector {
 
             // code
             if (val.content) {
-                const c = val.content
                 expandOnce.promise.then(() => {
-                    const code = Prism.highlight(c, Prism.languages.javascript!, 'javascript')
+                    const editorCnt = e_fn_codeCnt.cloneNode(true)
+
+                    let show = false
+                    const btn = e_fn_codeBtn.cloneNode(true)
+
+                    btn.addEventListener('click', () => {
+                        const editor = CodeMirror(editorCnt, {
+                            mode: 'text/javascript',
+                            theme: 'tomorrow-night-eighties',
+                            value: val.content!,
+                            readOnly: true
+                        })
+                        requestAnimationFrame(() => editor.refresh())
+                    }, { once: true })
+
+                    btn.addEventListener('click', () => {
+                        show = !show
+                        btn.textContent = show ? 'hide' : 'show'
+                        editorCnt.hidden = !show
+                    })
+
                     const row = tbody.insertRow()
                     row.insertCell().append(e_fn_codeName.cloneNode(true))
-                    row.insertCell().innerHTML = code
+                    row.insertCell().append(btn, editorCnt)
                 })
             }
         }
