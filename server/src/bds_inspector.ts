@@ -14,7 +14,7 @@ const bdsLogLevelMap: Record<string, BedrockType.Console.LogLevel> = {
 }
 Object.setPrototypeOf(bdsLogLevelMap, null)
 
-export default class ScriptBDSInspector extends TypedEventEmitter<{ [K in keyof ScriptBDSInspectorEvents]: ScriptBDSInspectorEvents[K] }> {
+export default class BDS extends TypedEventEmitter<{ [K in keyof ScriptBDSInspectorEvents]: ScriptBDSInspectorEvents[K] }> {
     constructor(bdsPath: string) {
         super()
 
