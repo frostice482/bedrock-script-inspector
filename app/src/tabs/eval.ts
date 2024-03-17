@@ -5,6 +5,7 @@ import { getIdThrow } from "../lib/misc.js";
 import handleResizer from "../lib/handle_resizer.js";
 import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
 import inputHistory from "../lib/inputhistory.js";
+import { tabchange } from "../tab.js";
 
 // editor
 
@@ -39,6 +40,8 @@ const editor = CodeMirror(editorCnt, {
         'console.log("Hello from inspector eval")'
     ].join('\n')
 })
+
+tabchange.addEventListener('eval', () => editor.refresh(), { once: true })
 
 // history
 
