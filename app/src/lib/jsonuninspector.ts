@@ -258,17 +258,17 @@ namespace JSONUninspector {
         if (val?.properties) {
             const props = val.properties
             expandOnce.promise.then(() => {
-                for (const [k, v] of props) {
+                for (const { key, value } of props) {
                     const row = body.insertRow()
     
                     // key
                     const keyData = row.insertCell()
-                    keyData.append(k.isSymbol ? t_symbol(k.key) : k.key)
-                    if (k.getter) keyData.append(' ', objectKeyGetSet(k.getter, 'Get', refList))
-                    if (k.setter) keyData.append(' ', objectKeyGetSet(k.setter, 'Set', refList))
+                    keyData.append(key.isSymbol ? t_symbol(key.key) : key.key)
+                    if (key.getter) keyData.append(' ', objectKeyGetSet(key.getter, 'Get', refList))
+                    if (key.setter) keyData.append(' ', objectKeyGetSet(key.setter, 'Set', refList))
     
                     // value
-                    row.insertCell().append(v ? JSONUninspector(v, refList) : '...')
+                    row.insertCell().append(value ? JSONUninspector(value, refList) : '...')
                 }
             })
         }

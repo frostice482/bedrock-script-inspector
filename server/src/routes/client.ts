@@ -21,7 +21,7 @@ const wss = new ws.WebSocketServer({
 wss.on('connection', (ws, req) => {
     ws.on('message', (data, binary) => {
         const transfer = JSON.parse(String(data)) as ClientType.EventTransferData
-        if (transfer.int) Client.debugEvents.emit(transfer.data[0], transfer.data[1])
+        if (transfer.int) Client.debugEvents.emit(transfer.data.name, transfer.data.data)
         else Client.eventSendQueue.push(transfer.data)
     })
 })
@@ -53,7 +53,7 @@ interpreter.on('stats', broadcaster('stats'))
 
 function broadcaster<K extends keyof BedrockInterpreterType.CrossEvents>(name: K) {
     return (data: BedrockInterpreterType.CrossEvents[K]) => {
-        const str = JSON.stringify([name, data])
+        const str = JSON.stringify({name, data})
         for (const ws of wss.clients) ws.send(str)
     }
 }
@@ -72,11 +72,14 @@ server.post('/client/request/:type',
 
         Client.requests.set(id, prm)
 
-        Client.eventSendQueue.push(['req', {
-            id,
-            name: req.params.type as any,
-            data: req.body,
-        }])
+        Client.eventSendQueue.push({
+            name: 'req',
+            data: {
+                id,
+                name: req.params.type as any,
+                data: req.body,
+            }
+        })
 
         prm.promise.then(
             v => res.end(v),

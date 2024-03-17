@@ -62,7 +62,7 @@ btnFetch.addEventListener('click', async () => {
     }) ?? []
 
     props.clear()
-    for (const [k, v] of li) props.set(k, v)
+    for (const { name, value } of li) props.set(name, value)
 })
 
 for (const f of Object.values(fi)) f.addEventListener('change', () => btnFetch.style.borderColor = 'orange')

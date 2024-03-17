@@ -1,5 +1,5 @@
 import JSONInspectData from "./jsoninspect.js"
-import { Pair } from "./types.js"
+import { EventPair } from "./types.js"
 
 declare namespace BedrockType {
     // bedrock sided events
@@ -28,7 +28,7 @@ declare namespace BedrockType {
 
         console: Console
     }
-    type CrossEventData = Pair<CrossEvents>
+    type CrossEventData = EventPair<CrossEvents>
 
     // client response
     namespace ClientResponse {
@@ -44,7 +44,10 @@ declare namespace BedrockType {
         
         type Values = keyof List
 
-        type BedrockPropertyPair = [name: string, value: DynamicProperty.Values]
+        type BedrockPropertyPair = {
+            name: string,
+            value: DynamicProperty.Values
+        }
     
         interface EvalData {
             error?: boolean

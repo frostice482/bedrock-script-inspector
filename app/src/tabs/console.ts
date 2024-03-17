@@ -259,7 +259,7 @@ const logQueue: BedrockType.Console.Data[] = initLog
                 }
 
                 // push & update
-                cg.push(IteatorUtil.map(c.properties ?? [], ([k, v]) => [k.key, v?.type === 'number' ? v.value : undefined]), undefined, cg.max)
+                cg.push(IteatorUtil.map(c.properties ?? [], ({ key, value }) => [key.key, value?.type === 'number' ? value.value : undefined]), undefined, cg.max)
 
                 return
             }

@@ -1,5 +1,5 @@
 import BedrockType from "./bedrock.js"
-import { DeepPartialReadonly, Pair } from "./types.js"
+import { DeepPartialReadonly, EventPair } from "./types.js"
 import { JsonInspectOptions } from "./jsoninspect.js"
 
 declare namespace ClientType {
@@ -25,7 +25,7 @@ declare namespace ClientType {
 
         disconnect: undefined
     }
-    type CrossEventData = Pair<CrossEvents>
+    type CrossEventData = EventPair<CrossEvents>
 
     // interpreter events
     interface DebugEvents {
@@ -34,7 +34,7 @@ declare namespace ClientType {
         restart: null
         _: null
     }
-    type DebugEventData = Pair<DebugEvents>
+    type DebugEventData = EventPair<DebugEvents>
 
     type EventTransferData = {
         int: false

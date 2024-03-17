@@ -1,5 +1,5 @@
 import BedrockType from "./bedrock"
-import { Pair } from "./types.js"
+import { EventPair } from "./types.js"
 
 declare namespace BedrockInterpreterType {
     // interpreter sided events
@@ -13,7 +13,7 @@ declare namespace BedrockInterpreterType {
         stats: WatchdogStats
     }
 
-    type CrossEventData = Pair<CrossEvents>
+    type CrossEventData = EventPair<CrossEvents>
 
     // json transfer
     namespace JSONData {

@@ -48,7 +48,7 @@ clientRequests.addEventListener('dpOf', ({ id, data }) => {
         if (!v || !(filter[typeFilter[typeof v] ?? 'string'] ?? true)) continue
 
         // push & break if overlength
-        if (list.push([id, v]) >= limit) break
+        if (list.push({ name: id, value: v }) >= limit) break
     }
     
     DebugClient.resolve<'dpOf'>(id, list)

@@ -58,7 +58,7 @@ export namespace DebugClient {
     }
 
     export async function send<K extends keyof BedrockType.CrossEvents>(name: K, data: BedrockType.CrossEvents[K], forceUpload = false) {
-        const q = queue, d = JSON.stringify([name, data])
+        const q = queue, d = JSON.stringify({name, data})
         q.push(d)
 
         const len = q.length
@@ -89,7 +89,7 @@ export namespace DebugClient {
 
                     // receive
                     const recv = JSON.parse(transferres.body) as ClientType.CrossEventData[]
-                    for (const [k, v] of recv) message.emit(k, v)
+                    for (const {name, data} of recv) message.emit(name, data)
 
                     // log
                     if (enableLog) rc.rawLog(

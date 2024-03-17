@@ -42,7 +42,7 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Bedr
 
         this.prependListener('bedrock_events', events => {
             for (const pair of events) {
-                const [name, data] = pair
+                const { name, data } = pair
                 switch (name) {
                     case 'console':
                         pushLimit(this.consoles, data, this.consoleLimit)

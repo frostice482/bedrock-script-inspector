@@ -158,7 +158,7 @@ export class JsonInspectInstance {
                 valueData = this.error(err, true, stack, refList)
             }
 
-            entries.push([keyData, valueData])
+            entries.push({ key: keyData, value: valueData })
         }
         return entries
     }

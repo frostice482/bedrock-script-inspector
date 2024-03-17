@@ -43,7 +43,7 @@ declare namespace JSONInspectData {
         writable?: boolean
     }
 
-    type T_ObjectEntry = [key: I_ObjectKey, value: All | null]
+    type T_ObjectEntry = { key: I_ObjectKey, value: All | null }
 
     interface I_ObjectBasic {
         properties?: T_ObjectEntry[]
