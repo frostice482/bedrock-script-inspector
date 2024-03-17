@@ -21,7 +21,7 @@ const bdsLevelTag: Record<BedrockInterpreterType.BDSLog.LogLevelUnknown, string>
     unknown: '    '
 }
 
-function handleInspector(bds: BDS) {
+function handleBds(bds: BDS, opts?: HandleBDSOptions) {
     bds.on('log', log => {
         const { level, message: msgRaw, category = '' } = log
         const maxLen = process.stdout.isTTY ? process.stdout.getWindowSize()[0] - 12 - category.length : Infinity
@@ -39,21 +39,33 @@ function handleInspector(bds: BDS) {
     bds.on('log', data => interpreter.emit('log', data))
     
     // stat
-    const statMatch = /^Script stats saved to '(.*)'/
-    bds.on('beforelog', async (data, cancel) => {
-        const statPath = data.message.match(statMatch)?.[1]
-        if (!statPath) return
-        cancel()
-    
-        await fsp.readFile(statPath)
-            .then(buf => interpreter.emit('stats', JSON.parse(String(buf))))
-            .catch(e => console.error(e))
-    
-        fsp.rm(statPath, { recursive: true, force: true })
+    const { stats: exportstats = true, profiler = true } = opts ?? {}
+
+    const statMatch = /^Script stats saved to '(.*)'\s*$/
+    const profileEndMatch = /^Profiler stopped\. Profile saved to '(.+)'\s*$/
+
+    bds.on('beforelog', async ({ message }, cancel) => {
+        let m: string | undefined
+
+        if (exportstats && (m = message.match(statMatch)?.[1])) {
+            cancel()
+        
+            await fsp.readFile(m)
+                .then(buf => interpreter.emit('stats', JSON.parse(String(buf))))
+                .catch(e => console.error(e))
+        
+            fsp.rm(m, { recursive: true, force: true })
+        }
+        else if (profiler && (m === 'Profiler started')) {
+            // todo start debug
+        }
+        else if (profiler && (m = message.match(profileEndMatch)?.[1])) {
+            // todo cancel debug
+        }
     })
     
     // auto stat
-    ;(async() => {
+    if (exportstats) (async() => {
         await events.once(interpreter, 'script_connect')
         while (bds.running) {
             bds.send('script watchdog exportstats')
@@ -70,21 +82,21 @@ function handleInspector(bds: BDS) {
     Client.debugEvents.on('kill', () => bds.bdsProcess.kill())
 }
 
-async function startBds(bdsDir: string, addBefore = false, removeAfter = false) {
-    if (addBefore) await import("./add.js").then(v => v.cliAddBds(bdsDir))
+async function startBds(bdsDir: string, opts?: StartBDSOptions) {
+    if (opts?.add) await import("./add.js").then(v => v.cliAddBds(bdsDir))
 
     const isWin = process.platform === 'win32' || process.platform.includes('win')
     const bdsFile = isWin ? 'bedrock_server.exe' : 'bedrock_server'
     const bds = new BDS(bdsDir + '/' + bdsFile)
-    handleInspector(bds)
+    handleBds(bds, opts)
 
-    if (removeAfter) bds.once('close', () => import("./rm.js").then(v => v.cliRmBds(bdsDir)))
+    if (opts?.remove) bds.once('close', () => import("./rm.js").then(v => v.cliRmBds(bdsDir)))
 
     return bds
 }
 
 export async function startBdsServer(dir: string, serverPort: number, opts: DeepPartialReadonly<CLIStartBDSOptions>) {
-    const { add, remove, authUser, authPass } = opts ?? {}
+    const { authUser, authPass } = opts ?? {}
 
     // add pack config
     // add autoconnect variables
@@ -98,19 +110,27 @@ export async function startBdsServer(dir: string, serverPort: number, opts: Deep
         }
     }))
 
-    let bds = await startBds(dir + '/', add, remove)
+    let bds = await startBds(dir + '/', opts)
 
     Client.debugEvents.addListener('restart', async () => {
-        if (!bds?.running) bds = await startBds(dir + '/', add, remove)
+        if (!bds?.running) bds = await startBds(dir + '/', opts)
     })
 
     // start server
     await listenServer(serverPort, authUser, authPass)
 }
 
-export interface CLIStartBDSOptions {
+export interface HandleBDSOptions {
+    stats?: boolean
+    profiler?: boolean
+}
+
+export interface StartBDSOptions extends HandleBDSOptions {
     add?: boolean
     remove?: boolean
+}
+
+export interface CLIStartBDSOptions extends StartBDSOptions {
     authUser?: string
     authPass?: string
 }

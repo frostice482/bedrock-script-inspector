@@ -68,6 +68,8 @@ program.command('start-bds')
     .option('-a, --add', 'Adds pack to BDS before starting')
     .option('-aC, --add-copy', 'Copies the pack instead of creating symlink')
     .option('-r, --remove', 'Removes pack from BDS atter close')
+    .option('-!hS, --no-stats', 'Do not handle script exportstats')
+    .option('-!hP, --no-profiler', 'Do not handle script profiler')
     .addOption(optAuthUser)
     .addOption(optAuthPass)
     .action(async (dir, port, opts) => {
