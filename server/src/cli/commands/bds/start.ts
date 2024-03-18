@@ -39,10 +39,10 @@ function handleBds(bds: BDS, opts?: HandleBDSOptions) {
     bds.on('log', data => interpreter.emit('log', data))
     
     // stat
-    const { stats: exportstats = true, profiler = true } = opts ?? {}
+    const { stats: exportstats = true } = opts ?? {}
 
     const statMatch = /^Script stats saved to '(.*)'\s*$/
-    const profileEndMatch = /^Profiler stopped\. Profile saved to '(.+)'\s*$/
+    //const profileEndMatch = /^Profiler stopped\. Profile saved to '(.+)'\s*$/
 
     bds.on('beforelog', async ({ message }, cancel) => {
         let m: string | undefined
@@ -55,12 +55,6 @@ function handleBds(bds: BDS, opts?: HandleBDSOptions) {
                 .catch(e => console.error(e))
         
             fsp.rm(m, { recursive: true, force: true })
-        }
-        else if (profiler && (m === 'Profiler started')) {
-            // todo start debug
-        }
-        else if (profiler && (m = message.match(profileEndMatch)?.[1])) {
-            // todo cancel debug
         }
     })
     
@@ -122,7 +116,6 @@ export async function startBdsServer(dir: string, serverPort: number, opts: Deep
 
 export interface HandleBDSOptions {
     stats?: boolean
-    profiler?: boolean
 }
 
 export interface StartBDSOptions extends HandleBDSOptions {
