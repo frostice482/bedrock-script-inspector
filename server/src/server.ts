@@ -43,6 +43,6 @@ export async function listenServer(port: number, authUsername?: string, authPass
         res.end()
     })
         
-    process.on('uncaughtException', e => console.error(chalk.redBright('Uncaught exception!'), e))
-    process.on('unhandledRejection', e => console.error(chalk.yellowBright('Unhandled rejection!'), e))
+    process.on('uncaughtException', e => console.error('Uncaught exception!', e))
+    process.on('unhandledRejection', e => console.error('Unhandled rejection!', e))
 }

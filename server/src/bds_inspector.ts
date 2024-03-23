@@ -74,9 +74,9 @@ export default class BDS extends TypedEventEmitter<{ [K in keyof ScriptBDSInspec
 
     send(command: string | Buffer | Uint8Array) {
         try {
-            const proc = this.bdsProcess
-            proc.stdin.write(command)
-            proc.stdin.write('\n')
+            const stdin = this.bdsProcess.stdin
+            stdin.write(command)
+            stdin.write('\n')
         } catch(e) {}
     }
 }
