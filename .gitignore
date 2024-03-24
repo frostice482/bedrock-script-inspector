@@ -1,8 +1,12 @@
-.vscode
+# Dot files
+.*
+!.gitignore
+
+# Generated files
 node_modules
-app/scripts
-pack/subpacks
-pack/scripts
-server/app
+/app/scripts
+/pack/subpacks
+/pack/scripts
+/server/app
 build.zip
 package-lock.json
