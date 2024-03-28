@@ -21,6 +21,8 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
     )
 
     event.addEventListener('data', ({ name, data, list, delta }) => {
+        if (name === 'playerGameModeChange') return
+
         const inst0 = now()
         const insData = jsonInspect.inspect(data)
         const instd = now() - inst0
