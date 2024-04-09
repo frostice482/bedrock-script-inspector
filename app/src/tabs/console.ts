@@ -299,7 +299,7 @@ let notifWarnCnt = 0
     })
 
     function updateGraph(forceUpdate = false) {
-        if (tab.hidden || !forceUpdate) return
+        if (tab.hidden && !forceUpdate) return
 
         const cg = ConsoleGraphing.selection
         if (cg?.hasUpdate) {
