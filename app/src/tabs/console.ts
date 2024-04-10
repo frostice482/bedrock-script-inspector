@@ -241,7 +241,7 @@ const logQueue: BedrockType.Console.Data[] = initLog.filter(v => v.data[0] !== '
                 }
 
                 // push & update
-                cg.push(IteatorUtil.map(c.properties ?? [], ({ key, value }) => [key.key, value?.type === 'number' ? value.value : undefined]), undefined, cg.max)
+                cg.push(IteatorUtil.map(c.properties ?? [], ({ key, value }) => [key.key, value?.type === 'number' ? +value.value : undefined]), undefined, cg.max)
 
                 return
             }
