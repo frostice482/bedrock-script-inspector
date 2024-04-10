@@ -1,3 +1,4 @@
+import DebugConsoleOverride from "debugger/override/console.js";
 import BedrockType from "../../../../../globaltypes/bedrock.js";
 import jsonInspect from "../../lib/jsoninspect.js";
 import { getTraceData } from "../../lib/util.js";
@@ -21,7 +22,11 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
     )
 
     event.addEventListener('data', ({ name, data, list, delta }) => {
-        if (name === 'playerGameModeChange') return
+        if (name === 'effectAdd' || name === 'playerGameModeChange') {
+            DebugConsoleOverride.rawWarn(`Dropped event data of event ${category}.${type}Events.${name}`)
+            //@ts-ignore
+            data = null
+        }
 
         const inst0 = now()
         const insData = jsonInspect.inspect(data)
