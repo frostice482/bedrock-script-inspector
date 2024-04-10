@@ -218,9 +218,9 @@ const grOptsSelect = ConsoleGraphing.select
 //// process ////
 
 const { consoles: initLog, limits: { console: logLimit } } = BedrockInspector.initData
-if (initLog.length > logLimit) initLog.splice(logLimit).filter(v => v.data[0] !== '[[debugGraph]]')
+if (initLog.length > logLimit) initLog.splice(logLimit)
 
-const logQueue: BedrockType.Console.Data[] = initLog
+const logQueue: BedrockType.Console.Data[] = initLog.filter(v => v.data[0] !== '[[debugGraph]]')
 
 //// events ////
 
