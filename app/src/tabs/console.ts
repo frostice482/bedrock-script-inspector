@@ -96,7 +96,7 @@ class ConsoleGraphing {
             this.datas.set(name, d = [])
             this.plot.addSeries({
                 label: name,
-                stroke: '#' + autoColor[this.datas.size & autoColor.length],
+                stroke: '#' + autoColor[this.datas.size % autoColor.length],
                 scale: 'y'
             })
         }
