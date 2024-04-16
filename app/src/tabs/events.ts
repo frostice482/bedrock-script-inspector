@@ -271,7 +271,7 @@ for (const lis of eventListeners) {
 
 for (const log of eventLogs) {
     const d = rowData(log)
-    logTbody.prepend(d.row, d.detailRow)
+    logTbody.append(d.row, d.detailRow)
 }
 
 // updater
@@ -297,11 +297,11 @@ let notifErrorCount = 0
 {
     BedrockInspector.bedrockEvents.addEventListener('event', ({ detail: ev }) => {
         const d = rowData(ev)
-        logTbody.prepend(d.row, d.detailRow)
+        logTbody.append(d.row, d.detailRow)
 
         if (logTbody.children.length > eventLogLimit * 2) {
-            logTbody.lastElementChild?.remove()
-            logTbody.lastElementChild?.remove()
+            logTbody.firstElementChild?.remove()
+            logTbody.firstElementChild?.remove()
         }
 
         if (tab.hidden) notifErrorCount += d.errcnt
