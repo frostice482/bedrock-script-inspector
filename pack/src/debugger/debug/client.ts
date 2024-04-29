@@ -1,6 +1,7 @@
+import { encodeText } from "debugger/lib/text_encoder.js"
 import type BedrockType from "../../../../globaltypes/bedrock.js"
 import type ClientType from "../../../../globaltypes/client.js"
-import { toBase64 } from "../lib/base64.js"
+import { encodeBase64 } from "../lib/base64.js"
 import HttpUtil from "../lib/http.js"
 import TypedEventEmitter from "../lib/typedevm.js"
 import DebugConsoleOverride from "../override/console.js"
@@ -26,7 +27,7 @@ export namespace DebugClient {
         }
 
         const addr = 'http://' + address
-        const hash = username && password ? 'Basic ' + toBase64(username + ':' + password) : undefined
+        const hash = username && password ? 'Basic ' + encodeBase64(encodeText(username + ':' + password)) : undefined
 
         try {
             // head request

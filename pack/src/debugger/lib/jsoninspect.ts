@@ -1,6 +1,6 @@
 import JSONInspectData, { JsonInspectOptions } from "../../../../globaltypes/jsoninspect.js"
 import DebugProxyOverride from "../override/proxy.js"
-import { toBase64 } from "./base64.js"
+import { encodeBase64 } from "./base64.js"
 import { getFunctionSource, getObjectProto } from "./util.js"
 
 const { getOwnPropertyDescriptors, assign, getPrototypeOf } = Object
@@ -338,7 +338,7 @@ export class JsonInspectInstance {
             type: 'arraybuffer',
             byteLength: obj.byteLength,
             shared: isShared ?? obj instanceof SharedArrayBuffer,
-            buffer: toBase64(new Uint8Array(obj))
+            buffer: encodeBase64(new Uint8Array(obj))
         }
     }
 
