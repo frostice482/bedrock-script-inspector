@@ -52,8 +52,10 @@ namespace JSONUninspector {
     e_str_optsCnt.classList.add('flex-row', 'gap8')
     e_str_optsCnt.style.alignItems = 'center'
 
-    function strFormat(str: string, elipsis = false) {
+    function strFormat(str: string, elipsisBefore = false, elipsisAfter = false) {
         const elms: (string | Node)[] = []
+
+        if (elipsisBefore) elms.push('...')
         elms.push('"')
 
         let lastIndex = 0
@@ -79,7 +81,7 @@ namespace JSONUninspector {
         if (lastIndex !== str.length) elms.push(str.slice(lastIndex))
 
         elms.push('"')
-        if (elipsis) elms.push('...')
+        if (elipsisAfter) elms.push('...')
 
         return elms
     }
@@ -94,22 +96,30 @@ namespace JSONUninspector {
         }
 
         // text
-        let curShow = limit
+        let min = 0, max = limit
         elm.classList.add('resize')
 
-        elm.append.apply(elm, strFormat(val.slice(0, curShow), true))
+        elm.append.apply(elm, strFormat(val.slice(min, max), false, true))
 
         // options container
         const optsCnt = e_str_optsCnt.cloneNode()
 
         // length info
         const txt = document.createElement('span')
-        txt.textContent = 'length: ' + val.length
+        txt.textContent = `${min}-${max}/${val.length}`
 
         // copy button
         const copyBtn = document.createElement('button')
         copyBtn.textContent = 'copy'
-        copyBtn.addEventListener('click', () => navigator.clipboard.writeText(val))
+        copyBtn.addEventListener('click', () => navigator.clipboard.writeText(val.slice(min, max)))
+
+        // copy button
+        const copyAllBtn = document.createElement('button')
+        copyAllBtn.classList.add('popup')
+        copyAllBtn.textContent = 'copy all'
+        copyAllBtn.addEventListener('click', () => navigator.clipboard.writeText(val))
+
+        new RelativePopupHandle(new RelativePopup(copyBtn, copyAllBtn, undefined, 'topcenter'), 'hover')
 
         // show more button
         const moreBtn = document.createElement('button')
@@ -118,25 +128,36 @@ namespace JSONUninspector {
             // abort
             const ab = new AbortController()
             ab.signal.addEventListener('abort', () => {
-                size.replaceWith(moreBtn)
+                minInput.replaceWith(moreBtn)
+                maxInput.remove()
                 setBtn.remove()
 
-                curShow = size.valueAsNumber
-                elm.replaceChildren.apply(elm, strFormat(val.slice(0, curShow = size.valueAsNumber), curShow < val.length))
+                min = minInput.valueAsNumber
+                max = maxInput.valueAsNumber
+
+                elm.replaceChildren.apply(elm, strFormat(val.slice(min, max), min !== 0, max !== val.length))
+                txt.textContent = `${min}-${max}/${val.length}`
             }, { once: true })
 
             // value
-            const size = document.createElement('input')
-            size.type = 'number'
-            size.value = String(curShow)
-            size.addEventListener('keydown', (ev) => ev.key === 'Enter' && ab.abort(), { signal: ab.signal })
+            const minInput = document.createElement('input')
+            minInput.style.width = '70px'
+            minInput.type = 'number'
+            minInput.value = String(min)
+            minInput.addEventListener('keydown', (ev) => ev.key === 'Enter' && maxInput.focus(), { signal: ab.signal })
+
+            const maxInput = document.createElement('input')
+            maxInput.style.width = '70px'
+            maxInput.type = 'number'
+            maxInput.value = String(max)
+            maxInput.addEventListener('keydown', (ev) => ev.key === 'Enter' && ab.abort(), { signal: ab.signal })
 
             // set button
             const setBtn = document.createElement('button')
             setBtn.textContent = 'set'
             setBtn.addEventListener('click', (ev) => { ab.abort() }, { once: true, signal: ab.signal })
 
-            moreBtn.replaceWith(size, setBtn)
+            moreBtn.replaceWith(minInput, maxInput, setBtn)
         })
 
         optsCnt.append(txt, copyBtn, moreBtn)
