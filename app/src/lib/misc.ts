@@ -177,6 +177,13 @@ export function textApplier<T>(replacer: T extends string ? { (value: T): string
     return (value: T) => void ( elm.textContent = replacer ? replacer(value) : typeof value === 'string' ? value : String(value) )
 }
 
+export function decodeBase64(str: string) {
+    const binaryString = atob(str);
+    const bytes = new Uint8Array(binaryString.length);
+    for (var i = 0, n = binaryString.length; i < n; i++) bytes[i] = binaryString.charCodeAt(i)
+    return bytes
+}
+
 export const filterTooltip = document.createElement('div')
 filterTooltip.classList.add('popup')
 filterTooltip.style.whiteSpace = 'pre'
