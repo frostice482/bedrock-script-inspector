@@ -45,7 +45,7 @@ export class RelativePopup extends TypedEventTarget<{ open: Event, close: Event 
             const { offsetWidth: width, offsetHeight: height } = this.popupElement
             const { clientWidth, clientHeight } = document.body
 
-            let [xl, yl] = Anchor({ width: width, height: height }, { width: ewidth, height: eheight }, this.popupElmAnchor, this.elmAnchor)
+            let {x: xl, y: yl} = Anchor({ width: width, height: height }, { width: ewidth, height: eheight }, this.popupElmAnchor, this.elmAnchor)
 
             const xa = x + xl, xm = clientWidth - width
             if (xa > xm) xl = xm - x
