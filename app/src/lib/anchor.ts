@@ -1,4 +1,17 @@
-export function Anchor(elementBox: Anchor.ReadonlySize | HTMLElement, parentBox: Anchor.ReadonlySizeWithOptionalOffset | HTMLElement, elementAnchor: AnchorOrMul, parentAnchor: AnchorOrMul): [x: number, y: number] {
+/**
+ * Gets anchor position for elements
+ * @param elementBox Element bounding box, must contain size
+ * @param parentBox Parent bounding box, must contain size while also can optionally contain offset
+ * @param elementAnchor Side of the element where will be anchored. `bottomright` means the anchor will be at the element's bottom right
+ * @param parentAnchor Side of the parent where anchor will be located at. `topcenter` means the anchor will be located at the top center of the parent
+ * @returns Anchor position
+ */
+export function Anchor (
+    elementBox: Anchor.ReadonlySize | HTMLElement,
+    parentBox: Anchor.ReadonlySizeWithOptionalOffset | HTMLElement,
+    elementAnchor: AnchorOrMul,
+    parentAnchor: AnchorOrMul
+): [x: number, y: number] {
     const [ xp, yp ] = typeof parentAnchor === 'string' ? Anchor.multipliers[parentAnchor] : parentAnchor
     const [ xe, ye ] = typeof elementAnchor === 'string' ? Anchor.multipliers[elementAnchor] : elementAnchor
 
@@ -12,6 +25,9 @@ export function Anchor(elementBox: Anchor.ReadonlySize | HTMLElement, parentBox:
 }
 
 export namespace Anchor {
+    /**
+     * Multiplier mapping, from top-left (0.0, 0.0) to bottom-right (1.0, 1.0)
+     */
     export const multipliers: Record<Anchor, AxisMultiplier> = {
         topleft     : [0.0, 0.0],
         topcenter   : [0.5, 0.0],
@@ -25,6 +41,9 @@ export namespace Anchor {
     }
     Object.setPrototypeOf(multipliers, null)
 
+    /**
+     * Anchor reversal
+     */
     export const reverse: Record<Anchor, Anchor> = {
         topleft     : 'bottomright',
         topcenter   : 'bottomcenter',
@@ -37,32 +56,6 @@ export namespace Anchor {
         bottomright : 'topleft',
     }
     Object.setPrototypeOf(reverse, null)
-
-    export const reverseHorizontal: Record<Anchor, Anchor> = {
-        topleft     : 'topright',
-        topcenter   : 'topcenter',
-        topright    : 'topleft',
-        middleleft  : 'middleright',
-        middlecenter: 'middlecenter',
-        middleright : 'middleleft',
-        bottomleft  : 'bottomright',
-        bottomcenter: 'bottomcenter',
-        bottomright : 'bottomleft',
-    }
-    Object.setPrototypeOf(reverseHorizontal, null)
-
-    export const reverseVertical: Record<Anchor, Anchor> = {
-        topleft     : 'bottomleft',
-        topcenter   : 'bottomcenter',
-        topright    : 'bottomright',
-        middleleft  : 'middleleft',
-        middlecenter: 'middlecenter',
-        middleright : 'middleright',
-        bottomleft  : 'topleft',
-        bottomcenter: 'topcenter',
-        bottomright : 'topright',
-    }
-    Object.setPrototypeOf(reverseVertical, null)
 
     export type Vertical = 'top' | 'middle' | 'bottom'
     export type Horizontal = 'left' | 'center' | 'right'

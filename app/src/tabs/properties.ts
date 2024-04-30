@@ -3,7 +3,7 @@ import ClientType from "../../../globaltypes/client.js";
 import { Typeof } from "../../../globaltypes/types.js";
 import BedrockInspector from "../debug.js";
 import JSONUninspector from "../lib/jsonuninspector.js";
-import { filterFn, filterTooltip, formatStack, getIdThrow, textApplier } from "../lib/misc.js";
+import { filterTextFn, filterTooltip, formatStack, getIdThrow, textApplier } from "../lib/misc.js";
 import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
 
 const select = getIdThrow('props-select', HTMLSelectElement)
@@ -121,7 +121,7 @@ class Properties {
     get nameFilter() { return this.#nameFilter }
     set nameFilter(v) {
         this.#nameFilter = v
-        this.#nameFilterFn = filterFn(v)
+        this.#nameFilterFn = filterTextFn(v)
     }
 
     canSet(id: string, value: DValues, ignoreLimit = false) {

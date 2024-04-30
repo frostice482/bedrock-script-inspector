@@ -3,7 +3,7 @@ import { getIdThrow } from "./misc.js"
 /**
  * Creates a resizer
  * @param elm Element to be resized
- * @param handle Resize handler
+ * @param handle Element resize handle
  * @param rx Horizontal resize multiplier
  * @param ry Vertical resize multiplier
  * @returns AbortController - stops the resizer on abort

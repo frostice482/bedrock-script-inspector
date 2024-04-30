@@ -1,5 +1,5 @@
 import { DeepPartialReadonly } from "../../../globaltypes/types.js"
-import { averageMagnitude, pushLimit, sum } from "./misc.js"
+import { latestAverage, pushLimit, sum } from "./misc.js"
 
 export class ArraySumCache extends Array<number> {
     constructor(...items: number[]) {
@@ -76,7 +76,7 @@ export class ArraySumCache extends Array<number> {
 }
 
 export default class ArrayAverage extends ArraySumCache {
-    constructor(opts: DeepPartialReadonly<ArrayAverageOptions> = {}, values: number[] = []) {
+    constructor(opts: DeepPartialReadonly<ArrayAverageOptions> = {}, values: Iterable<number> = []) {
         super(...values)
 
         this.minLen = opts.minLen ?? 3
@@ -86,18 +86,55 @@ export default class ArrayAverage extends ArraySumCache {
         this.maxLatestAvgLen = opts.maxLatestAvgLen ?? 10
 
         this.minDelta = opts.minDelta ?? 1
-        this.deltaMul = opts.deltaMul ?? 2
-        this.deltaPow = opts.deltaPow ?? 2
+        this.deltaPow = opts.deltaPow ?? 4
     }
 
+    /**
+     * Minimum array length. (default: 1)
+     * 
+     * Stable to unstable state can drop this array's length to its minimum
+     */
     minLen: number
-    minUnstableLen: number
-    minStableLen: number
+
+    /**
+     * Maximum array length (default: 100)
+     */
     maxLen: number
+
+    /**
+     * Minimum array length. (default: 10)
+     * 
+     * When in unstable state, array's length cannot drop below this value
+     * except during transition
+     */
+    minUnstableLen: number
+
+    /**
+     * Minimum array length. (default: 20)
+     * 
+     * for the state to be considered stable
+     */
+    minStableLen: number
+
+    /**
+     * Maximum latest length (default: 10)
+     */
     maxLatestAvgLen: number
 
+    /**
+     * Minimum delts value (default: 1).
+     * 
+     * Array will be unshifted by an amount of this value,
+     * scaled by the array's length
+     */
     minDelta: number
-    deltaMul: number
+
+    /**
+     * Delta power value (default: 4).
+     * 
+     * Array will be unshifted by an amount of this value,
+     * scaled by the array's length
+     */
     deltaPow: number
 
     isStable = false
@@ -105,16 +142,23 @@ export default class ArrayAverage extends ArraySumCache {
 
     _prevLAvg = 0
     _prevAvg = 0
-    _prevMul = 0
 
+    /**
+     * Calculates current average value
+     * while also updating length
+     */
     average() {
-        const { minLen, minUnstableLen, minStableLen, maxLen, minDelta, deltaMul, deltaPow, isStable, length } = this
-        const avg = super.average()
-        const latestAvg = averageMagnitude(this.latestSum)
+        const { minLen, minUnstableLen, minStableLen, maxLen, minDelta, deltaPow, isStable, length } = this
 
-        const mul = Math.max( Math.abs(avg - latestAvg) - minDelta, 0 ) ** deltaPow ** deltaMul
+        // ger average
+        const avg = super.average()
+        const latestAvg = latestAverage(this.latestSum)
+
+        // get delta length mul
+        const mul = Math.max( Math.abs(avg - latestAvg) - minDelta, 0 ) ** deltaPow
         const splice = mul * length
 
+        // splice
         this.splice(0, Math.max(
             0, // prevent negative splice
             length - maxLen, // max length
@@ -124,14 +168,19 @@ export default class ArrayAverage extends ArraySumCache {
             )
         ))
 
+        // set state & prev value
         this._prevLAvg = latestAvg
         this._prevAvg = avg
-        this._prevMul = mul
         this.isStable = isStable ? length >= minUnstableLen : length >= minStableLen
 
         return avg
     }
 
+    /**
+     * Pushes value and immediately averages it
+     * @param v Value
+     * @returns Average value
+     */
     pushAndAverage(v: number) {
         this.push(v)
         pushLimit(this.latestSum, v, this.maxLatestAvgLen)
@@ -140,14 +189,4 @@ export default class ArrayAverage extends ArraySumCache {
     }
 }
 
-export interface ArrayAverageOptions {
-    minLen: number
-    minUnstableLen: number
-    minStableLen: number
-    maxLen: number
-    maxLatestAvgLen: number
-
-    minDelta: number
-    deltaMul: number
-    deltaPow: number
-}
+export type ArrayAverageOptions = Pick<ArrayAverage, 'minLen' | "maxLen" | 'minUnstableLen' | 'minStableLen' | 'maxLatestAvgLen' | 'minDelta' | 'deltaPow'>

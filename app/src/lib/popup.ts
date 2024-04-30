@@ -3,6 +3,15 @@ import { Anchor } from "./anchor.js"
 import TypedEventTarget from "./typedevt.js"
 
 export class RelativePopup extends TypedEventTarget<{ open: Event, close: Event }> {
+    /**
+     * Creates relative popup
+     * @param elm Parent Element
+     * @param popupElm Popup element
+     * @param host Element where popup will be displayed at
+     * @param elmAnchor Element anchor
+     * @param popupElmAnchor Parent anchor
+     * @param useAbsoluteOffset Uses absolute offset. If disabled, us0es relative offset from parent element
+     */
     constructor(elm: HTMLElement, popupElm: HTMLElement, host = elm, elmAnchor: Anchor, popupElmAnchor = Anchor.reverse[elmAnchor], useAbsoluteOffset = true) {
         super()
 
