@@ -304,7 +304,7 @@ let notifWarnCnt = 0
         logQueue.splice(0)
 
         // scroll
-        if (scroll) logContainer.scroll(0, logContainer.scrollHeight)
+        if (scroll) requestAnimationFrame(() => logContainer.scroll(0, logContainer.scrollHeight))
     }
 
     function updateNotif() {

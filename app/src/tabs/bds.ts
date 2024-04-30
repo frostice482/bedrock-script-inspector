@@ -192,9 +192,8 @@ let notifWarnCount = 0
         logTbody.append.apply(logTbody, logQueue.map(row))
         logQueue.splice(0)
         // scroll
-        if (scroll) logContainer.scroll(0, logContainer.scrollHeight)
+        if (scroll) requestAnimationFrame(() => logContainer.scroll(0, logContainer.scrollHeight))
     }
-
 
     function updateNotif() {
         notifErrElm.textContent = notifErrCount ? notifErrCount >= 100 ? '99+' : notifErrCount + '' : ''
