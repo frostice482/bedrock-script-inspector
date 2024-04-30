@@ -3,10 +3,11 @@ import BedrockInspector from "../debug.js"
 import IteatorUtil from "../lib/iterator.js"
 import JSONUninspector from "../lib/jsonuninspector.js"
 import { getIdThrow, pushLimit, querySelectorThrow } from "../lib/misc.js"
-import { errNotif, formatStack, initFilter } from "../lib/misc.js"
+import { errNotif, formatStack } from "../lib/misc.js"
 import handleResizer from "../lib/handle_resizer.js"
 import { tabchange } from "../tab.js"
 import { plotNonSelectable, uPlotResizer } from "../lib/uplotutil.js"
+import { initFilter } from "../lib/text_filter.js"
 
 const tab = getIdThrow('tab-console')
 

@@ -3,9 +3,10 @@ import BedrockInterpreterType from "../../../globaltypes/interpreter.js";
 import JSONInspectData from "../../../globaltypes/jsoninspect.js";
 import BedrockInspector from "../debug.js";
 import JSONUninspector from "../lib/jsonuninspector.js";
-import { filterTooltip, getIdThrow, querySelectorThrow } from "../lib/misc.js";
-import { cellBar, errNotif, formatStack, initFilter, initFilterText, textApplier } from "../lib/misc.js";
+import { getIdThrow, querySelectorThrow } from "../lib/misc.js";
+import { cellBar, errNotif, formatStack, textApplier } from "../lib/misc.js";
 import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
+import { initFilter, initFilterText, filterTooltip } from "../lib/text_filter.js";
 import { tabchange } from "../tab.js";
 
 const tab = getIdThrow('tab-events')

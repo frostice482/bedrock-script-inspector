@@ -3,8 +3,9 @@ import ClientType from "../../../globaltypes/client.js";
 import { Typeof } from "../../../globaltypes/types.js";
 import BedrockInspector from "../debug.js";
 import JSONUninspector from "../lib/jsonuninspector.js";
-import { filterTextFn, filterTooltip, formatStack, getIdThrow, textApplier } from "../lib/misc.js";
+import { formatStack, getIdThrow, textApplier } from "../lib/misc.js";
 import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
+import { filterTooltip, filterTextFn } from "../lib/text_filter.js";
 
 const select = getIdThrow('props-select', HTMLSelectElement)
 const list = new Map<string, Properties>()
