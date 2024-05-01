@@ -1,6 +1,6 @@
-import BedrockType from "../../globaltypes/bedrock.js"
-import BedrockInterpreterType from "../../globaltypes/interpreter.js"
 import TypedEventEmitter from "./lib/typedevm.js"
+import BedrockType from "@globaltypes/bedrock.js"
+import BedrockInterpreterType from "@globaltypes/interpreter.js"
 
 function pushLimit<T>(arr: T[], elm: T, limit: number) {
     arr.push(elm)

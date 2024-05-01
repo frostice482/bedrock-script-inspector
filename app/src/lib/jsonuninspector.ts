@@ -1,4 +1,4 @@
-import JSONInspectData from "../../../globaltypes/jsoninspect.js";
+import JSONInspectData from "@globaltypes/jsoninspect.js";
 import { formatStack } from "./misc.js";
 import { RelativePopup, RelativePopupHandle } from "./popup.js";
 import { PromiseController } from "./prmctrl.js";

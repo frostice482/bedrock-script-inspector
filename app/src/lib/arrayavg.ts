@@ -1,4 +1,4 @@
-import { DeepPartialReadonly } from "../../../globaltypes/types.js"
+import { DeepPartialReadonly } from "@globaltypes/types.js"
 import { latestAverage, pushLimit, sum } from "./misc.js"
 
 export class ArraySumCache extends Array<number> {

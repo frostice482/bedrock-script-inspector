@@ -1,5 +1,5 @@
 import { system } from "@minecraft/server"
-import BedrockType from "../../../../globaltypes/bedrock.js"
+import BedrockType from "@globaltypes/bedrock.js"
 
 const { now } = Date
 

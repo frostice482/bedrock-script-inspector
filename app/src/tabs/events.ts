@@ -1,6 +1,6 @@
-import BedrockType from "../../../globaltypes/bedrock.js";
-import BedrockInterpreterType from "../../../globaltypes/interpreter.js";
-import JSONInspectData from "../../../globaltypes/jsoninspect.js";
+import BedrockType from "@globaltypes/bedrock.js";
+import BedrockInterpreterType from "@globaltypes/interpreter.js";
+import JSONInspectData from "@globaltypes/jsoninspect.js";
 import BedrockInspector from "../debug.js";
 import JSONUninspector from "../lib/jsonuninspector.js";
 import { getIdThrow, querySelectorThrow } from "../lib/misc.js";

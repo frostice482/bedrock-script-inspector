@@ -1,5 +1,5 @@
 import DebugConsoleOverride from "debugger/override/console.js";
-import BedrockType from "../../../../../globaltypes/bedrock.js";
+import BedrockType from "@globaltypes/bedrock.js";
 import jsonInspect from "../../lib/jsoninspect.js";
 import { getTraceData } from "../../lib/util.js";
 import DebugEventsOverride, { EventsOverride } from "../../override/events.js";

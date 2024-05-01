@@ -1,6 +1,6 @@
 import { World, Entity } from "@minecraft/server";
 import TypedEventEmitter from "../lib/typedevm.js";
-import BedrockType from "../../../../globaltypes/bedrock.js";
+import BedrockType from "@globaltypes/bedrock.js";
 
 namespace DebugDynamicPropertyOverride {
     function override<T extends Host>(host: { prototype: T }) {

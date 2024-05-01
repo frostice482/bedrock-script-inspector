@@ -6,6 +6,9 @@
         "rootDir": "src",
         "module": "commonjs",
         "moduleResolution": "node",
+        "paths": {
+            "@globaltypes/*": ["../globaltypes/*"]
+        },
 
         "outDir": "app",
         "removeComments": true,

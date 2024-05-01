@@ -1,4 +1,4 @@
-import JSONInspectData, { JsonInspectOptions } from "../../../../globaltypes/jsoninspect.js"
+import JSONInspectData, { JsonInspectOptions } from "@globaltypes/jsoninspect.js"
 import DebugProxyOverride from "../override/proxy.js"
 import { encodeBase64 } from "./base64.js"
 import { getFunctionSource, getObjectProto } from "./util.js"

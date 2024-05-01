@@ -1,4 +1,4 @@
-import BedrockInterpreterType from "../../../globaltypes/interpreter.js"
+import BedrockInterpreterType from "@globaltypes/interpreter.js"
 import BedrockInspector from "../debug.js"
 import IteatorUtil from "../lib/iterator.js"
 import { getIdThrow, pushLimit } from "../lib/misc.js"

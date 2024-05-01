@@ -1,4 +1,4 @@
-import { DeepPartialReadonly } from "../../../globaltypes/types.js"
+import { DeepPartialReadonly } from "@globaltypes/types.js"
 import { Anchor } from "./anchor.js"
 import TypedEventTarget from "./typedevt.js"
 

@@ -2,11 +2,11 @@ import crypto = require('crypto')
 import ws = require("ws");
 import express = require("express");
 import { interpreter } from "../interpreter.js";
-import BedrockInterpreterType from "../../../globaltypes/interpreter.js";
 import { httpServer, server } from "../server.js";
-import ClientType from "../../../globaltypes/client.js";
 import { PromiseController } from "../lib/prmctrl.js";
-import TypedEventEmitter from '../lib/typedevm.js';
+import TypedEventEmitter from '../lib/typedevm.js'
+import BedrockInterpreterType from "@globaltypes/interpreter.js";
+import ClientType from "@globaltypes/client.js";
 
 // ws magic
 const wss = new ws.WebSocketServer({

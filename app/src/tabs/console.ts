@@ -1,4 +1,4 @@
-import BedrockType from "../../../globaltypes/bedrock.js"
+import BedrockType from "@globaltypes/bedrock.js"
 import BedrockInspector from "../debug.js"
 import IteatorUtil from "../lib/iterator.js"
 import JSONUninspector from "../lib/jsonuninspector.js"

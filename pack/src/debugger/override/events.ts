@@ -1,4 +1,4 @@
-import BedrockType from "../../../../globaltypes/bedrock.js"
+import BedrockType from "@globaltypes/bedrock.js"
 import getFid from "../lib/fid.js"
 import jsonInspect from "../lib/jsoninspect.js"
 import timing from "../lib/timing.js"

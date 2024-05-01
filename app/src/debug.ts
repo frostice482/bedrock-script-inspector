@@ -1,6 +1,6 @@
-import BedrockType from "../../globaltypes/bedrock.js"
-import ClientType from "../../globaltypes/client.js"
-import BedrockInterpreterType from "../../globaltypes/interpreter.js"
+import BedrockType from "@globaltypes/bedrock.js"
+import ClientType from "@globaltypes/client.js"
+import BedrockInterpreterType from "@globaltypes/interpreter.js"
 import { post, resThrowIfError } from "./lib/misc.js"
 import TypedEventTarget from "./lib/typedevt.js"
 

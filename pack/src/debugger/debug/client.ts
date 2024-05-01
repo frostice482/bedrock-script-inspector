@@ -1,6 +1,6 @@
 import { encodeText } from "debugger/lib/text_encoder.js"
-import type BedrockType from "../../../../globaltypes/bedrock.js"
-import type ClientType from "../../../../globaltypes/client.js"
+import type BedrockType from "@globaltypes/bedrock.js"
+import type ClientType from "@globaltypes/client.js"
 import { encodeBase64 } from "../lib/base64.js"
 import HttpUtil from "../lib/http.js"
 import TypedEventEmitter from "../lib/typedevm.js"

@@ -6,6 +6,9 @@
         "rootDir": "src",
         "module": "esnext",
         "moduleResolution": "node",
+        "paths": {
+            "@globaltypes/*": ["../globaltypes/*"]
+        },
 
         "outDir": "scripts",
         "removeComments": true,

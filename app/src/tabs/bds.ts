@@ -1,4 +1,4 @@
-import BedrockInterpreterType from "../../../globaltypes/interpreter.js"
+import BedrockInterpreterType from "@globaltypes/interpreter.js"
 import BedrockInspector from "../debug.js"
 import { inputHistoryElement } from "../lib/inputhistory.js"
 import { getIdThrow, pushLimit, querySelectorThrow } from "../lib/misc.js"

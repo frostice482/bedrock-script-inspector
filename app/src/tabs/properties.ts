@@ -1,6 +1,6 @@
-import BedrockType from "../../../globaltypes/bedrock.js";
-import ClientType from "../../../globaltypes/client.js";
-import { Typeof } from "../../../globaltypes/types.js";
+import BedrockType from "@globaltypes/bedrock.js";
+import ClientType from "@globaltypes/client.js";
+import { Typeof } from "@globaltypes/types.js";
 import BedrockInspector from "../debug.js";
 import JSONUninspector from "../lib/jsonuninspector.js";
 import { formatStack, getIdThrow, textApplier } from "../lib/misc.js";

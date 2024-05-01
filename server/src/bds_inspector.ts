@@ -2,8 +2,8 @@ import cp = require("child_process");
 import path = require("path");
 import rl = require("readline");
 import TypedEventEmitter from "./lib/typedevm.js";
-import BedrockInterpreterType from "../../globaltypes/interpreter.js";
-import BedrockType from "../../globaltypes/bedrock.js";
+import BedrockInterpreterType from "@globaltypes/interpreter.js";
+import BedrockType from "@globaltypes/bedrock.js";
 
 const bdsLogMatch = /^\[(?<date>.*?) (?<time>.*?) (?<level>\w+)\]( \[(?<cat>\w+)\])? (?<msg>.*)/
 const bdsLogLevelMap: Record<string, BedrockType.Console.LogLevel> = {

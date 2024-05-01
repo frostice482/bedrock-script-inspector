@@ -1,4 +1,4 @@
-import ClientType from "../../../../../../globaltypes/client.js";
+import ClientType from "@globaltypes/client.js";
 import TypedEventEmitter from "../../../lib/typedevm.js";
 import DebugClient from "../../client.js";
 

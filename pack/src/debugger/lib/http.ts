@@ -1,6 +1,6 @@
 import { HttpRequest, HttpRequestMethod, http, HttpResponse } from '@minecraft/server-net'
 import { iteratePair } from './util.js'
-import { DeepPartialReadonly } from '../../../../globaltypes/types.js'
+import { DeepPartialReadonly } from '@globaltypes/types.js'
 
 namespace HttpUtil {
     export function get(url: string, headers?: HeaderList) {
