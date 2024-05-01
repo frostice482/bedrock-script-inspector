@@ -267,5 +267,5 @@ export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof Bedr
     }
 }
 
-export const interpreter = new InterpreterConstructor
-
+const interpreter = new InterpreterConstructor
+export default interpreter

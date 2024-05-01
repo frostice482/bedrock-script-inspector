@@ -1,7 +1,7 @@
 import fs = require("fs");
 import path = require("path");
-import { BedrockManifest } from "./bedrock-pack/manifest.js";
-import { BedrockPack } from "./bedrock-pack/pack.js";
+import BedrockManifest from "./bedrock-pack/manifest.js";
+import BedrockPack from "./bedrock-pack/pack.js";
 
 const debugManifestDir = path.join(__dirname, '..', '..', 'pack')
 

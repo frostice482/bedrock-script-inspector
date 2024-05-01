@@ -1,4 +1,4 @@
-export class PromiseController<T = any> {
+export default class PromiseController<T = any> {
     constructor() {
         this.promise = new Promise((res, rej) => {
             this.resolve = res

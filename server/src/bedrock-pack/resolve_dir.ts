@@ -1,6 +1,6 @@
 import fsp = require('fs/promises')
 import * as tse from 'ts-essentials'
-import { BedrockPack } from './pack.js'
+import BedrockPack from './pack.js'
 
 const manifestFiles = [
     'manifest.json',

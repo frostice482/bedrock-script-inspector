@@ -3,7 +3,7 @@ import events = require("events");
 import fsp = require("fs/promises");
 import path = require("path");
 import timersp = require("timers/promises");
-import { interpreter } from "../../../interpreter";
+import interpreter from "../../../interpreter";
 import BDS from "../../../bds_inspector.js";
 import { debugManifestScriptModule } from "../../../debug_manifest.js";
 import { listenServer } from "../../../server.js";
