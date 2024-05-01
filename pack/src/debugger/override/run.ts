@@ -11,7 +11,11 @@ namespace DebugRunOverride {
     const { run, runTimeout, runInterval, clearRun, runJob, clearJob } = proto
     export const rawRun = run, rawRunTimeout = runTimeout, rawRunInterval = runInterval, rawClearRun = clearRun, rawRunJob = runJob, rawClearJob = clearJob
 
-    proto.run = (cb) => new Run(cb).id
+    proto.run = (cb) => {
+        const r = new Run(cb)
+        events.emit('add', r)
+        return r.id
+    }
     proto.runTimeout = (cb, i) => {
         const r = new RunTimeout(cb, undefined, i)
         events.emit('add', r)
