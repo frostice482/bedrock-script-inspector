@@ -5,50 +5,34 @@
         "description": "Advanced script debugging",
         "uuid": "55fce836-92df-4d34-8ae6-1c93576db01b",
         "version": "1.0.0",
-        "min_engine_version": [
-            1,
-            20,
-            0
-        ]
+        "min_engine_version": [1, 20, 80]
     },
-    "modules": [
-        {
-            "type": "script",
-            "entry": "scripts/debugger/index.js",
-            "uuid": "9e2c6491-2920-4af2-b0e3-10ab9a87c5cb",
-            "version": "1.0.0"
-        }
-    ],
-    "dependencies": [
-        {
-            "module_name": "@minecraft/server",
-            "version": "1.10.0-beta"
-        },
-        {
-            "module_name": "@minecraft/server-gametest",
-            "version": "1.0.0-beta"
-        },
-        {
-            "module_name": "@minecraft/server-ui",
-            "version": "1.2.0-beta"
-        },
-        {
-            "module_name": "@minecraft/server-net",
-            "version": "1.0.0-beta"
-        },
-        {
-            "module_name": "@minecraft/server-admin",
-            "version": "1.0.0-beta"
-        }
-    ],
-    "subpacks": [
-        {
-            "name": "pack",
-            "folder_name": "subpack",
-            "memory_tier": 4
-        }
-    ],
-    "capabilities": [
-        "script_eval"
-    ]
+    "modules": [{
+        "type": "script",
+        "entry": "scripts/debugger/index.js",
+        "uuid": "9e2c6491-2920-4af2-b0e3-10ab9a87c5cb",
+        "version": "1.0.0"
+    }],
+    "dependencies": [{
+        "module_name": "@minecraft/server",
+        "version": "1.11.0-beta"
+    }, {
+        "module_name": "@minecraft/server-gametest",
+        "version": "1.0.0-beta"
+    }, {
+        "module_name": "@minecraft/server-ui",
+        "version": "1.2.0-beta"
+    }, {
+        "module_name": "@minecraft/server-net",
+        "version": "1.0.0-beta"
+    }, {
+        "module_name": "@minecraft/server-admin",
+        "version": "1.0.0-beta"
+    }],
+    "subpacks": [{
+        "name": "pack",
+        "folder_name": "subpack",
+        "memory_tier": 4
+    }],
+    "capabilities": [ "script_eval" ]
 }
