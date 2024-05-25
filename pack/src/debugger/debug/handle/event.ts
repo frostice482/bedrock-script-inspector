@@ -1,9 +1,9 @@
-import DebugConsoleOverride from "debugger/override/console.js";
-import BedrockType from "@globaltypes/bedrock.js";
-import jsonInspect from "../../lib/jsoninspect.js";
-import { getTraceData } from "../../lib/util.js";
-import DebugEventsOverride, { EventsOverride } from "../../override/events.js";
-import DebugClient from "../client.js";
+import DebugClient from "@client"
+import BedrockType from "@globaltypes/bedrock.js"
+import jsonInspect from "@jsoninspect.js"
+import { getTraceData } from "@util.js"
+import DebugConsoleOverride from "$console.js"
+import DebugEventsOverride, { EventsOverride } from "$events.js"
 
 const { now } = Date
 

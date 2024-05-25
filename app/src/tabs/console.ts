@@ -1,13 +1,12 @@
+import BedrockInspector from "#debug.js"
+import { tabchange } from "#tab.js"
 import BedrockType from "@globaltypes/bedrock.js"
-import BedrockInspector from "../debug.js"
-import IteatorUtil from "../lib/iterator.js"
-import JSONUninspector from "../lib/jsonuninspector.js"
-import { getIdThrow, pushLimit, querySelectorThrow } from "../lib/misc.js"
-import { errNotif, formatStack } from "../lib/misc.js"
-import handleResizer from "../lib/handle_resizer.js"
-import { tabchange } from "../tab.js"
-import { plotNonSelectable, uPlotResizer } from "../lib/uplotutil.js"
-import { initFilter } from "../lib/text_filter.js"
+import handleResizer from "@handle_resizer.js"
+import IteatorUtil from "@iterator.js"
+import JSONUninspector from "@jsonuninspector.js"
+import { getIdThrow, formatStack, pushLimit, querySelectorThrow, errNotif } from "@misc.js"
+import { initFilter } from "@text_filter.js"
+import { uPlotResizer, plotNonSelectable } from "@uplotutil.js"
 
 const tab = getIdThrow('tab-console')
 

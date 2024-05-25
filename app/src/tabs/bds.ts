@@ -1,11 +1,10 @@
+import BedrockInspector from "#debug.js"
+import { tabchange } from "#tab.js"
 import BedrockInterpreterType from "@globaltypes/interpreter.js"
-import BedrockInspector from "../debug.js"
-import { inputHistoryElement } from "../lib/inputhistory.js"
-import { getIdThrow, pushLimit, querySelectorThrow } from "../lib/misc.js"
-import { errNotif, textApplier } from "../lib/misc.js"
-import { RelativePopup, RelativePopupHandle } from "../lib/popup.js"
-import { initFilter, initFilterText, filterTooltip } from "../lib/text_filter.js"
-import { tabchange } from "../tab.js"
+import { inputHistoryElement } from "@inputhistory.js"
+import { getIdThrow, textApplier, pushLimit, querySelectorThrow, errNotif } from "@misc.js"
+import { RelativePopupHandle, RelativePopup } from "@popup.js"
+import { initFilter, initFilterText, filterTooltip } from "@text_filter.js"
 
 const tab = getIdThrow('tab-bds')
 

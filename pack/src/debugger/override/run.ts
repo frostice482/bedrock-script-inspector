@@ -1,8 +1,8 @@
 import { System } from "@minecraft/server"
 import BedrockType from "@globaltypes/bedrock.js"
-import timing, { TimingResult } from "../lib/timing.js"
-import TypedEventEmitter from "../lib/typedevm.js"
-import jsonInspect from "../lib/jsoninspect.js"
+import timing, { TimingResult } from "@timing.js"
+import TypedEventEmitter from "@typedevm.js"
+import jsonInspect from "@jsoninspect.js"
 
 const { now } = Date
 

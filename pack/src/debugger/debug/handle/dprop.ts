@@ -1,6 +1,6 @@
-import { getStackTrace } from "../../lib/util.js";
-import ov from "../../override/dprop.js";
-import DebugClient from "../client.js";
+import { getStackTrace } from "@util.js";
+import ov from "$dprop.js";
+import DebugClient from "@client";
 
 ov.world.addEventListener('set', ({ id, value }) => DebugClient.send('dp_change', { id, value, stack: getStackTrace(4) }))
 ov.world.addEventListener('clear', () => DebugClient.send('dp_clear', {}))

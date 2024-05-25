@@ -1,3 +1,3 @@
-import DebugClient from "../../client.js";
+import DebugClient from "@client";
 
 DebugClient.message.addEventListener('disconnect', () => DebugClient.disconnect())

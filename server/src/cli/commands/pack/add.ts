@@ -1,8 +1,8 @@
 import chalk = require("chalk");
 import fsp = require("fs/promises");
 import semver = require("semver");
-import { debugManifest } from "../../../debug_manifest.js";
-import { resolveDirManifest } from "../../../bedrock-pack/resolve_dir.js";
+import { debugManifest } from "#debug_manifest.js";
+import { resolveDirManifest } from "#bedrock-pack/resolve_dir.js";
 import { DeepPartialReadonly } from "@globaltypes/types.js";
 
 function versionStr(v: string | number[]) {

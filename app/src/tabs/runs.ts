@@ -1,14 +1,14 @@
-import BedrockType from "@globaltypes/bedrock.js";
-import BedrockInterpreterType from "@globaltypes/interpreter.js";
-import JSONInspectData from "@globaltypes/jsoninspect.js";
-import BedrockInspector from "../debug.js";
-import ArrayAverage from "../lib/arrayavg.js";
-import JSONUninspector from "../lib/jsonuninspector.js";
-import { cellBar, errNotif, formatStack, getIdThrow, pushLimit, querySelectorThrow } from "../lib/misc.js";
-import { initFilter } from "../lib/text_filter.js";
-import { timeUnit } from "../lib/units.js";
-import { uPlotResizer } from "../lib/uplotutil.js";
-import { tabchange } from "../tab.js";
+import BedrockInspector from "#debug.js"
+import { tabchange } from "#tab.js"
+import ArrayAverage from "@arrayavg.js"
+import BedrockType from "@globaltypes/bedrock.js"
+import BedrockInterpreterType from "@globaltypes/interpreter.js"
+import JSONInspectData from "@globaltypes/jsoninspect.js"
+import JSONUninspector from "@jsonuninspector.js"
+import { getIdThrow, cellBar, formatStack, pushLimit, querySelectorThrow, errNotif } from "@misc.js"
+import { initFilter } from "@text_filter.js"
+import { timeUnit } from "@units.js"
+import { uPlotResizer } from "@uplotutil.js"
 
 const tab = getIdThrow('tab-runs')
 

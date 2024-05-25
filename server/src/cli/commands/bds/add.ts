@@ -1,7 +1,7 @@
 import fsp = require("fs/promises");
 import path = require("path");
-import { debugPack, debugManifestScriptModule } from "../../../debug_manifest.js";
 import { DeepPartialReadonly } from "@globaltypes/types.js";
+import { debugPack, debugManifestScriptModule } from "#debug_manifest.js";
 
 const levelnameRegex = /^level-name=(.*)$/m
 

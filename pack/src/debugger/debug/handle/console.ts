@@ -1,8 +1,8 @@
-import BedrockType from "@globaltypes/bedrock.js";
-import jsonInspect from "../../lib/jsoninspect.js";
-import { getStackTrace } from "../../lib/util.js";
-import DebugConsoleOverride from "../../override/console.js";
-import DebugClient from "../client.js";
+import DebugClient from "@client"
+import BedrockType from "@globaltypes/bedrock.js"
+import jsonInspect from "@jsoninspect.js"
+import { getStackTrace } from "@util.js"
+import DebugConsoleOverride from "$console.js"
 
 function emitter(level: BedrockType.Console.LogLevel) {
     return (data: unknown[]) => {

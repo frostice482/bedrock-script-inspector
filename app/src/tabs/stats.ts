@@ -1,10 +1,10 @@
+import BedrockInspector from "#debug.js"
+import { tabchange } from "#tab.js"
 import BedrockInterpreterType from "@globaltypes/interpreter.js"
-import BedrockInspector from "../debug.js"
-import IteatorUtil from "../lib/iterator.js"
-import { getIdThrow, pushLimit } from "../lib/misc.js"
-import { byteUnit } from "../lib/units.js"
-import { plotNonSelectable, uPlotResizer } from "../lib/uplotutil.js"
-import { tabchange } from "../tab.js"
+import IteatorUtil from "@iterator.js"
+import { getIdThrow, pushLimit } from "@misc.js"
+import { byteUnit } from "@units.js"
+import { uPlotResizer, plotNonSelectable } from "@uplotutil.js"
 
 const tab = getIdThrow('tab-stats')
 

@@ -1,9 +1,9 @@
-import BedrockInspector from "../debug.js";
-import { getIdThrow, pushLimit } from "../lib/misc.js";
-import { tabchange } from "../tab.js";
-import { timeUnit } from "../lib/units.js";
-import { uPlotResizer } from "../lib/uplotutil.js";
-import ArrayAverage from "../lib/arrayavg.js";
+import BedrockInspector from "#debug.js"
+import { tabchange } from "#tab.js"
+import ArrayAverage from "@arrayavg.js"
+import { getIdThrow, pushLimit } from "@misc.js"
+import { timeUnit } from "@units.js"
+import { uPlotResizer } from "@uplotutil.js"
 
 const tab = getIdThrow('tab-timing')
 

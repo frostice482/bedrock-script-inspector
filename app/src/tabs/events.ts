@@ -1,13 +1,12 @@
-import BedrockType from "@globaltypes/bedrock.js";
-import BedrockInterpreterType from "@globaltypes/interpreter.js";
-import JSONInspectData from "@globaltypes/jsoninspect.js";
-import BedrockInspector from "../debug.js";
-import JSONUninspector from "../lib/jsonuninspector.js";
-import { getIdThrow, querySelectorThrow } from "../lib/misc.js";
-import { cellBar, errNotif, formatStack, textApplier } from "../lib/misc.js";
-import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
-import { initFilter, initFilterText, filterTooltip } from "../lib/text_filter.js";
-import { tabchange } from "../tab.js";
+import BedrockInspector from "#debug.js"
+import { tabchange } from "#tab.js"
+import BedrockType from "@globaltypes/bedrock.js"
+import BedrockInterpreterType from "@globaltypes/interpreter.js"
+import JSONInspectData from "@globaltypes/jsoninspect.js"
+import JSONUninspector from "@jsonuninspector.js"
+import { getIdThrow, textApplier, formatStack, cellBar, errNotif, querySelectorThrow } from "@misc.js"
+import { RelativePopupHandle, RelativePopup } from "@popup.js"
+import { initFilter, initFilterText, filterTooltip } from "@text_filter.js"
 
 const tab = getIdThrow('tab-events')
 

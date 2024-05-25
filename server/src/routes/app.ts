@@ -1,6 +1,6 @@
 import express = require('express')
 import fsp = require('fs/promises')
-import { server } from "../server.js";
+import { server } from "#server.js";
 
 const clientPath = __dirname + '/../../../app'
 

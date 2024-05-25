@@ -1,4 +1,4 @@
-import TypedEventEmitter from "../lib/typedevm.js"
+import TypedEventEmitter from "@typedevm.js"
 
 namespace DebugConsoleOverride {
     const { log, info, warn, error } = console, _print = print

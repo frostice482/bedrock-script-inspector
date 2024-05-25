@@ -1,7 +1,7 @@
-import { system } from "@minecraft/server";
-import DebugRunOverride from "../../override/run.js";
-import DebugClient from "../client.js";
-import BedrockType from "@globaltypes/bedrock.js";
+import DebugClient from "@client"
+import BedrockType from "@globaltypes/bedrock.js"
+import { system } from "@minecraft/server"
+import DebugRunOverride from "$run.js"
 
 const { now } = Date
 

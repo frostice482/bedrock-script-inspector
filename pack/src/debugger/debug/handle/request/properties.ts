@@ -1,10 +1,10 @@
-import { world } from "@minecraft/server";
-import DebugClient from "../../client.js";
-import clientRequests from "./request.js";
-import DynamicPropertyOverride from "../../../override/dprop.js";
-import BedrockType from "@globaltypes/bedrock.js";
-import { Typeof } from "@globaltypes/types.js";
-import ClientType from "@globaltypes/client.js";
+import DebugClient from "@client"
+import BedrockType from "@globaltypes/bedrock.js"
+import ClientType from "@globaltypes/client.js"
+import { Typeof } from "@globaltypes/types.js"
+import { world } from "@minecraft/server"
+import DebugDynamicPropertyOverride from "$dprop.js"
+import clientRequests from "./request.js"
 
 const ow = world.getDimension('overworld')
 
@@ -27,7 +27,7 @@ clientRequests.addEventListener('dpList', ({ id }) => {
 clientRequests.addEventListener('dpOf', ({ id, data }) => {
     const { filter = {}, nameFilter, entityId, limit = 200 } = data
 
-    let ref: DynamicPropertyOverride.Host = world
+    let ref: DebugDynamicPropertyOverride.Host = world
     if (entityId && entityId !== 'world') {
         const x = world.getEntity(entityId)
         if (!x) return DebugClient.resolve<'dpOf'>(id, null)
@@ -55,7 +55,7 @@ clientRequests.addEventListener('dpOf', ({ id, data }) => {
 })
 
 DebugClient.message.addEventListener('dp_set', ({ entityId, id, value }) => {
-    let ref: DynamicPropertyOverride.Host = world
+    let ref: DebugDynamicPropertyOverride.Host = world
 
     if (entityId && entityId !== 'world') {
         const x = world.getEntity(entityId)

@@ -1,8 +1,8 @@
-import { getTraceData } from "../../lib/util.js";
-import DebugRunOverride from "../../override/run.js";
-import DebugClient from "../client.js";
-import jsonInspect from "../../lib/jsoninspect.js";
-import getFid from "../../lib/fid.js";
+import DebugClient from "@client"
+import getFid from "@fid.js"
+import jsonInspect from "@jsoninspect.js"
+import { getTraceData } from "@util.js"
+import DebugRunOverride from "$run.js"
 
 DebugRunOverride.events.addEventListener('add', ({ id, type, fn, interval }) => 
     DebugClient.send('run_add', getTraceData({

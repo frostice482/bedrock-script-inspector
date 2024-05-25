@@ -1,6 +1,6 @@
 import fsp = require("fs/promises");
 import path = require("path");
-import { debugManifest, debugManifestScriptModule, debugPack } from "../../../debug_manifest.js";
+import { debugManifest, debugManifestScriptModule, debugPack } from "#debug_manifest.js";
 
 const levelnameRegex = /^level-name=(.*)$/m
 

@@ -1,6 +1,6 @@
-import { ScriptEventSource } from "@minecraft/server";
-import DebugEventsOverride from "../../../override/events.js";
-import DebugClient from "../../client.js";
+import DebugClient from "@client"
+import { ScriptEventSource } from "@minecraft/server"
+import DebugEventsOverride from "$events.js"
 
 const sig = DebugEventsOverride.systemAfter.events.scriptEventReceive
 sig.rawSubscribe.call(sig.signal, ({ id, message, sourceType }) => {

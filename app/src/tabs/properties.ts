@@ -1,11 +1,11 @@
-import BedrockType from "@globaltypes/bedrock.js";
-import ClientType from "@globaltypes/client.js";
-import { Typeof } from "@globaltypes/types.js";
-import BedrockInspector from "../debug.js";
-import JSONUninspector from "../lib/jsonuninspector.js";
-import { formatStack, getIdThrow, textApplier } from "../lib/misc.js";
-import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
-import { filterTooltip, filterTextFn } from "../lib/text_filter.js";
+import BedrockInspector from "#debug.js"
+import BedrockType from "@globaltypes/bedrock.js"
+import ClientType from "@globaltypes/client.js"
+import { Typeof } from "@globaltypes/types.js"
+import JSONUninspector from "@jsonuninspector.js"
+import { getIdThrow, formatStack, textApplier } from "@misc.js"
+import { RelativePopupHandle, RelativePopup } from "@popup.js"
+import { filterTooltip, filterTextFn } from "@text_filter.js"
 
 const select = getIdThrow('props-select', HTMLSelectElement)
 const list = new Map<string, Properties>()

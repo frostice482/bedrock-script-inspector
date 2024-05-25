@@ -1,6 +1,6 @@
-import { variables } from "@minecraft/server-admin";
-import DebugConsoleOverride from "../override/console.js";
-import DebugClient from "./client.js";
+import DebugClient from "@client"
+import { variables } from "@minecraft/server-admin"
+import DebugConsoleOverride from "$console.js"
 
 var rc = DebugConsoleOverride
 

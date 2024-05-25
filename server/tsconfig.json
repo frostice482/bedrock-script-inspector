@@ -2,23 +2,24 @@
     "compilerOptions": {
         "lib": ["esnext"],
         "target": "esnext",
-
-        "rootDir": "src",
         "module": "commonjs",
+
         "moduleResolution": "node",
+        "skipLibCheck": true,
         "paths": {
+            "#*": ["./src/*"],
             "@globaltypes/*": ["../globaltypes/*"]
         },
 
+        "rootDir": "src",
         "outDir": "app",
-        "removeComments": true,
         "allowJs": true,
+        "removeComments": true,
 
         "strict": true,
         "noImplicitThis": true,
         "noUncheckedIndexedAccess": true,
-        "noUnusedLocals": true,
-        "skipLibCheck": true
+        "noUnusedLocals": true
     },
     "include": ["src", "../globaltypes"]
 }

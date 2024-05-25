@@ -1,25 +1,28 @@
 {
     "compilerOptions": {
-        "lib": [ "ES2020" ],
+        "lib": ["ES2020"],
         "target": "ES2022",
-
-        "rootDir": "src",
-        "baseUrl": "src",
         "module": "ES2022",
+        
         "moduleResolution": "node",
         "skipLibCheck": true,
         "paths": {
-            "@globaltypes/*": ["../../globaltypes/*"]
+            "@globaltypes/*": ["../../globaltypes/*"],
+            "@*": ["debugger/lib/*"],
+            "$*": ["debugger/override/*"],
+            "@client": ["debugger/debug/client"],
         },
 
+        "baseUrl": "src",
+        "rootDir": "src",
         "outDir": "scripts",
-        "removeComments": true,
         "allowJs": true,
+        "removeComments": true,
 
         "strict": true,
         "noImplicitThis": true,
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true
     },
-    "include": [ "src", "../globaltypes" ]
+    "include": ["src", "../globaltypes"]
 }

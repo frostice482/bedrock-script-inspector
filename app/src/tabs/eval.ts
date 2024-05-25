@@ -1,11 +1,11 @@
-import BedrockInspector from "../debug.js";
-import IteatorUtil from "../lib/iterator.js";
-import JSONUninspector from "../lib/jsonuninspector.js";
-import { getIdThrow } from "../lib/misc.js";
-import handleResizer from "../lib/handle_resizer.js";
-import { RelativePopup, RelativePopupHandle } from "../lib/popup.js";
-import inputHistory from "../lib/inputhistory.js";
-import { tabchange } from "../tab.js";
+import BedrockInspector from "#debug.js"
+import { tabchange } from "#tab.js"
+import handleResizer from "@handle_resizer.js"
+import inputHistory from "@inputhistory.js"
+import IteatorUtil from "@iterator.js"
+import JSONUninspector from "@jsonuninspector.js"
+import { getIdThrow } from "@misc.js"
+import { RelativePopupHandle, RelativePopup } from "@popup.js"
 
 // editor
 

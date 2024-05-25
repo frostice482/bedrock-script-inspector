@@ -4,17 +4,16 @@ import * as ui from '@minecraft/server-ui'
 import * as net from '@minecraft/server-net'
 import * as admin from '@minecraft/server-admin'
 
-import HttpUtil from '../../../lib/http.js'
-import { getStackTrace } from '../../../lib/util.js'
-
-import debugDynamicPropertyOverride from '../../../override/dprop.js'
-import DebugConsoleOverride from '../../../override/console.js'
-import DebugEventsOverride from '../../../override/events.js'
-import debugProxyOverride from '../../../override/proxy.js'
-import debugRunOverride from '../../../override/run.js'
-import DebugClient from '../../client.js'
+import DebugClient from '@client'
+import HttpUtil from '@http.js'
+import jsonInspect, { JsonInspectInstance, RootRefInspector } from '@jsoninspect.js'
+import { getStackTrace } from '@util.js'
+import DebugConsoleOverride from '$console.js'
+import DebugDynamicPropertyOverride from '$dprop.js'
+import DebugEventsOverride from '$events.js'
+import DebugProxyOverride from '$proxy.js'
+import DebugRunOverride from '$run.js'
 import clientRequests from './request.js'
-import jsonInspect, { JsonInspectInstance, RootRefInspector } from '../../../lib/jsoninspect.js'
 
 const { now } = Date
 const asyncFC = (async function() {}).constructor as FunctionConstructor
@@ -94,9 +93,9 @@ const dims = [overworld, nether, end]
 const evalOverridesObj: any = {
     console: DebugConsoleOverride,
     events: DebugEventsOverride,
-    proxy: debugProxyOverride,
-    run: debugRunOverride,
-    prop: debugDynamicPropertyOverride,
+    proxy: DebugProxyOverride,
+    run: DebugRunOverride,
+    prop: DebugDynamicPropertyOverride,
 }
 Object.setPrototypeOf(evalOverridesObj, null)
 

@@ -1,5 +1,6 @@
-import BedrockInspector from '../debug.js'
-import { getIdThrow } from '../lib/misc.js'
+
+import BedrockInspector from "#debug.js"
+import { getIdThrow } from "@misc.js"
 
 // status
 

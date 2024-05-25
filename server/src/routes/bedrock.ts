@@ -1,6 +1,6 @@
 import express = require("express");
-import { server } from "../server.js";
-import interpreter from "../interpreter.js";
+import { server } from "#server.js";
+import interpreter from "#interpreter.js";
 import Client from "./client.js";
 
 server.use('/bedrock', (req, res, next) => {
