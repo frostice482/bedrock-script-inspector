@@ -42,7 +42,11 @@ async function bundleBuild(entry, out, format, platform, tsconfig = undefined, m
     await fsp.mkdir(parRef, { recursive: true })
     await fsp.rename(temp, out)
 
-    if (transformPath && !opts.bundle) alias.replaceTscAliasPaths({ configFile: tsconfig })
+    if (transformPath && !opts.bundle) alias.replaceTscAliasPaths({
+        configFile: tsconfig,
+        resolveFullExtension: '.js',
+        resolveFullPaths: true
+    })
 
     console.timeEnd(entry)
 }
