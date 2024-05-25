@@ -256,6 +256,7 @@ namespace DebugEventsOverride {
     export const worldAfter = new EventsOverride(world.afterEvents)
     export const systemBefore = new EventsOverride(system.beforeEvents)
     export const systemAfter = new EventsOverride(system.afterEvents)
+    export let inspectEventData = true
 }
 
 export default DebugEventsOverride

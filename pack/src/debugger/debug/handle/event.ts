@@ -29,7 +29,7 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
         }
 
         const inst0 = now()
-        const insData = jsonInspect.inspect(data)
+        const insData = jsonInspect.inspect(DebugEventsOverride.inspectEventData && data)
         const instd = now() - inst0
 
         DebugClient.send('event', {
