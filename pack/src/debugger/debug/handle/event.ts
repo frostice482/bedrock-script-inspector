@@ -22,7 +22,7 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
     )
 
     event.addEventListener('data', ({ name, data, list, delta }) => {
-        if (name === 'effectAdd' || name === 'playerGameModeChange' && type === 'before') {
+        if ((name === 'effectAdd' || name === 'playerGameModeChange') && type === 'before') {
             DebugConsoleOverride.rawWarn(`Dropped event data of event ${category}.beforeEvents.${name}`)
             //@ts-ignore
             data = null
