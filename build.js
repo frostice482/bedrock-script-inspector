@@ -3,6 +3,7 @@
 const crypto = require('crypto')
 const fsp = require('fs/promises')
 const path = require('path')
+const alias = require('tsc-alias')
 const { build } = require('esbuild')
 
 /**
@@ -14,7 +15,7 @@ const { build } = require('esbuild')
  * @param {string | undefined} tsconfig 
  * @param {import('esbuild').BuildOptions | undefined} more 
  */
-async function bundleBuild(entry, out, format, platform, tsconfig = undefined, more = {}) {
+async function bundleBuild(entry, out, format, platform, tsconfig = undefined, more = {}, transformPath = false) {
     console.time(entry)
 
     const temp = crypto.randomBytes(8).toString('hex')
@@ -41,10 +42,12 @@ async function bundleBuild(entry, out, format, platform, tsconfig = undefined, m
     await fsp.mkdir(parRef, { recursive: true })
     await fsp.rename(temp, out)
 
+    if (transformPath && !opts.bundle) alias.replaceTscAliasPaths({ configFile: tsconfig })
+
     console.timeEnd(entry)
 }
 
-bundleBuild('app/src/index.ts', 'app/scripts/index.js', 'esm', 'browser', 'app/tsconfig.json')
+bundleBuild('app/src/index.ts', 'app/scripts/index.js', 'esm', 'browser', 'app/tsconfig.json', undefined, true)
 
 bundleBuild('pack/src/debugger/index.ts', 'pack/scripts/debugger/bundle.js', 'esm', 'neutral', 'pack/tsconfig.json', {
     external: [
@@ -60,5 +63,6 @@ bundleBuild('pack/src/debugger/index.ts', 'pack/scripts/debugger/bundle.js', 'es
 })
 
 bundleBuild('server/src/**/*', '^server/app', 'cjs', 'node', 'server/tsconfig.json', {
-    external: ['*']
-})
+    bundle: false,
+    packages: 'external'
+}, true)

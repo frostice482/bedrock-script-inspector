@@ -4,6 +4,7 @@
     "@types/yazl": "^2.4.5",
     "esbuild": "^0.20.0",
     "ts-essentials": "^9.4.1",
+    "tsc-alias": "^1.8.10",
     "yazl": "^2.5.1"
   }
 }
