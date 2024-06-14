@@ -5,6 +5,7 @@ import HttpUtil from "@http.js"
 import { encodeText } from "@text_encoder.js"
 import TypedEventEmitter from "@typedevm.js"
 import DebugConsoleOverride from "$console.js"
+import { now } from "@util.js"
 
 var rc = DebugConsoleOverride
 
@@ -77,12 +78,12 @@ export namespace DebugClient {
                         data = '[' + queue.join(',') + ']'
                     
                     // transfer
-                    const t = Date.now()
+                    const t = now()
 
                     const transferres = await HttpUtil.post(connectURI + '/bedrock/transfer', data, { Authorization: authHash }).then(HttpUtil.throwIfError)
                     queue.splice(0, qlen)
 
-                    const td = Date.now() - t
+                    const td = now() - t
                     if (td > 2500) {
                         rc.rawWarn(`[inspector] Transfer time took so long! (${(td / 1000).toFixed(1)}s)`)
                         rc.rawWarn(`[inspector] Set script-watchdog-enable to false if persists`)

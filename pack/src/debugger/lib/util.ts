@@ -1,8 +1,6 @@
 import { system } from "@minecraft/server"
 import BedrockType from "@globaltypes/bedrock.js"
 
-const { now } = Date
-
 /**
  * Gets current stack trace
  * @param deleteCount Number of stack to delete from the topmost
@@ -62,4 +60,10 @@ export function getTraceData<T>(data: T, stackDel = 2): BedrockType.TraceData<T>
         stack: getStackTrace(2),
         data
     }
+}
+
+var timeNow = typeof __date_clock !== 'undefined' ? __date_clock : Date.now
+
+export function now() {
+    return timeNow() / 1000
 }

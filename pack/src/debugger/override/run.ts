@@ -3,8 +3,7 @@ import BedrockType from "@globaltypes/bedrock.js"
 import timing, { TimingResult } from "@timing.js"
 import TypedEventEmitter from "@typedevm.js"
 import jsonInspect from "@jsoninspect.js"
-
-const { now } = Date
+import { now } from "@util.js"
 
 namespace DebugRunOverride {
     const proto = System.prototype

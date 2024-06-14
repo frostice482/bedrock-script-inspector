@@ -1,4 +1,4 @@
-const { now } = Date
+import { now } from "@util.js"
 
 /**
  * Executes function and outputs the execution time and the function result / error

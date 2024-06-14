@@ -1,11 +1,9 @@
 import DebugClient from "@client"
 import BedrockType from "@globaltypes/bedrock.js"
 import jsonInspect from "@jsoninspect.js"
-import { getTraceData } from "@util.js"
+import { getTraceData, now } from "@util.js"
 import DebugConsoleOverride from "$console.js"
 import DebugEventsOverride, { EventsOverride } from "$events.js"
-
-const { now } = Date
 
 function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
     event.addEventListener('subscribe', ({ name, fid, listener }) =>

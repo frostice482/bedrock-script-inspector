@@ -4,8 +4,7 @@ import jsonInspect from "@jsoninspect.js"
 import timing from "@timing.js"
 import TypedEventEmitter from "@typedevm.js"
 import { world, system } from "@minecraft/server"
-
-const { now } = Date
+import { now } from "@util.js"
 
 /**
  * Overrides events

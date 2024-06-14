@@ -7,7 +7,7 @@ import * as admin from '@minecraft/server-admin'
 import DebugClient from '@client'
 import HttpUtil from '@http.js'
 import jsonInspect, { JsonInspectInstance, RootRefInspector } from '@jsoninspect.js'
-import { getStackTrace } from '@util.js'
+import { getStackTrace, now } from '@util.js'
 import DebugConsoleOverride from '$console.js'
 import DebugDynamicPropertyOverride from '$dprop.js'
 import DebugEventsOverride from '$events.js'
@@ -15,7 +15,6 @@ import DebugProxyOverride from '$proxy.js'
 import DebugRunOverride from '$run.js'
 import clientRequests from './request.js'
 
-const { now } = Date
 const asyncFC = (async function() {}).constructor as FunctionConstructor
 
 clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, code, opts, store, root } }) => {
@@ -26,20 +25,20 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
     if (opts?.function) Object.assign(insp.functionOptions, opts.function)
     if (opts?.object) Object.assign(insp.objectOptions, opts.object)
 
-    const t1 = Date.now()
+    const t1 = now()
 
     try {
         // execute
         let out = isAsync
             ? await asyncFC(`with (this) {${code}}`).call(evalProxy)
             : Function(`with (this) return eval(${JSON.stringify(code)})`).call(evalProxy)
-        const te = Date.now()
+        const te = now()
         
         if (store) evalProps.$_ = out
 
         // inspect & timing
         const inspData = root ? insp.inspectRoot(out) : insp.inspect(out)
-        const ti = Date.now()
+        const ti = now()
 
         // send
         DebugClient.resolve<'eval'>(id, {
@@ -50,11 +49,11 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
         })
     }
     catch(e) {
-        const te = Date.now()
+        const te = now()
 
         // inspect & timing
         const inspData = insp.inspect(e)
-        const ti = Date.now()
+        const ti = now()
 
         DebugClient.resolve<'eval'>(id, {
             error: true,

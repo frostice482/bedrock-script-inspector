@@ -2,8 +2,7 @@ import DebugClient from "@client"
 import BedrockType from "@globaltypes/bedrock.js"
 import { system } from "@minecraft/server"
 import DebugRunOverride from "$run.js"
-
-const { now } = Date
+import { now } from "@util.js"
 
 let lt = now()
 let runPrev: BedrockType.Tick.TickRun = { delta: 0, runs: [], jobs: [] }
