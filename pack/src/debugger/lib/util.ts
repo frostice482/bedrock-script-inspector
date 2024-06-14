@@ -62,7 +62,7 @@ export function getTraceData<T>(data: T, stackDel = 2): BedrockType.TraceData<T>
     }
 }
 
-var timeNow = typeof __date_clock !== 'undefined' ? __date_clock : Date.now
+var timeNow = typeof __date_clock !== 'undefined' ? __date_clock : () => Date.now() * 1000
 
 export function now() {
     return timeNow() / 1000
