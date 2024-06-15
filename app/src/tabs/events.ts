@@ -204,7 +204,7 @@ function rowData(data: BedrockType.Events.Data) {
     listenersRow.append(data.functions.length + '')
     const timeRow = row.insertCell()
     timeRow.style.backgroundImage = rowDataTimeBar(data.delta / 50)
-    timeRow.append(data.delta + 'ms')
+    timeRow.append(data.delta.toFixed(1) + 'ms')
 
     // detail row
     const detailRow = document.createElement('tr')
@@ -236,7 +236,7 @@ function rowData(data: BedrockType.Events.Data) {
             
             const timeRow = row.insertCell()
             timeRow.style.backgroundImage = rowDataTimeBar(fn.delta / 50)
-            timeRow.append(fn.delta + 'ms')
+            timeRow.append(fn.delta.toFixed(1) + 'ms')
     
             const errRow = row.insertCell()
             if (fn.error) {

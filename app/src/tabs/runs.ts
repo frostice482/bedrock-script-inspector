@@ -189,8 +189,8 @@ class RowRunDataTimeout extends RowRunData {
         const ed = this.elm.execData
         ed.textContent = [
             'tick  : ' + tick,
-            'delay : ' + data.sleep + 'ms',
-            'time  : ' + data.delta + 'ms'
+            'delay : ' + data.sleep.toFixed(3) + 'ms',
+            'time  : ' + data.delta.toFixed(3) + 'ms'
         ].join('\n')
 
         if (data.error) {

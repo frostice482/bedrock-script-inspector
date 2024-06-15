@@ -155,7 +155,7 @@ async function send(value = editor.getValue()) {
     // replace
     evalRes.replaceChildren(e)
     stat.textContent = td + 'ms'
-    statPopup.textContent = `exec: ${res.execTime}ms, inspect: ${res.inspTime}ms, other: ${td - res.execTime - res.inspTime}ms`
+    statPopup.textContent = `exec: ${res.execTime.toFixed(1)}ms, inspect: ${res.inspTime.toFixed(1)}ms, other: ${(td - res.execTime - res.inspTime).toFixed(1)}ms`
 
     sessionStorage.setItem('evalcode', value)
 }
