@@ -189,8 +189,8 @@ class RowRunDataTimeout extends RowRunData {
         const ed = this.elm.execData
         ed.textContent = [
             'tick  : ' + tick,
-            'delay : ' + data.sleep.toFixed(3) + 'ms',
-            'time  : ' + data.delta.toFixed(3) + 'ms'
+            'delay : ' + timeUnit(data.sleep),
+            'time  : ' + timeUnit(data.delta)
         ].join('\n')
 
         if (data.error) {
@@ -377,7 +377,7 @@ class RowRunDataInterval extends RowRunData {
         this.timingUpdateState = false
 
         const avg = this.delayAvg._prevAvg
-        this.elm.avgTimeCell.textContent = `${avg.toFixed(3).padStart(6)}ms (${this.delayAvg.length})`
+        this.elm.avgTimeCell.textContent = timeUnit(avg).padStart(8) + ' (' + this.delayAvg.length + ')'
         this.elm.avgTimeCell.style.setProperty('background', runTimeBar(avg / (avg + 10)))
 
         return true
@@ -621,7 +621,7 @@ class RowRunDataJob extends RowRunData {
         this.timingUpdateState = false
 
         const avg = this.delayAvg._prevAvg
-        this.elm.avgTimeCell.textContent = `${avg.toFixed(3).padStart(6)}ms (${this.delayAvg.length})`
+        this.elm.avgTimeCell.textContent = timeUnit(avg).padStart(8) + ' (' + this.delayAvg.length + ')'
         this.elm.avgTimeCell.style.setProperty('background', runTimeBar(avg / (avg + 10)))
 
         return true
@@ -722,7 +722,7 @@ let notifErrorCount = 0
             if (!job.detailRow.hidden) job.updateDetail()
         }
 
-        dataElm.textContent = `active: ${runCntMax.toFixed(2)} (${runCntTtl}) - avg: ${runAvgTtl.toFixed(3)}ms (${runAvgMax.toFixed(3)}ms)`
+        dataElm.textContent = `active: ${runCntMax.toFixed(2)} (${runCntTtl}) - avg: ${timeUnit(runAvgTtl)} (${timeUnit(runAvgMax)})`
     }
 
     function updateNotif() {

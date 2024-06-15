@@ -7,6 +7,7 @@ import JSONUninspector from "@jsonuninspector.js"
 import { getIdThrow, textApplier, formatStack, cellBar, errNotif, querySelectorThrow } from "@misc.js"
 import { RelativePopupHandle, RelativePopup } from "@popup.js"
 import { initFilter, initFilterText, filterTooltip } from "@text_filter.js"
+import { timeUnit } from "@units.js"
 
 const tab = getIdThrow('tab-events')
 
@@ -204,7 +205,7 @@ function rowData(data: BedrockType.Events.Data) {
     listenersRow.append(data.functions.length + '')
     const timeRow = row.insertCell()
     timeRow.style.backgroundImage = rowDataTimeBar(data.delta / 50)
-    timeRow.append(data.delta.toFixed(1) + 'ms')
+    timeRow.append(timeUnit(data.delta))
 
     // detail row
     const detailRow = document.createElement('tr')
@@ -236,7 +237,7 @@ function rowData(data: BedrockType.Events.Data) {
             
             const timeRow = row.insertCell()
             timeRow.style.backgroundImage = rowDataTimeBar(fn.delta / 50)
-            timeRow.append(fn.delta.toFixed(1) + 'ms')
+            timeRow.append(timeUnit(fn.delta))
     
             const errRow = row.insertCell()
             if (fn.error) {

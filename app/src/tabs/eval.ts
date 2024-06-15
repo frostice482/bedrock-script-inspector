@@ -6,6 +6,7 @@ import IteatorUtil from "@iterator.js"
 import JSONUninspector from "@jsonuninspector.js"
 import { getIdThrow } from "@misc.js"
 import { RelativePopupHandle, RelativePopup } from "@popup.js"
+import { timeUnit } from "@units.js"
 
 // editor
 
@@ -154,8 +155,8 @@ async function send(value = editor.getValue()) {
     
     // replace
     evalRes.replaceChildren(e)
-    stat.textContent = td + 'ms'
-    statPopup.textContent = `exec: ${res.execTime.toFixed(1)}ms, inspect: ${res.inspTime.toFixed(1)}ms, other: ${(td - res.execTime - res.inspTime).toFixed(1)}ms`
+    stat.textContent = timeUnit(td)
+    statPopup.textContent = `exec: ${timeUnit(res.execTime)}, inspect: ${timeUnit(res.inspTime)}, other: ${timeUnit(td - res.execTime - res.inspTime)}`
 
     sessionStorage.setItem('evalcode', value)
 }
