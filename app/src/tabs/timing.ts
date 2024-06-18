@@ -42,6 +42,12 @@ const plotInst = new uPlotResizer('timing-plot', {
             stroke: 'yellow',
             value: (plot, value) => timeUnit(value),
         }, {
+            label: 'RunHead',
+            stroke: 'rgb(255, 0, 0)',
+            scale: 'ms',
+            value: (plot, value) => timeUnit(value),
+            show: false,
+        }, {
             label: 'Events',
             scale: 'ms',
             stroke: 'green',
@@ -66,6 +72,7 @@ const namedDatas = {
     worldAvg: [] as number[],
     runs: [] as number[],
     runAvg: [] as number[],
+    runHead: [] as number[],
     events: [] as number[],
 }
 const worldAvg = new ArrayAverage
@@ -75,7 +82,7 @@ const maxDatas = 20 * 180
 //// updater ////
 
 let updateState = false
-const updateDatas = [ namedDatas.label, namedDatas.world, namedDatas.worldAvg, namedDatas.runs, namedDatas.runAvg, namedDatas.events ] as [number[], ...number[][]]
+const updateDatas = [ namedDatas.label, namedDatas.world, namedDatas.worldAvg, namedDatas.runs, namedDatas.runAvg, namedDatas.runHead, namedDatas.events ] as [number[], ...number[][]]
 {
     setInterval(updateChart, 150)
     tabchange.addEventListener('timing', () => updateChart(true))
@@ -96,10 +103,14 @@ const updateDatas = [ namedDatas.label, namedDatas.world, namedDatas.worldAvg, n
     BedrockInspector.bedrockEvents.addEventListener('event', ({ detail: data }) => eventMs += data.delta)
 
     BedrockInspector.bedrockEvents.addEventListener('tick', ({ detail: data }) => {
+        const run = data.run
+        const effectiveRunTime = run.jobs.reduce((a, b) => a + b.delta, 0) + run.runs.reduce((a, b) => a + b.delta, 0)
+
         pushLimit(namedDatas.world, data.delta, maxDatas)
         pushLimit(namedDatas.worldAvg, worldAvg.pushAndAverage(data.delta), maxDatas)
-        pushLimit(namedDatas.runs, data.run.delta, maxDatas)
-        pushLimit(namedDatas.runAvg, runAvg.pushAndAverage(data.run.delta), maxDatas)
+        pushLimit(namedDatas.runs, effectiveRunTime, maxDatas)
+        pushLimit(namedDatas.runAvg, runAvg.pushAndAverage(effectiveRunTime), maxDatas)
+        pushLimit(namedDatas.runHead, run.delta - effectiveRunTime, maxDatas)
         pushLimit(namedDatas.events, eventMs, maxDatas)
         pushLimit(namedDatas.label, data.time / 1000, maxDatas)
         updateState = true
