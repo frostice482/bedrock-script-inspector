@@ -2,7 +2,6 @@ import DebugClient from "@client"
 import BedrockType from "@globaltypes/bedrock.js"
 import jsonInspect from "@jsoninspect.js"
 import { getTraceData, now } from "@util.js"
-import DebugConsoleOverride from "$console.js"
 import DebugEventsOverride, { EventsOverride } from "$events.js"
 
 function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
@@ -20,8 +19,11 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
     )
 
     event.addEventListener('data', ({ name, data, list, delta }) => {
-        if ((name === 'effectAdd' || name === 'playerGameModeChange') && type === 'before') {
-            DebugConsoleOverride.rawWarn(`Dropped event data of event ${category}.beforeEvents.${name}`)
+        // drop spam event data
+        if (type === 'after' && name === 'playerInputPermissionCategoryChange') return
+
+        // drpo event data that can cause crash
+        if (type === 'before' && (name === 'effectAdd' || name === 'playerGameModeChange')) {
             //@ts-ignore
             data = null
         }
