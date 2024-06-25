@@ -78,6 +78,7 @@ export class JsonInspectInstance {
             switch (typeof obj) {
                 case 'string': return { type: 'string', value: obj }
                 case 'number': return { type: 'number', value: obj + '' }
+                case 'bigint': return { type: 'number', value: obj + 'n' }
                 case 'boolean': return { type: 'boolean', value: obj }
                 case 'symbol': return { type: 'symbol', value: obj.description ?? '' }
                 case 'undefined': return { type: 'undefined' }
