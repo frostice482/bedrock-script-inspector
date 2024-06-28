@@ -6,7 +6,7 @@
  * @param precision Number of precision (default: `3`)
  * @param baseBack Base value on unit
  */
-export function valueUnit(value: number, names: readonly any[], base = 1000, precision = Math.ceil(Math.log(base)), baseBack = base): string {
+export function valueUnit(value: number, names: readonly any[], base = 1000, precision = Math.ceil(Math.log10(base)), baseBack = base): string {
     if (!value) return (Number.isInteger(value) ? value : value.toPrecision(precision)) + names[0]
 
     const ix = Math.trunc(Math.log(value) / Math.log(base))
