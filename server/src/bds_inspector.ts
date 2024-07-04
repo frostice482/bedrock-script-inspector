@@ -1,7 +1,7 @@
 import cp = require("child_process");
 import path = require("path");
 import rl = require("readline");
-import TypedEventEmitter from "./lib/typedevm.js";
+import { EventEmitter } from "stream";
 import BedrockInterpreterType from "@globaltypes/interpreter.js";
 import BedrockType from "@globaltypes/bedrock.js";
 
@@ -14,7 +14,7 @@ const bdsLogLevelMap: Record<string, BedrockType.Console.LogLevel> = {
 }
 Object.setPrototypeOf(bdsLogLevelMap, null)
 
-export default class BDS extends TypedEventEmitter<{ [K in keyof ScriptBDSInspectorEvents]: ScriptBDSInspectorEvents[K] }> {
+export default class BDS extends EventEmitter<{ [K in keyof ScriptBDSInspectorEvents]: ScriptBDSInspectorEvents[K] }> {
     constructor(bdsPath: string) {
         super()
 

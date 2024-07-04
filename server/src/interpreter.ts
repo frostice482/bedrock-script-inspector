@@ -1,13 +1,13 @@
-import TypedEventEmitter from "./lib/typedevm.js"
 import BedrockType from "@globaltypes/bedrock.js"
 import BedrockInterpreterType from "@globaltypes/interpreter.js"
+import EventEmitter = require("events")
 
 function pushLimit<T>(arr: T[], elm: T, limit: number) {
     arr.push(elm)
     if (arr.length > limit) arr.shift()
 }
 
-export class InterpreterConstructor extends TypedEventEmitter<{ [K in keyof BedrockInterpreterType.CrossEvents]: [BedrockInterpreterType.CrossEvents[K]] }> {    
+export class InterpreterConstructor extends EventEmitter<{ [K in keyof BedrockInterpreterType.CrossEvents]: [BedrockInterpreterType.CrossEvents[K]] }> {    
     constructor() {
         super()        
 

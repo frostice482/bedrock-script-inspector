@@ -1,4 +1,4 @@
-import TypedEventEmitter from "./lib/typedevm"
+import EventEmitter = require("events")
 
 declare global {
     interface WorldBehaviorPack {
@@ -9,7 +9,7 @@ declare global {
     declare namespace Express {
         interface Application {
             authHash?: string
-            events: TypedEventEmitter<{ close: [] }>
+            events: EventEmitter<{ close: [] }>
         }
     }    
 }

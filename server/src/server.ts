@@ -1,9 +1,9 @@
 import express = require('express')
 import http = require("http")
-import TypedEventEmitter from './lib/typedevm.js'
+import EventEmitter = require('events')
 
 const server = express()
-server.events = new TypedEventEmitter
+server.events = new EventEmitter
 const httpServer = http.createServer(server)
 export { server, httpServer }
 

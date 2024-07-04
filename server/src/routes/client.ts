@@ -1,10 +1,10 @@
 import crypto = require('crypto')
 import ws = require("ws");
 import express = require("express");
+import EventEmitter = require('events');
 import interpreter from "#interpreter.js";
 import { httpServer, server } from "#server.js";
 import PromiseController from "#lib/prmctrl.js";
-import TypedEventEmitter from '#lib/typedevm.js'
 import BedrockInterpreterType from "@globaltypes/interpreter.js";
 import ClientType from "@globaltypes/client.js";
 
@@ -96,7 +96,7 @@ interpreter.prependOnceListener('script_disconnect', () => {
 
 namespace Client {
     export const requests = new Map<string, PromiseController<string>>()
-    export const debugEvents = new TypedEventEmitter<{ [K in keyof ClientType.DebugEvents]: [ClientType.DebugEvents[K]] }>()
+    export const debugEvents = new EventEmitter<{ [K in keyof ClientType.DebugEvents]: [ClientType.DebugEvents[K]] }>()
     export const eventSendQueue: ClientType.CrossEventData[] = []
 }
 export default Client
