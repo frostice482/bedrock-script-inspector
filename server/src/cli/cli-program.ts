@@ -13,7 +13,7 @@ const optAuthPass = new Option('-ap, --auth-pass <password>', 'Authentication pa
 program
     .name('bsi')
     .description('CLI for Minecraft Bedrock Script API Inspector')
-    .version('v1.0.0')
+    .version('v1.3.0')
 
 program.command('add-pack')
     .aliases(['ap'])
