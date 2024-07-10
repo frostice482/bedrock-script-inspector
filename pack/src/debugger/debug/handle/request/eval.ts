@@ -1,8 +1,4 @@
 import * as mc from '@minecraft/server'
-import * as gt from '@minecraft/server-gametest'
-import * as ui from '@minecraft/server-ui'
-import * as net from '@minecraft/server-net'
-import * as admin from '@minecraft/server-admin'
 
 import DebugClient from '@client'
 import HttpUtil from '@http.js'
@@ -68,20 +64,27 @@ const evalSetVars = Object.create(null)
 
 const evalContext = new Map<PropertyKey, any>([
     ['vars'     , evalSetVars],
-
     ['mc'        , mc],
-    ['gt'        , gt],
-    ['gametest'  , gt],
-    ['ui'        , ui],
-    ['mcui'      , ui],
-    ['net'       , net],
-    ['mcnet'     , net],
-    ['admin'     , admin],
-    ['mcadmin'   , admin],
-
     ['global'    , globalThis],
     ['globalThis', globalThis]
 ])
+
+import('@minecraft/server-gametest').then(gt => {
+    evalContext.set('gt', gt)
+    evalContext.set('gametest', gt)
+}, () => {})
+import('@minecraft/server-ui').then(ui => {
+    evalContext.set('ui', ui)
+    evalContext.set('mcui', ui)
+}, () => {})
+import('@minecraft/server-net').then(net => {
+    evalContext.set('net', net)
+    evalContext.set('mcnet', net)
+}, () => {})
+import('@minecraft/server-admin').then(admin => {
+    evalContext.set('admin', admin)
+    evalContext.set('mcadmin', admin)
+}, () => {})
 
 const overworld = mc.world.getDimension('overworld')
 const nether = mc.world.getDimension('nether')
