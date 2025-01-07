@@ -7,13 +7,13 @@ const alias = require('tsc-alias')
 const { build } = require('esbuild')
 
 /**
- * 
- * @param {string} entry 
- * @param {string} out 
- * @param {import('esbuild').Format} format 
- * @param {import('esbuild').Platform} platform 
- * @param {string | undefined} tsconfig 
- * @param {import('esbuild').BuildOptions | undefined} more 
+ *
+ * @param {string} entry
+ * @param {string} out
+ * @param {import('esbuild').Format} format
+ * @param {import('esbuild').Platform} platform
+ * @param {string | undefined} tsconfig
+ * @param {import('esbuild').BuildOptions | undefined} more
  */
 async function bundleBuild(entry, out, format, platform, tsconfig = undefined, more = {}, transformPath = false) {
 	console.time(entry)
@@ -59,8 +59,10 @@ bundleBuild('pack/src/debugger/index.ts', 'pack/scripts/debugger/bundle.js', 'es
 		'@minecraft/server-gametest',
 		'@minecraft/server-ui',
 		'@minecraft/server-net',
-		'@minecraft/server-admin'
-	]
+		'@minecraft/server-admin',
+		'@minecraft/debug-utilities',
+	],
+	minify: false
 }).then(async () => {
 	await fsp.writeFile('pack/scripts/debugger/index.js', "import './bundle.js'\nimport './dropper.js'")
 	await fsp.writeFile('pack/scripts/debugger/dropper.js', "//")

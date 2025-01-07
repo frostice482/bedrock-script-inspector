@@ -131,7 +131,7 @@ declare namespace BedrockType {
 		interface Data extends TimeData, TimingData {
 			run: TickRun
 			packets: PlayerPacket[]
-			runtimeStats: Watchdog.RuntimeStats
+			runtimeStats: Record<string, number>
 		}
 
 		interface PlayerPacket {
@@ -227,27 +227,6 @@ declare namespace BedrockType {
 		}
 		export interface PluginStats {
 			plugins: HandleCounts[]
-		}
-		export interface RuntimeStats {
-			arrayCount: number
-			atomCount: number
-			atomSize: number
-			fastArrayCount: number
-			fastArrayElementCount: number
-			functionCodeSize: number
-			functionCount: number
-			functionLineCount: number
-			functionSize: number
-			memoryAllocatedCount: number
-			memoryAllocatedSize: number
-			memoryUsedCount: number
-			memoryUsedSize: number
-			objectCount: number
-			objectSize: number
-			propertyCount: number
-			propertySize: number
-			stringCount: number
-			stringSize: number
 		}
 	}
 }

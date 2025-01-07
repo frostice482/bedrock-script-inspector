@@ -1,7 +1,4 @@
 declare global {
-	var CodeMirror: typeof import('codemirror')
-	var uPlot: typeof import('uplot')
-
 	interface Node {
 		cloneNode(deep?: boolean): this
 	}

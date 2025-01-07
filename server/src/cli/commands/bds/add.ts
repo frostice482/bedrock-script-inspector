@@ -41,7 +41,7 @@ export async function cliAddBds(dir: string, level?: string, opts?: DeepPartialR
 	// add to dev packs
 	console.log(copy ? 'Copying' : 'Linking')
 	await debugPack.copyTo(path.join(dir, 'development_behavior_packs', debugPack.manifest.uuid), copy ? 'copy' : 'symlink').catch(() => {})
-	
+
 	// add pack config
 	// write permissions
 	console.log('Creating config')
@@ -55,7 +55,8 @@ export async function cliAddBds(dir: string, level?: string, opts?: DeepPartialR
 			"@minecraft/server-ui",
 			"@minecraft/server-admin",
 			"@minecraft/server-editor",
-			"@minecraft/server-net"
+			"@minecraft/server-net",
+			"@minecraft/debug-utilities"
 		]
 	}))
 

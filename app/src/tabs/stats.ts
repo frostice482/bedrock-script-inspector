@@ -5,6 +5,7 @@ import IteatorUtil from "@iterator.js"
 import { getIdThrow, pushLimit } from "@misc.js"
 import { byteUnit } from "@units.js"
 import { uPlotResizer, plotNonSelectable } from "@uplotutil.js"
+import * as uPlot from "uplot"
 
 const tab = getIdThrow('tab-stats')
 
@@ -35,7 +36,7 @@ const memSizePlot = new uPlotResizer('stats-mem', {
 		...IteatorUtil.map(
 			memSizeData,
 			([k, v]) => ({
-				label: k.slice(0, -5),
+				label: k.slice(0, -4),
 				scale: 'bytes',
 				value: (plot, value) => byteUnit(value),
 				...v
@@ -80,7 +81,7 @@ const memCountPlot = new uPlotResizer('stats-memcount', {
 		...IteatorUtil.map(
 			memCountData,
 			([k, v]) => ({
-				label: k.slice(0, -6),
+				label: k.slice(0, -5),
 				scale: 'count',
 				...v
 			} satisfies uPlot.Series)
@@ -158,9 +159,10 @@ const memCountPlot = new uPlotResizer('stats-memcount', {
 					rowData.total.textContent = handle.total + ''
 				}
 			}
+		}
+		*/
 
 		updateChart()
-		*/
 	})
 
 	BedrockInspector.events.addEventListener('bds_start', () => {
@@ -196,4 +198,4 @@ const memCountPlot = new uPlotResizer('stats-memcount', {
 	}
 }
 
-type RuntimeKeys = keyof BedrockInterpreterType.WatchdogStats.Runtime
+type RuntimeKeys = string
