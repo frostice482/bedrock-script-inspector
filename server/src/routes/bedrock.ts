@@ -1,4 +1,4 @@
-import express = require("express");
+import express from "express";
 import { server } from "#server.js";
 import interpreter from "#interpreter.js";
 import Client from "./client.js";
@@ -39,7 +39,7 @@ server.post('/bedrock/resolve/:id',
 	express.text({ type: () => true, limit: 256 * 1048576 }),
 	(req, res) => {
 		const id = req.params.id, data = req.body
-		
+
 		Client.requests.get(id)?.resolve(data)
 		Client.requests.delete(id)
 

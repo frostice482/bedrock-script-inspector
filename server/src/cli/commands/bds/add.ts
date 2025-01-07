@@ -1,5 +1,5 @@
-import fsp = require("fs/promises");
-import path = require("path");
+import fsp from "fs/promises";
+import path from "path";
 import { DeepPartialReadonly } from "@globaltypes/types.js";
 import { debugPack, debugManifestScriptModule } from "#debug_manifest.js";
 

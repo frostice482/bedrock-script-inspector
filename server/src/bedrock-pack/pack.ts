@@ -1,5 +1,5 @@
-import fsp = require('fs/promises')
-import path = require('path')
+import fsp from 'fs/promises'
+import path from 'path'
 import BedrockManifest from "./manifest.js"
 import BedrockManifestJson from "./types/manifest_json.js"
 
@@ -23,11 +23,11 @@ export class BedrockPack {
 
 	async copyTo(path: string, copyType: CopyType = 'copy') {
 		switch (copyType) {
-			case 'copy': 
+			case 'copy':
 				await fsp.cp(this.dir, path, { recursive: true })
 				break
 
-			case 'symlink': 
+			case 'symlink':
 				await fsp.symlink(this.dir, path, 'dir')
 				break
 		}

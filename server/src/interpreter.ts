@@ -1,15 +1,15 @@
 import BedrockType from "@globaltypes/bedrock.js"
 import BedrockInterpreterType from "@globaltypes/interpreter.js"
-import EventEmitter = require("events")
+import EventEmitter from "events"
 
 function pushLimit<T>(arr: T[], elm: T, limit: number) {
 	arr.push(elm)
 	if (arr.length > limit) arr.shift()
 }
 
-export class InterpreterConstructor extends EventEmitter<{ [K in keyof BedrockInterpreterType.CrossEvents]: [BedrockInterpreterType.CrossEvents[K]] }> {    
+export class InterpreterConstructor extends EventEmitter<{ [K in keyof BedrockInterpreterType.CrossEvents]: [BedrockInterpreterType.CrossEvents[K]] }> {
 	constructor() {
-		super()        
+		super()
 
 		this.prependListener('bds_start', pid => {
 			// reset & set state
@@ -77,7 +77,7 @@ export class InterpreterConstructor extends EventEmitter<{ [K in keyof BedrockIn
 						this.runJobs.set(id, {
 							id,
 							type: 'job',
-							
+
 							addStack: stack,
 							addTick: tick,
 
@@ -222,14 +222,14 @@ export class InterpreterConstructor extends EventEmitter<{ [K in keyof BedrockIn
 		this.eventLogs.splice(0)
 		this.runs.clear()
 		this.runJobs.clear()
-		
+
 		this.runClearCache.clear()
 		this.eventListenerClearCache.clear()
 
 		this.connected = false
 	}
 
-	resetBDS() {        
+	resetBDS() {
 		this.bdsConsoles.splice(0)
 
 		this.bdsConnected = false

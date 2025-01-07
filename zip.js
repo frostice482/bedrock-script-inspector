@@ -1,11 +1,11 @@
 //@ts-check
 
-const fs = require('fs')
-const fsp = require('fs/promises')
-const { ZipFile } = require('yazl')
+import fs from 'fs'
+import fsp from 'fs/promises'
+import { ZipFile } from 'yazl'
 
 /**
- * 
+ *
  * @param {string} target
  * @param {string | undefined} context
  * @return {AsyncGenerator<string>}
@@ -46,7 +46,7 @@ zip.outputStream.once('end', () => console.log('done'))
 	for (const incl of include)
 		for await (const entry of files(incl))
 			zip.addFile(entry, entry)
-	
+
 	// extras
 	zip.addEmptyDirectory('pack/subpacks')
 

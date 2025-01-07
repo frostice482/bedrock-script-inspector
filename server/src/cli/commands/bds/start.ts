@@ -1,6 +1,6 @@
-import chalk = require("chalk");
-import fsp = require("fs/promises");
-import path = require("path");
+import chalk from "chalk";
+import fsp from "fs/promises";
+import path from "path";
 import interpreter from "#interpreter";
 import BDS from "#bds_inspector.js";
 import { debugManifestScriptModule } from "#debug_manifest.js";

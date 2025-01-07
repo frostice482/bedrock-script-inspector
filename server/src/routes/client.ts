@@ -1,7 +1,7 @@
-import crypto = require('crypto')
-import ws = require("ws");
-import express = require("express");
-import EventEmitter = require('events');
+import crypto from 'crypto'
+import { WebSocketServer } from "ws";
+import express from "express";
+import EventEmitter from 'events';
 import interpreter from "#interpreter.js";
 import { httpServer, server } from "#server.js";
 import PromiseController from "#lib/prmctrl.js";
@@ -9,7 +9,7 @@ import BedrockInterpreterType from "@globaltypes/interpreter.js";
 import ClientType from "@globaltypes/client.js";
 
 // ws magic
-const wss = new ws.WebSocketServer({
+const wss = new WebSocketServer({
 	server: httpServer,
 	path: '/client/ws',
 	verifyClient: ({ req }, verify) => {

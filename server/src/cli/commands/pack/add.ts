@@ -1,6 +1,6 @@
-import chalk = require("chalk");
-import fsp = require("fs/promises");
-import semver = require("semver");
+import chalk from "chalk";
+import fsp from "fs/promises";
+import semver from "semver";
 import { debugManifest } from "#debug_manifest.js";
 import { resolveDirManifest } from "#bedrock-pack/resolve_dir.js";
 import { DeepPartialReadonly } from "@globaltypes/types.js";
@@ -41,7 +41,7 @@ export async function cliAddPack(dir: string, opts?: DeepPartialReadonly<CLIAddP
 			else if (version !== debVersion)
 				throw `Version validation failed: Pack requires module ${module} v${versionRaw} while inspector uses different beta version v${debVersion}`
 		}
-		
+
 		// pack uses higher version
 		else if (semver.compare(version, debVersion) === 1)
 			throw `Version validation failed: Pack requires module ${module} v${versionRaw} while inspector uses older version v${debVersion}`
@@ -50,14 +50,14 @@ export async function cliAddPack(dir: string, opts?: DeepPartialReadonly<CLIAddP
 	// copy
 	console.log(copy ? 'Copying' : 'Linking')
 
-	const copyTarget = __dirname + '/../../../../../pack/subpacks/subpack'
+	const copyTarget = import.meta.dirname + '/../../../../../pack/subpacks/subpack'
 	await fsp.rm(copyTarget, { force: true })
 	await pack.copyTo(copyTarget, copy ? 'copy' : 'symlink')
 
 	// dropper
 	const fileEntry = scriptModule.entry.substring(8).replace(/\\/g, '/')
 	console.log('Adding file entry', fileEntry)
-	await fsp.writeFile(__dirname + '/../../../../../pack/scripts/debugger/dropper.js', `import "${fileEntry}"`)
+	await fsp.writeFile(import.meta.dirname + '/../../../../../pack/scripts/debugger/dropper.js', `import "${fileEntry}"`)
 
 	console.log('Finished')
 }

@@ -1,5 +1,5 @@
-import fsp = require("fs/promises");
-import path = require("path");
+import fsp from "fs/promises";
+import path from "path";
 import { debugManifest, debugManifestScriptModule, debugPack } from "#debug_manifest.js";
 
 const levelnameRegex = /^level-name=(.*)$/m
@@ -32,7 +32,7 @@ export async function cliRmBds(dir: string, level?: string) {
 	// remove from dev packs
 	console.log('Removing')
 	await fsp.rm(path.join(dir, 'development_behavior_packs', debugPack.manifest.uuid), { force: true, recursive: true })
-	
+
 	// remove pack config
 	console.log('Deleting config')
 	await fsp.rm(path.join(dir, 'config', debugManifestScriptModule.uuid), { force: true, recursive: true })

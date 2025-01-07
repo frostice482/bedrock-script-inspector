@@ -1,9 +1,9 @@
-import fs = require("fs");
-import path = require("path");
+import fs from "fs";
+import path from "path";
 import BedrockManifest from "./bedrock-pack/manifest.js";
 import BedrockPack from "./bedrock-pack/pack.js";
 
-const debugManifestDir = path.join(__dirname, '..', '..', 'pack')
+const debugManifestDir = path.join(import.meta.dirname, '..', '..', 'pack')
 
 export const debugManifest = new BedrockManifest(JSON.parse(fs.readFileSync(debugManifestDir + '/manifest.json').toString()))
 export const debugManifestScriptModule = debugManifest.modules.get('script')!

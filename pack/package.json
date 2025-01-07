@@ -22,5 +22,6 @@
 		"overrides": {
 			"@minecraft/server": "$@minecraft/server"
 		}
-	}
+	},
+	"type": "module"
 }

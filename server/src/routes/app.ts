@@ -1,8 +1,8 @@
-import express = require('express')
-import fsp = require('fs/promises')
+import express from 'express'
+import fsp from 'fs/promises'
 import { server } from "#server.js";
 
-const clientPath = __dirname + '/../../../app'
+const clientPath = import.meta.dirname + '/../../../app'
 
 server.get('/', async (req, res) => {
 	const html = await fsp.readFile(clientPath + '/main.html').then(String)

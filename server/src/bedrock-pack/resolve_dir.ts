@@ -1,4 +1,4 @@
-import fsp = require('fs/promises')
+import fsp from 'fs/promises'
 import * as tse from 'ts-essentials'
 import BedrockPack from './pack.js'
 
@@ -49,7 +49,7 @@ export async function resolveDirManifest(path: string, opts?: tse.DeepReadonly<M
 	// get entry
 	const [entry] = manifestEntries
 	if (!entry) return
-	
+
 	const manifestPath = entry
 	return BedrockPack.fromFile(manifestPath)
 }

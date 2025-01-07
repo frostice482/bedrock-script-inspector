@@ -9,7 +9,7 @@
 		"paths": {
 			"@type/*": ["../../globaltypes/*"],
 			"@override": ["override/index"],
-			"@client": ["debug/client"],
+			"@client": ["inspector/client"],
 			"@/*": ["lib/*"],
 		},
 

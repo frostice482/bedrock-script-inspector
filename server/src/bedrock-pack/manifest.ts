@@ -1,5 +1,5 @@
-import crypto = require('crypto')
-import fsp = require('fs/promises')
+import crypto from 'crypto'
+import fsp from 'fs/promises'
 import Manifest from './types/manifest_json.js'
 
 export class BedrockManifest {

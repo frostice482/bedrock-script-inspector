@@ -1,6 +1,6 @@
-import express = require('express')
-import http = require("http")
-import EventEmitter = require('events')
+import express from 'express'
+import http from "http"
+import EventEmitter from 'events'
 
 const server = express()
 server.events = new EventEmitter
@@ -27,7 +27,7 @@ export async function listenServer(port: number, authUsername?: string, authPass
 
 	// route
 	if (route) await import('./routes/index.js')
-	
+
 	// error handling
 	server.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
 		console.error(chalk.yellowBright('Server error!'), err)
@@ -42,7 +42,7 @@ export async function listenServer(port: number, authUsername?: string, authPass
 		)
 		res.end()
 	})
-		
+
 	process.on('uncaughtException', e => console.error('Uncaught exception!', e))
 	process.on('unhandledRejection', e => console.error('Unhandled rejection!', e))
 }

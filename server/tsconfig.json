@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"lib": ["esnext"],
 		"target": "esnext",
-		"module": "commonjs",
+		"module": "esnext",
 
 		"moduleResolution": "node",
 		"skipLibCheck": true,
@@ -19,7 +19,9 @@
 		"strict": true,
 		"noImplicitThis": true,
 		"noUncheckedIndexedAccess": true,
-		"noUnusedLocals": true
+		"noUnusedLocals": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true
 	},
 	"include": ["src", "../globaltypes"]
 }

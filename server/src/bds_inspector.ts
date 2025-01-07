@@ -1,7 +1,7 @@
-import cp = require("child_process");
-import path = require("path");
-import rl = require("readline");
-import { EventEmitter } from "stream";
+import cp from "child_process";
+import path from "path";
+import rl from "readline";
+import { EventEmitter } from "events";
 import BedrockInterpreterType from "@globaltypes/interpreter.js";
 import BedrockType from "@globaltypes/bedrock.js";
 
@@ -68,7 +68,7 @@ export default class BDS extends EventEmitter<{ [K in keyof ScriptBDSInspectorEv
 	}
 
 	#running = false
-	
+
 	readonly bdsProcess: cpProc
 	get running() { return this.#running }
 

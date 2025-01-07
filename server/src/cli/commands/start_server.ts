@@ -1,4 +1,4 @@
-import chalk = require('chalk')
+import chalk from 'chalk'
 import { DeepPartialReadonly } from '@globaltypes/types.js'
 
 export async function cliStartServer(port: number, opts?: DeepPartialReadonly<CLIStartServerOptions>) {
