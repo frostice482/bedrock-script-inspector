@@ -1,5 +1,6 @@
 export { default as ConsoleOverride } from './console'
 export { default as DynamicPropertyOverride } from './dprop'
 export { default as EventsOverride } from './events'
+export { default as PropertyRegistryOverride } from './propreg'
 export { default as ProxyOverride } from './proxy'
 export { default as RunOverride } from './run'

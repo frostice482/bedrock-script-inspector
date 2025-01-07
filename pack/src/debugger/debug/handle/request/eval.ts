@@ -7,7 +7,8 @@ import * as gt from '@minecraft/server-gametest'
 import * as ui from '@minecraft/server-ui'
 import * as net from '@minecraft/server-net'
 import * as admin from '@minecraft/server-admin'
-import { ConsoleOverride, EventsOverride, ProxyOverride, RunOverride, DynamicPropertyOverride } from '@override'
+import * as debugUtils from '@minecraft/debug-utilities'
+import * as Overrides from '@override'
 import clientRequests from './request'
 
 const asyncFC = (async function() {}).constructor as FunctionConstructor
@@ -70,6 +71,8 @@ const evalContext = new Map<PropertyKey, any>([
 	['ui', ui],
 	['net', net],
 	['admin', admin],
+	['debugUtils', debugUtils],
+	['Overrides', Overrides]
 ])
 
 const overworld = mc.world.getDimension('overworld')
@@ -78,17 +81,7 @@ const end = mc.world.getDimension('the_end')
 
 const dims = [overworld, nether, end]
 
-const evalOverridesObj: any = {
-	console: ConsoleOverride,
-	events: EventsOverride,
-	proxy: ProxyOverride,
-	run: RunOverride,
-	prop: DynamicPropertyOverride,
-}
-Object.setPrototypeOf(evalOverridesObj, null)
-
 export const evalProps: any = {
-	Overrides: evalOverridesObj,
 	DebugClient: InspectorClient,
 
 	setInterval: mc.system.runInterval.bind(mc.system),
@@ -113,16 +106,6 @@ export const evalProps: any = {
 			if (player) return player
 		}
 		return overworld.getEntities({ closest: 1, type: data })[0]
-	},
-
-	measure(fn: () => void, time = 1000) {
-		let c = 0
-		const maxTime = now() + time
-		while (now() < maxTime) {
-			fn()
-			c++
-		}
-		return time / c
 	}
 }
 Object.setPrototypeOf(evalProps, null)
