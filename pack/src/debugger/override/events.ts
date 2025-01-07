@@ -72,6 +72,8 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
 	/** Signal listener list, readonly */
 	readonly listener: ReadonlyMap<_D['listener'], Readonly<EventsOverrideSignalListenerData<_D>>> = this._signalListeners
 
+	optsFilter: (ev: _D['data'], opts: _D['options'] | undefined, listener: _D['listener']) => boolean = () => true
+
 	/**
 	 * Adds event listener to the signal
 	 * @param listener Signal listener
@@ -175,13 +177,14 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
 	 * @param data Event data
 	 * @param optsFilter Options filter
 	 */
-	dispatch(data: _D['data'], optsFilter?: (opts: _D['options'] | undefined, listener: _D['listener']) => boolean) {
+	dispatch(data: _D['data']) {
+		const optsFilter = this.optsFilter
 		const list: BedrockType.Events.DataFunctionExec[] = []
 
 		const t0 = now()
 		for (const [listener, { options, disabled }] of this.listener) {
 			if (disabled) continue
-			if (optsFilter ? !optsFilter(options, listener) : false) continue
+			if (!optsFilter(data, options, listener)) continue
 
 			const exec = timing(() => listener(data))
 			list.push({
