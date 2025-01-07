@@ -14,14 +14,14 @@ const maxDatas = 5 * 90
 //// memory size data ////
 
 const memSizeData = new Map<RuntimeKeys, uPlot.Series & { data: number[] }>([
-	['memory_allocated_size', { data: [], stroke: '#ffffff', show: false }],
-	['memory_used_size'     , { data: [], stroke: '#bbbbbb' }],
-	['atom_size'            , { data: [], stroke: '#9030ff', show: false }],
-	['string_size'          , { data: [], stroke: '#90ff30' }],
-	['object_size'          , { data: [], stroke: '#ff9030' }],
-	['property_size'        , { data: [], stroke: '#3090ff' }],
-	['function_size'        , { data: [], stroke: '#ffff30', show: false }],
-	['function_code_size'   , { data: [], stroke: '#c6c600', show: false }],
+	['atomSize', { data: [], stroke: '#ffffff', show: false }],
+	['functionCodeSize', { data: [], stroke: '#bbbbbb' }],
+	['functionSize', { data: [], stroke: '#9030ff', show: false }],
+	['memoryAllocatedSize', { data: [], stroke: '#90ff30' }],
+	['memoryUsedSize', { data: [], stroke: '#ff9030' }],
+	['objectSize', { data: [], stroke: '#3090ff' }],
+	['propertySize', { data: [], stroke: '#ffff30', show: false }],
+	['stringSize', { data: [], stroke: '#c6c600', show: false }],
 ])
 
 const memSizeUpdateData = [labels].concat(Array.from(memSizeData.values(), v => v.data)) as [number[], ...number[][]]
@@ -57,17 +57,17 @@ const memSizePlot = new uPlotResizer('stats-mem', {
 //// memory count data ////
 
 const memCountData = new Map<RuntimeKeys, uPlot.Series & { data: number[] }>([
-	['memory_allocated_count'  , { data: [], stroke: '#ffffff', show: false }],
-	['memory_used_count'       , { data: [], stroke: '#bbbbbb' }],
-	['atom_count'              , { data: [], stroke: '#9030ff', show: false }],
-	['string_count'            , { data: [], stroke: '#90ff30' }],
-	['object_count'            , { data: [], stroke: '#ff9030' }],
-	['property_count'          , { data: [], stroke: '#3090ff' }],
-	['function_count'          , { data: [], stroke: '#ffff30', show: false }],
-	['function_line_count'     , { data: [], stroke: '#c6c600', show: false }],
-	['array_count'             , { data: [], stroke: '#ff30ff', show: false }],
-	['fast_array_count'        , { data: [], stroke: '#ff30ff' }],
-	['fast_array_element_count', { data: [], stroke: '#ff307f' }],
+	['arrayCount', { data: [], stroke: '#ffffff', show: false }],
+	['atomCount', { data: [], stroke: '#bbbbbb' }],
+	['fastArrayCount', { data: [], stroke: '#9030ff', show: false }],
+	['fastArrayElementCount', { data: [], stroke: '#90ff30' }],
+	['functionCount', { data: [], stroke: '#ff9030' }],
+	['functionLineCount', { data: [], stroke: '#3090ff' }],
+	['memoryAllocatedCount', { data: [], stroke: '#ffff30', show: false }],
+	['memoryUsedCount', { data: [], stroke: '#c6c600', show: false }],
+	['objectCount', { data: [], stroke: '#ff30ff', show: false }],
+	['propertyCount', { data: [], stroke: '#ff30ff' }],
+	['stringCount', { data: [], stroke: '#ff307f' }],
 ])
 const memCountUpdateData = [labels].concat(Array.from(memCountData.values(), v => v.data)) as [number[], ...number[][]]
 
@@ -114,14 +114,15 @@ const memCountPlot = new uPlotResizer('stats-memcount', {
 	const updateDatas = new Map( IteatorUtil.map( IteatorUtil.concat([memSizeData, memCountData]), ([k, v]) => [k, v.data] ) )
 	let updateState = false
 
-	BedrockInspector.events.addEventListener('stats', ({ detail: { plugins, runtime } }) => {
+	BedrockInspector.bedrockEvents.addEventListener('tick', ({ detail: { runtimeStats } }) => {
 		updateState = true
 
 		// push data & label
-		for (const [k, d] of updateDatas) pushLimit(d, runtime[k], maxDatas)
+		for (const [k, d] of updateDatas) pushLimit(d, runtimeStats[k], maxDatas)
 		pushLimit(labels, Date.now() / 1000, maxDatas)
 
 		// push plugins
+		/*
 		const slcPlugin = pSelect.value
 		for (const { handles, name } of plugins) {
 			// plugin does not exist in list
@@ -159,6 +160,7 @@ const memCountPlot = new uPlotResizer('stats-memcount', {
 			}
 
 		updateChart()
+		*/
 	})
 
 	BedrockInspector.events.addEventListener('bds_start', () => {
@@ -176,7 +178,7 @@ const memCountPlot = new uPlotResizer('stats-memcount', {
 
 	function updateChart(forceUpdate = false) {
 		if (!updateState || !forceUpdate && tab.hidden) return
-		
+
 		memSizePlot.setData(memSizeUpdateData)
 		memCountPlot.setData(memCountUpdateData)
 		updateState = false

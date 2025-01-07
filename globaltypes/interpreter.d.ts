@@ -10,7 +10,6 @@ declare namespace BedrockInterpreterType {
 		script_disconnect: null
 		bds_start: number
 		bds_kill: string | number
-		stats: WatchdogStats
 	}
 
 	type CrossEventData = EventPair<CrossEvents>
@@ -33,12 +32,12 @@ declare namespace BedrockInterpreterType {
 			eventLogs: BedrockType.Events.Data[]
 			runs: RunData[]
 			runJobs: RunDataBasic[]
-	
+
 			connected: boolean
 			bdsConnected: boolean
 			bdsPid: number | undefined
 			bdsExit: number | string | undefined
-	
+
 			limits: JSONLimits
 		}
 	}
@@ -63,10 +62,10 @@ declare namespace BedrockInterpreterType {
 		interface Data extends BedrockType.Events.Listener {
 			disabled: boolean
 			unsubscribed: boolean
-			
+
 			log: DataAction[]
 		}
-	
+
 		interface DataAction {
 			tick: number
 			stack: string
@@ -91,49 +90,6 @@ declare namespace BedrockInterpreterType {
 	}
 
 	interface RunData extends BedrockType.Run.InfoWithFn, RunDataBasic {}
-
-	// stats
-	namespace WatchdogStats {
-		interface Data {
-			plugins: Plugin[]
-			runtime: Runtime
-		}
-	
-		interface Runtime {
-			memory_allocated_count: number
-			memory_allocated_size: number
-			memory_used_count: number
-			memory_used_size: number
-			atom_count: number
-			atom_size: number
-			string_count: number
-			string_size: number
-			object_count: number
-			object_size: number
-			property_count: number
-			property_size: number
-			function_count: number
-			function_size: number
-			function_code_size: number
-			function_line_count: number
-			array_count: number
-			fast_array_count: number
-			fast_array_element_count: number
-		}
-	
-		interface Plugin {
-			name: string
-			handles: Handle[]
-		}
-	
-		interface Handle {
-			type: string
-			current: number
-			peak: number
-			total: number
-		}
-	}
-	type WatchdogStats = WatchdogStats.Data
 }
 
 export default BedrockInterpreterType

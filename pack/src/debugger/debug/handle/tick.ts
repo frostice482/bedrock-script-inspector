@@ -4,6 +4,7 @@ import { system, world } from "@minecraft/server"
 import { RunOverride } from "@override"
 import BedrockType from "@type/bedrock"
 import { netstat } from "./packet"
+import { collectRuntimeStats } from "@minecraft/debug-utilities"
 
 let lt = now()
 let runPrev: BedrockType.Tick.TickRun = { delta: 0, runs: [], jobs: [] }
@@ -48,7 +49,9 @@ RunOverride.rawRunInterval.call(system, () => {
 		delta: dt,
 
 		run: runPrev,
-		packets: packets
+		packets: packets,
+
+		runtimeStats: collectRuntimeStats()
 	}, true)
 
 	runPrev = { delta, jobs, runs }

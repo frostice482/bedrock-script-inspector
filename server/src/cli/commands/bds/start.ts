@@ -1,8 +1,6 @@
 import chalk = require("chalk");
-import events = require("events");
 import fsp = require("fs/promises");
 import path = require("path");
-import timersp = require("timers/promises");
 import interpreter from "#interpreter";
 import BDS from "#bds_inspector.js";
 import { debugManifestScriptModule } from "#debug_manifest.js";
@@ -21,7 +19,7 @@ const bdsLevelTag: Record<BedrockInterpreterType.BDSLog.LogLevelUnknown, string>
 	unknown: '    '
 }
 
-function handleBds(bds: BDS, opts?: HandleBDSOptions) {
+function handleBds(bds: BDS) {
 	bds.on('log', log => {
 		const { level, message: msgRaw, category = '' } = log
 		const maxLen = process.stdout.isTTY ? process.stdout.getWindowSize()[0] - 12 - category.length : Infinity
@@ -37,39 +35,6 @@ function handleBds(bds: BDS, opts?: HandleBDSOptions) {
 		console.log(`BDS exited ${code ? `with ${typeof code === 'string' ? `status ${code}` : `code ${code} (0x${code.toString(16)})`}` : ''}`)
 	})
 	bds.on('log', data => interpreter.emit('log', data))
-	
-	// stat
-	const { stats: exportstats = true } = opts ?? {}
-
-	const statMatch = /^Script stats saved to '(.*)'\s*$/
-	//const profileEndMatch = /^Profiler stopped\. Profile saved to '(.+)'\s*$/
-
-	bds.on('beforelog', async ({ message }, cancel) => {
-		let m: string | undefined
-
-		if (exportstats && (m = message.match(statMatch)?.[1])) {
-			cancel()
-		
-			await fsp.readFile(m)
-				.then(buf => interpreter.emit('stats', JSON.parse(String(buf))))
-				.catch(e => console.error(e))
-		
-			fsp.rm(m, { recursive: true, force: true })
-		}
-	})
-	
-	// auto stat
-	if (exportstats) (async() => {
-		await events.once(interpreter, 'script_connect')
-		while (bds.running) {
-			bds.send('script watchdog exportstats')
-			
-			await Promise.all([
-				events.once(interpreter, 'stats'),
-				timersp.setTimeout(200),
-			])
-		}
-	})()
 
 	// client events
 	Client.debugEvents.on('command', cmd => bds.send(cmd))
@@ -82,7 +47,7 @@ async function startBds(bdsDir: string, opts?: StartBDSOptions) {
 	const isWin = process.platform === 'win32' || process.platform.includes('win')
 	const bdsFile = isWin ? 'bedrock_server.exe' : 'bedrock_server'
 	const bds = new BDS(bdsDir + '/' + bdsFile)
-	handleBds(bds, opts)
+	handleBds(bds)
 
 	if (opts?.remove) bds.once('close', () => import("./rm.js").then(v => v.cliRmBds(bdsDir)))
 
@@ -114,11 +79,7 @@ export async function startBdsServer(dir: string, serverPort: number, opts: Deep
 	await listenServer(serverPort, authUser, authPass)
 }
 
-export interface HandleBDSOptions {
-	stats?: boolean
-}
-
-export interface StartBDSOptions extends HandleBDSOptions {
+export interface StartBDSOptions {
 	add?: boolean
 	remove?: boolean
 }
