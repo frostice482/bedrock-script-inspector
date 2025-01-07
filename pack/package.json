@@ -1,9 +1,10 @@
 {
   "devDependencies": {
-    "@minecraft/server": "^1.12.0-beta.1.21.0-stable",
-    "@minecraft/server-admin": "1.0.0-beta.1.20.70-stable",
-    "@minecraft/server-gametest": "1.0.0-beta.1.20.70-stable",
-    "@minecraft/server-net": "1.0.0-beta.1.20.70-stable",
-    "@minecraft/server-ui": "1.2.0-beta.1.20.70-stable"
+    "@minecraft/debug-utilities": "1.0.0-beta.1.21.50-stable",
+    "@minecraft/server": "1.17.0-beta.1.21.50-stable",
+    "@minecraft/server-admin": "1.0.0-beta.1.21.50-stable",
+    "@minecraft/server-gametest": "1.0.0-beta.1.21.50-stable",
+    "@minecraft/server-net": "1.0.0-beta.1.21.50-stable",
+    "@minecraft/server-ui": "1.4.0-beta.1.21.50-stable"
   }
 }
