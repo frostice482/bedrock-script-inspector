@@ -7,11 +7,11 @@ import { getIdThrow } from "@misc.js"
 const statusElm = getIdThrow('status')
 
 function changeStatus(script: boolean, bds: boolean) {
-    let [color, text] = script ? ['lime', 'connected'] : ['gold', 'listening']
-    if (bds) text += ' (bds)'
+	let [color, text] = script ? ['lime', 'connected'] : ['gold', 'listening']
+	if (bds) text += ' (bds)'
 
-    statusElm.style.color = color
-    statusElm.textContent = text
+	statusElm.style.color = color
+	statusElm.textContent = text
 }
 
 let { connected, bdsConnected } = BedrockInspector.initData
@@ -23,6 +23,6 @@ BedrockInspector.events.addEventListener('script_connect', () => changeStatus(co
 BedrockInspector.events.addEventListener('script_disconnect', () => changeStatus(connected = false, bdsConnected))
 
 BedrockInspector.ws.addEventListener('close', () => {
-    statusElm.style.color = 'red'
-    statusElm.textContent = 'disconnected'
+	statusElm.style.color = 'red'
+	statusElm.textContent = 'disconnected'
 }, { once: true })

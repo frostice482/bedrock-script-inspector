@@ -5,40 +5,40 @@ import { getTraceData, now } from "@util.js"
 import DebugEventsOverride, { EventsOverride } from "$events.js"
 
 function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
-    event.addEventListener('subscribe', ({ name, fid, listener }) =>
-        DebugClient.send('event_listener_subscribe', getTraceData({ type, category, name, fid, fn: jsonInspect.fn(listener as Function) }, 8))
-    )
-    event.addEventListener('unsubscribe', ({ name, fid }) =>
-        DebugClient.send('event_listener_unsubscribe', getTraceData({ type, category, name, fid }, 8))
-    )
-    event.addEventListener('disable', ({ name, fid }) =>
-        DebugClient.send('event_listener_disable', { type, category, name, fid })
-    )
-    event.addEventListener('enable', ({ name, fid }) =>
-        DebugClient.send('event_listener_enable', { type, category, name, fid })
-    )
+	event.addEventListener('subscribe', ({ name, fid, listener }) =>
+		DebugClient.send('event_listener_subscribe', getTraceData({ type, category, name, fid, fn: jsonInspect.fn(listener as Function) }, 8))
+	)
+	event.addEventListener('unsubscribe', ({ name, fid }) =>
+		DebugClient.send('event_listener_unsubscribe', getTraceData({ type, category, name, fid }, 8))
+	)
+	event.addEventListener('disable', ({ name, fid }) =>
+		DebugClient.send('event_listener_disable', { type, category, name, fid })
+	)
+	event.addEventListener('enable', ({ name, fid }) =>
+		DebugClient.send('event_listener_enable', { type, category, name, fid })
+	)
 
-    event.addEventListener('data', ({ name, data, list, delta }) => {
-        // drop spam event data
-        if (type === 'after' && name === 'playerInputPermissionCategoryChange') return
+	event.addEventListener('data', ({ name, data, list, delta }) => {
+		// drop spam event data
+		if (type === 'after' && name === 'playerInputPermissionCategoryChange') return
 
-        // drpo event data that can cause crash
-        if (type === 'before' && (name === 'effectAdd' || name === 'playerGameModeChange')) {
-            //@ts-ignore
-            data = null
-        }
+		// drpo event data that can cause crash
+		if (type === 'before' && (name === 'effectAdd' || name === 'playerGameModeChange')) {
+			//@ts-ignore
+			data = null
+		}
 
-        const inst0 = now()
-        const insData = jsonInspect.inspect(DebugEventsOverride.inspectEventData && data)
-        const instd = now() - inst0
+		const inst0 = now()
+		const insData = jsonInspect.inspect(DebugEventsOverride.inspectEventData && data)
+		const instd = now() - inst0
 
-        DebugClient.send('event', {
-            type, category, name,
-            data: insData,
-            delta: instd + delta,
-            functions: list
-        })
-    })
+		DebugClient.send('event', {
+			type, category, name,
+			data: insData,
+			delta: instd + delta,
+			functions: list
+		})
+	})
 }
 
 eventEmitter(DebugEventsOverride.worldBefore, 'world', 'before')
@@ -49,33 +49,33 @@ eventEmitter(DebugEventsOverride.netBefore, 'net', 'before')
 eventEmitter(DebugEventsOverride.netAfter, 'net', 'after')
 
 DebugClient.message.addEventListener('event_action', ({ action, id: { category, fid, name, type } }) => {
-    const eo: EventsOverride<any> =
-        category === 'world'
-            ? type === 'before'
-                ? DebugEventsOverride.worldBefore
-                : DebugEventsOverride.worldAfter
-        : category === 'system'
-            ? type === 'before'
-                ? DebugEventsOverride.systemBefore
-                : DebugEventsOverride.systemAfter
-        :   type === 'before'
-                ? DebugEventsOverride.netBefore
-                : DebugEventsOverride.netAfter
+	const eo: EventsOverride<any> =
+		category === 'world'
+			? type === 'before'
+				? DebugEventsOverride.worldBefore
+				: DebugEventsOverride.worldAfter
+		: category === 'system'
+			? type === 'before'
+				? DebugEventsOverride.systemBefore
+				: DebugEventsOverride.systemAfter
+		:   type === 'before'
+				? DebugEventsOverride.netBefore
+				: DebugEventsOverride.netAfter
 
-    const ev = eo.events[name]
-    if (!ev) return
+	const ev = eo.events[name]
+	if (!ev) return
 
-    switch (action) {
-        case 'enable':
-            ev.enableListener(fid)
-            break
+	switch (action) {
+		case 'enable':
+			ev.enableListener(fid)
+			break
 
-        case 'disable':
-            ev.disableListener(fid)
-            break
+		case 'disable':
+			ev.disableListener(fid)
+			break
 
-        case 'unsubscribe':
-            ev.unsubscribe(fid)
-            break
-    }
+		case 'unsubscribe':
+			ev.unsubscribe(fid)
+			break
+	}
 })

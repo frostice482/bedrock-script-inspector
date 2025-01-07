@@ -1,25 +1,25 @@
 {
-    "compilerOptions": {
-        "lib": ["esnext"],
-        "target": "esnext",
-        "module": "commonjs",
+	"compilerOptions": {
+		"lib": ["esnext"],
+		"target": "esnext",
+		"module": "commonjs",
 
-        "moduleResolution": "node",
-        "skipLibCheck": true,
-        "paths": {
-            "#*": ["./src/*"],
-            "@globaltypes/*": ["../globaltypes/*"]
-        },
+		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"paths": {
+			"#*": ["./src/*"],
+			"@globaltypes/*": ["../globaltypes/*"]
+		},
 
-        "rootDir": "src",
-        "outDir": "app",
-        "allowJs": true,
-        "removeComments": true,
+		"rootDir": "src",
+		"outDir": "app",
+		"allowJs": true,
+		"removeComments": true,
 
-        "strict": true,
-        "noImplicitThis": true,
-        "noUncheckedIndexedAccess": true,
-        "noUnusedLocals": true
-    },
-    "include": ["src", "../globaltypes"]
+		"strict": true,
+		"noImplicitThis": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true
+	},
+	"include": ["src", "../globaltypes"]
 }

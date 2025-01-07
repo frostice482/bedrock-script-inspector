@@ -3,268 +3,268 @@ import BedrockInterpreterType from "@globaltypes/interpreter.js"
 import EventEmitter = require("events")
 
 function pushLimit<T>(arr: T[], elm: T, limit: number) {
-    arr.push(elm)
-    if (arr.length > limit) arr.shift()
+	arr.push(elm)
+	if (arr.length > limit) arr.shift()
 }
 
 export class InterpreterConstructor extends EventEmitter<{ [K in keyof BedrockInterpreterType.CrossEvents]: [BedrockInterpreterType.CrossEvents[K]] }> {    
-    constructor() {
-        super()        
+	constructor() {
+		super()        
 
-        this.prependListener('bds_start', pid => {
-            // reset & set state
-            this.reset()
-            this.bdsConnected = true
-            this.bdsPid = pid
-        })
-        this.prependListener('bds_kill', exit => {
-            // set state
-            this.bdsConnected = false
-            this.bdsExit = exit
+		this.prependListener('bds_start', pid => {
+			// reset & set state
+			this.reset()
+			this.bdsConnected = true
+			this.bdsPid = pid
+		})
+		this.prependListener('bds_kill', exit => {
+			// set state
+			this.bdsConnected = false
+			this.bdsExit = exit
 
-            // if inspector is connected emit disconnect
-            if (this.connected) this.emit('script_disconnect', null)
-        })
-        this.prependListener('script_connect', () => {
-            // if inspector is connected emit disconnect
-            if (this.connected) this.emit('script_disconnect', null)
+			// if inspector is connected emit disconnect
+			if (this.connected) this.emit('script_disconnect', null)
+		})
+		this.prependListener('script_connect', () => {
+			// if inspector is connected emit disconnect
+			if (this.connected) this.emit('script_disconnect', null)
 
-            // reset & set state
-            this.reset()
-            this.connected = true
-        })
-        this.prependListener('script_disconnect', () => {
-            this.connected = false
-        })
-        this.prependListener('log', log => {
-            pushLimit(this.bdsConsoles, log, this.bdsConsoleLimit)
-        })
+			// reset & set state
+			this.reset()
+			this.connected = true
+		})
+		this.prependListener('script_disconnect', () => {
+			this.connected = false
+		})
+		this.prependListener('log', log => {
+			pushLimit(this.bdsConsoles, log, this.bdsConsoleLimit)
+		})
 
-        this.prependListener('bedrock_events', events => {
-            for (const pair of events) {
-                const { name, data } = pair
-                switch (name) {
-                    case 'console':
-                        pushLimit(this.consoles, data, this.consoleLimit)
-                        break
+		this.prependListener('bedrock_events', events => {
+			for (const pair of events) {
+				const { name, data } = pair
+				switch (name) {
+					case 'console':
+						pushLimit(this.consoles, data, this.consoleLimit)
+						break
 
-                    case 'event':
-                        pushLimit(this.eventLogs, data, this.eventLogLimit)
-                        break
+					case 'event':
+						pushLimit(this.eventLogs, data, this.eventLogLimit)
+						break
 
-                    case 'run_add': {
-                        const { stack, tick, data: { id, type, interval, fid, fn } } = data
-                        this.runs.set(id, {
-                            id, interval, type, fid, fn,
+					case 'run_add': {
+						const { stack, tick, data: { id, type, interval, fid, fn } } = data
+						this.runs.set(id, {
+							id, interval, type, fid, fn,
 
-                            addStack: stack,
-                            addTick: tick,
+							addStack: stack,
+							addTick: tick,
 
-                            cleared: false,
-                            suspended: false
-                        })
+							cleared: false,
+							suspended: false
+						})
 
-                        if (this.runJobs.size + this.runs.size > this.runsLimit) {
-                            for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
-                            this.runClearCache.clear()
-                        }
+						if (this.runJobs.size + this.runs.size > this.runsLimit) {
+							for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
+							this.runClearCache.clear()
+						}
 
-                        break
-                    }
+						break
+					}
 
-                    case 'job_add': {
-                        const { stack, tick, data: id } = data
-                        this.runJobs.set(id, {
-                            id,
-                            type: 'job',
-                            
-                            addStack: stack,
-                            addTick: tick,
+					case 'job_add': {
+						const { stack, tick, data: id } = data
+						this.runJobs.set(id, {
+							id,
+							type: 'job',
+							
+							addStack: stack,
+							addTick: tick,
 
-                            cleared: false,
-                            suspended: false
-                        })
+							cleared: false,
+							suspended: false
+						})
 
-                        if (this.runJobs.size + this.runs.size > this.runsLimit) {
-                            for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
-                            this.runClearCache.clear()
-                        }
+						if (this.runJobs.size + this.runs.size > this.runsLimit) {
+							for (const id of this.runClearCache) this.runs.delete(id) || this.runJobs.delete(id)
+							this.runClearCache.clear()
+						}
 
-                        break
-                    }
+						break
+					}
 
-                    case 'run_clear': {
-                        const id = data.data
-                        const run = this.runs.get(id)
-                        if (!run) break
+					case 'run_clear': {
+						const id = data.data
+						const run = this.runs.get(id)
+						if (!run) break
 
-                        run.cleared = true
-                        run.clearTick = data.tick
-                        run.clearStack = data.stack
+						run.cleared = true
+						run.clearTick = data.tick
+						run.clearStack = data.stack
 
-                        this.runClearCache.add(id)
+						this.runClearCache.add(id)
 
-                        break
-                    }
+						break
+					}
 
-                    case 'job_clear': {
-                        const run = this.runJobs.get(data.data.id)
-                        if (!run) break
+					case 'job_clear': {
+						const run = this.runJobs.get(data.data.id)
+						if (!run) break
 
-                        run.cleared = true
-                        run.clearTick = data.tick
-                        run.clearStack = data.stack
+						run.cleared = true
+						run.clearTick = data.tick
+						run.clearStack = data.stack
 
-                        this.runClearCache.add(data.data.id)
+						this.runClearCache.add(data.data.id)
 
-                        break
-                    }
+						break
+					}
 
-                    case 'run_suspend': {
-                        const run = this.runs.get(data) ?? this.runJobs.get(data)
-                        if (run) run.suspended = true
-                        break
-                    }
+					case 'run_suspend': {
+						const run = this.runs.get(data) ?? this.runJobs.get(data)
+						if (run) run.suspended = true
+						break
+					}
 
-                    case 'run_resume': {
-                        const run = this.runs.get(data) ?? this.runJobs.get(data)
-                        if (run) run.suspended = false
-                        break
-                    }
+					case 'run_resume': {
+						const run = this.runs.get(data) ?? this.runJobs.get(data)
+						if (run) run.suspended = false
+						break
+					}
 
-                    case 'event_listener_subscribe': {
-                        const { stack, tick, data: lisid } = data
+					case 'event_listener_subscribe': {
+						const { stack, tick, data: lisid } = data
 
-                        const key = this.#eventLisKeyOfId(lisid)
-                        let lis = this.eventListeners.get(key)
+						const key = this.#eventLisKeyOfId(lisid)
+						let lis = this.eventListeners.get(key)
 
-                        if (!lis) {
-                            const { category, fid, fn, name, type } = lisid
-                            this.eventListeners.set(key, lis = {
-                                category, type, name, fid, fn,
-                                disabled: false,
-                                unsubscribed: false,
-                                log: []
-                            })
+						if (!lis) {
+							const { category, fid, fn, name, type } = lisid
+							this.eventListeners.set(key, lis = {
+								category, type, name, fid, fn,
+								disabled: false,
+								unsubscribed: false,
+								log: []
+							})
 
-                            if (this.eventListeners.size > this.eventListenersLimit) {
-                                for (const key of this.eventListenerClearCache) this.eventListeners.delete(key)
-                                this.eventListenerClearCache.clear()
-                            }
-                        }
-                        else {
-                            this.eventListenerClearCache.delete(key)
-                            lis.disabled = lis.unsubscribed = false
-                        }
+							if (this.eventListeners.size > this.eventListenersLimit) {
+								for (const key of this.eventListenerClearCache) this.eventListeners.delete(key)
+								this.eventListenerClearCache.clear()
+							}
+						}
+						else {
+							this.eventListenerClearCache.delete(key)
+							lis.disabled = lis.unsubscribed = false
+						}
 
-                        pushLimit(lis.log, { action: 'subscribe', tick, stack }, this.eventListenerLogLimit)
-                        break
-                    }
+						pushLimit(lis.log, { action: 'subscribe', tick, stack }, this.eventListenerLogLimit)
+						break
+					}
 
-                    case 'event_listener_unsubscribe': {
-                        const { stack, tick, data: lisid } = data
+					case 'event_listener_unsubscribe': {
+						const { stack, tick, data: lisid } = data
 
-                        const key = this.#eventLisKeyOfId(lisid)
-                        const lis = this.eventListeners.get(key)
-                        if (!lis) return
+						const key = this.#eventLisKeyOfId(lisid)
+						const lis = this.eventListeners.get(key)
+						if (!lis) return
 
-                        pushLimit(lis.log, { action: 'unsubscribe', tick, stack }, this.eventListenerLogLimit)
-                        lis.unsubscribed = true
-                        this.eventListenerClearCache.add(key)
-                        break
-                    }
+						pushLimit(lis.log, { action: 'unsubscribe', tick, stack }, this.eventListenerLogLimit)
+						lis.unsubscribed = true
+						this.eventListenerClearCache.add(key)
+						break
+					}
 
-                    case 'event_listener_disable': {
-                        const key = this.#eventLisKeyOfId(data)
-                        const lis = this.eventListeners.get(key)
-                        if (lis) lis.disabled = true
-                        break
-                    }
+					case 'event_listener_disable': {
+						const key = this.#eventLisKeyOfId(data)
+						const lis = this.eventListeners.get(key)
+						if (lis) lis.disabled = true
+						break
+					}
 
-                    case 'event_listener_enable': {
-                        const key = this.#eventLisKeyOfId(data)
-                        const lis = this.eventListeners.get(key)
-                        if (lis) lis.disabled = false
-                        break
-                    }
-                }
-            }
-        })
-    }
+					case 'event_listener_enable': {
+						const key = this.#eventLisKeyOfId(data)
+						const lis = this.eventListeners.get(key)
+						if (lis) lis.disabled = false
+						break
+					}
+				}
+			}
+		})
+	}
 
-    consoles: BedrockType.Console[] = []
-    bdsConsoles: BedrockInterpreterType.BDSLog[] = []
-    eventListeners = new Map<string, BedrockInterpreterType.EventListener>()
-    eventLogs: BedrockType.Events.Data[] = []
-    runs = new Map<number, BedrockInterpreterType.RunData>()
-    runJobs = new Map<number, BedrockInterpreterType.RunDataBasic>()
+	consoles: BedrockType.Console[] = []
+	bdsConsoles: BedrockInterpreterType.BDSLog[] = []
+	eventListeners = new Map<string, BedrockInterpreterType.EventListener>()
+	eventLogs: BedrockType.Events.Data[] = []
+	runs = new Map<number, BedrockInterpreterType.RunData>()
+	runJobs = new Map<number, BedrockInterpreterType.RunDataBasic>()
 
-    runClearCache = new Set<number>()
-    eventListenerClearCache = new Set<string>()
+	runClearCache = new Set<number>()
+	eventListenerClearCache = new Set<string>()
 
-    bdsConsoleLimit = 300
-    consoleLimit = 200
-    eventListenersLimit = 80
-    eventListenerLogLimit = 80
-    eventLogLimit = 60
-    runsLimit = 80
+	bdsConsoleLimit = 300
+	consoleLimit = 200
+	eventListenersLimit = 80
+	eventListenerLogLimit = 80
+	eventLogLimit = 60
+	runsLimit = 80
 
-    connected = false
-    bdsConnected = false
-    bdsPid: number | undefined
-    bdsExit: number | string | undefined
+	connected = false
+	bdsConnected = false
+	bdsPid: number | undefined
+	bdsExit: number | string | undefined
 
-    reset() {
-        if (!this.bdsConnected) this.resetBDS()
+	reset() {
+		if (!this.bdsConnected) this.resetBDS()
 
-        this.consoles.splice(0)
-        this.eventListeners.clear()
-        this.eventLogs.splice(0)
-        this.runs.clear()
-        this.runJobs.clear()
-        
-        this.runClearCache.clear()
-        this.eventListenerClearCache.clear()
+		this.consoles.splice(0)
+		this.eventListeners.clear()
+		this.eventLogs.splice(0)
+		this.runs.clear()
+		this.runJobs.clear()
+		
+		this.runClearCache.clear()
+		this.eventListenerClearCache.clear()
 
-        this.connected = false
-    }
+		this.connected = false
+	}
 
-    resetBDS() {        
-        this.bdsConsoles.splice(0)
+	resetBDS() {        
+		this.bdsConsoles.splice(0)
 
-        this.bdsConnected = false
-        this.bdsPid = this.bdsExit = undefined
-    }
+		this.bdsConnected = false
+		this.bdsPid = this.bdsExit = undefined
+	}
 
-    #eventLisKeyOfId(identifier: BedrockType.Events.ListenerWithId): string {
-        return identifier.category + '/' + identifier.type + '/' + identifier.name + '/' + identifier.fid
-    }
+	#eventLisKeyOfId(identifier: BedrockType.Events.ListenerWithId): string {
+		return identifier.category + '/' + identifier.type + '/' + identifier.name + '/' + identifier.fid
+	}
 
-    toJSON(): BedrockInterpreterType.JSONData {
-        const {
-            consoleLimit, bdsConsoleLimit, eventListenersLimit, eventListenerLogLimit, eventLogLimit, runsLimit,
-            connected, bdsConnected, bdsPid, bdsExit,
-            consoles, bdsConsoles, eventListeners, eventLogs, runs, runJobs
-        } = this
+	toJSON(): BedrockInterpreterType.JSONData {
+		const {
+			consoleLimit, bdsConsoleLimit, eventListenersLimit, eventListenerLogLimit, eventLogLimit, runsLimit,
+			connected, bdsConnected, bdsPid, bdsExit,
+			consoles, bdsConsoles, eventListeners, eventLogs, runs, runJobs
+		} = this
 
-        return {
-            connected, bdsConnected, bdsPid, bdsExit,
-            consoles,
-            bdsConsoles,
-            eventListeners: Array.from(eventListeners.values()),
-            eventLogs,
-            runs: Array.from(runs.values()),
-            runJobs: Array.from(runJobs.values()),
-            limits: {
-                bdsConsole: bdsConsoleLimit,
-                console: consoleLimit,
-                eventListenerLog: eventListenerLogLimit,
-                eventListeners: eventListenersLimit,
-                eventLog: eventLogLimit,
-                runs: runsLimit
-            }
-        }
-    }
+		return {
+			connected, bdsConnected, bdsPid, bdsExit,
+			consoles,
+			bdsConsoles,
+			eventListeners: Array.from(eventListeners.values()),
+			eventLogs,
+			runs: Array.from(runs.values()),
+			runJobs: Array.from(runJobs.values()),
+			limits: {
+				bdsConsole: bdsConsoleLimit,
+				console: consoleLimit,
+				eventListenerLog: eventListenerLogLimit,
+				eventListeners: eventListenersLimit,
+				eventLog: eventLogLimit,
+				runs: runsLimit
+			}
+		}
+	}
 }
 
 const interpreter = new InterpreterConstructor

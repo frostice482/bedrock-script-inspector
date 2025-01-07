@@ -16,15 +16,15 @@
 /* Console */
 
 #tab-console {
-    display: grid;
-    grid-template-areas:
-        'opts opts'
-        'list list'
-        'resz hide'
-        'grph grph'
-    ;
-    grid-template-rows: auto 1fr auto auto;
-    grid-template-columns: 1fr auto;
+	display: grid;
+	grid-template-areas:
+		'opts opts'
+		'list list'
+		'resz hide'
+		'grph grph'
+	;
+	grid-template-rows: auto 1fr auto auto;
+	grid-template-columns: 1fr auto;
 }
 
 #console-log:not(.level-log) > tbody > tr.level-log { display: none; }
@@ -38,8 +38,8 @@
 #console-log:not(._fi-display-stack) > colgroup > col:nth-child(3) { display: none; }
 
 #console-gr-vars > tbody > tr > td:nth-child(1) {
-    font-family: monospace;
-    font-size: 1.25em;
+	font-family: monospace;
+	font-size: 1.25em;
 }
 
 /* Inspector */
@@ -49,37 +49,37 @@
 /* Eval */
 
 #eval-side {
-    display: grid;
-    grid-template-areas:
-        'edit edit edit'
-        'objc eval send'
-        'func func stat'
-    ;
-    grid-template-rows: 1fr auto auto;
+	display: grid;
+	grid-template-areas:
+		'edit edit edit'
+		'objc eval send'
+		'func func stat'
+	;
+	grid-template-rows: 1fr auto auto;
 }
 
 #eval-editor {
-    grid-area: edit;
-    font-size: 1em;
-    min-width: 700px;
-    border-radius: 5px;
+	grid-area: edit;
+	font-size: 1em;
+	min-width: 700px;
+	border-radius: 5px;
 }
 
 #eval-editor > * {
 
-    font-size: 1.2em;
+	font-size: 1.2em;
 }
 
 /* Events */
 
 #tab-events {
-    display: grid;
-    grid-template-areas:
-        'opts opts'
-        'list log'
-    ;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 1fr 1fr;
+	display: grid;
+	grid-template-areas:
+		'opts opts'
+		'list log'
+	;
+	grid-template-rows: auto 1fr;
+	grid-template-columns: 1fr 1fr;
 }
 
 :is(#events-log, #events-listeners):not(._fi-cat-world) > tbody > tr._fi-cat-world { display: none; }
@@ -94,76 +94,76 @@
 
 #events-log > tbody > tr:nth-child(odd) > td:is(:nth-child(4), :nth-child(5)),
 #events-log > tbody > tr:nth-child(even) > td > div > table > tbody > tr > td:nth-child(3) {
-    background-repeat: no-repeat;
+	background-repeat: no-repeat;
 }
 
 /* Properties */
 
 #props-list-cnt > table > tbody > tr > td:nth-child(4) {
-    font-size: 0.8em;
+	font-size: 0.8em;
 }
 
 #props-list-cnt > table > tbody > tr > td:nth-child(4) > button:not(:hover) {
-    opacity: 0.4;
+	opacity: 0.4;
 }
 
 #props-add-popup-cnt {
-    display: grid;
-    grid-template-areas:
-        'inpt inpt addb'
-        'line line line'
-        'list list list'
-        'reld stat .   '
-    ;
-    grid-template-columns: auto 1fr auto;
-    gap: 8px;
+	display: grid;
+	grid-template-areas:
+		'inpt inpt addb'
+		'line line line'
+		'list list list'
+		'reld stat .   '
+	;
+	grid-template-columns: auto 1fr auto;
+	gap: 8px;
 }
 
 #props-list-tooltip {
-    box-sizing: border-box;
-    border-top: 1px solid var(--border-mid);
-    opacity: 0.25;
+	box-sizing: border-box;
+	border-top: 1px solid var(--border-mid);
+	opacity: 0.25;
 }
 
 #props-add-list > tbody > tr:hover {
-    background: rgba(255, 255, 255, 0.08);
-    cursor: pointer;
+	background: rgba(255, 255, 255, 0.08);
+	cursor: pointer;
 }
 
 /* Runs */
 
 .run-detail-timeout {
-    display: grid;
-    grid-template-areas:
-        'addstk execdt'
-        'clrstk execdt'
-        'action action'
-    ;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+	display: grid;
+	grid-template-areas:
+		'addstk execdt'
+		'clrstk execdt'
+		'action action'
+	;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
 }
 
 .run-detail-interval {
-    display: grid;
-    grid-template-areas:
-        'addstk clrstk'
-        'plot   plot  '
-        'errlog errlog'
-        'action action'
-    ;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+	display: grid;
+	grid-template-areas:
+		'addstk clrstk'
+		'plot   plot  '
+		'errlog errlog'
+		'action action'
+	;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
 }
 
 .run-detail-job {
-    display: grid;
-    grid-template-areas:
-        'addstk clrstk clrerr .'
-        'plot   plot   plot   plot  '
-        'action action action action'
-    ;
-    grid-template-columns: 1fr 1fr auto 100px;
-    gap: 8px;
+	display: grid;
+	grid-template-areas:
+		'addstk clrstk clrerr .'
+		'plot   plot   plot   plot  '
+		'action action action action'
+	;
+	grid-template-columns: 1fr 1fr auto 100px;
+	gap: 8px;
 }
 
 #runs-functions:not(._fi-status-active) > tbody > tr._fi-status-active { display: none; }
@@ -178,12 +178,12 @@
 /* Stats */
 
 #tab-stats {
-    display: grid;
-    grid-template-areas:
-        'memusg plisel'
-        'memusg plilst'
-        'memcnt plilst'
-    ;
-    grid-template-rows: auto 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
+	display: grid;
+	grid-template-areas:
+		'memusg plisel'
+		'memusg plilst'
+		'memcnt plilst'
+	;
+	grid-template-rows: auto 1fr 1fr;
+	grid-template-columns: 1fr 1fr;
 }

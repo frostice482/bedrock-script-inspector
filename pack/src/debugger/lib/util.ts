@@ -9,7 +9,7 @@ import BedrockType from "@globaltypes/bedrock.js"
  * @returns stack trace
  */
 export function getStackTrace(deleteCount = 1) {
-    return new Error().stack?.replace(RegExp(`^(.*\\r?\\n){0,${deleteCount}}`), '') ?? ''
+	return new Error().stack?.replace(RegExp(`^(.*\\r?\\n){0,${deleteCount}}`), '') ?? ''
 }
 
 /**
@@ -17,7 +17,7 @@ export function getStackTrace(deleteCount = 1) {
  * @param obj Object
  */
 export function* iterateObject<T extends object>(obj: T): Iterable<readonly [keyof T, T[keyof T]]> {
-    for (const k in obj) yield [k, obj[k]]
+	for (const k in obj) yield [k, obj[k]]
 }
 
 /**
@@ -25,8 +25,8 @@ export function* iterateObject<T extends object>(obj: T): Iterable<readonly [key
  * @param list Object
  */
 export function iteratePair<T extends ReadonlyObjectOrIterable<string, unknown>>(list: T): T extends Iterable<infer R> ? Iterable<R> : Iterable<readonly [keyof T, T[keyof T]]> {
-    //@ts-ignore
-    return Symbol.iterator in list ? list : iterateObject(list)
+	//@ts-ignore
+	return Symbol.iterator in list ? list : iterateObject(list)
 }
 
 /**
@@ -35,35 +35,35 @@ export function iteratePair<T extends ReadonlyObjectOrIterable<string, unknown>>
  * @returns Function source
  */
 export function getFunctionSource(fn: Function) {
-    return fn.fileName ? fn.fileName + ':' + fn.lineNumber : '<native>'
+	return fn.fileName ? fn.fileName + ':' + fn.lineNumber : '<native>'
 }
 
 export function* getObjectProto(obj: unknown, includeInitial = false, includeNull = false) {
-    if (includeInitial) yield obj
-    while (obj) {
-        obj = Object.getPrototypeOf(obj)
-        if (obj || includeNull) yield obj
-    }
+	if (includeInitial) yield obj
+	while (obj) {
+		obj = Object.getPrototypeOf(obj)
+		if (obj || includeNull) yield obj
+	}
 }
 
 export function getTimeData(): BedrockType.TimeData {
-    return {
-        tick: system.currentTick,
-        time: now()
-    }
+	return {
+		tick: system.currentTick,
+		time: now()
+	}
 }
 
 export function getTraceData<T>(data: T, stackDel = 2): BedrockType.TraceData<T> {
-    return {
-        tick: system.currentTick,
-        time: now(),
-        stack: getStackTrace(2),
-        data
-    }
+	return {
+		tick: system.currentTick,
+		time: now(),
+		stack: getStackTrace(2),
+		data
+	}
 }
 
 var timeNow = typeof __date_clock !== 'undefined' ? __date_clock : () => Date.now() * 1000
 
 export function now() {
-    return timeNow() / 1000
+	return timeNow() / 1000
 }

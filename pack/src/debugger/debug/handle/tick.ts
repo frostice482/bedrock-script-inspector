@@ -8,19 +8,19 @@ let lt = now()
 let runPrev: BedrockType.Tick.TickRun = { delta: 0, runs: [], jobs: [] }
 
 DebugRunOverride.rawRunInterval.call(system, () => {
-    const ct = now(), dt = ct - lt
-    lt = ct
+	const ct = now(), dt = ct - lt
+	lt = ct
 
-    DebugClient.send('tick', {
-        tick: system.currentTick,
-        time: now(),
-        delta: dt,
-        run: runPrev
-    }, true)
+	DebugClient.send('tick', {
+		tick: system.currentTick,
+		time: now(),
+		delta: dt,
+		run: runPrev
+	}, true)
 
-    const t0 = now()
-    const { jobs, runs } = DebugRunOverride.execAll()
-    const delta = now() - t0
+	const t0 = now()
+	const { jobs, runs } = DebugRunOverride.execAll()
+	const delta = now() - t0
 
-    runPrev = { delta, jobs, runs }
+	runPrev = { delta, jobs, runs }
 })

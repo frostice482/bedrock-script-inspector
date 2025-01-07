@@ -1,28 +1,28 @@
 {
-    "compilerOptions": {
-        "lib": ["ES2020"],
-        "target": "ES2022",
-        "module": "ES2022",
-        
-        "moduleResolution": "node",
-        "skipLibCheck": true,
-        "paths": {
-            "@globaltypes/*": ["../../globaltypes/*"],
-            "@*": ["debugger/lib/*"],
-            "$*": ["debugger/override/*"],
-            "@client": ["debugger/debug/client"],
-        },
+	"compilerOptions": {
+		"lib": ["ES2020"],
+		"target": "ES2022",
+		"module": "ES2022",
+		
+		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"paths": {
+			"@globaltypes/*": ["../../globaltypes/*"],
+			"@*": ["debugger/lib/*"],
+			"$*": ["debugger/override/*"],
+			"@client": ["debugger/debug/client"],
+		},
 
-        "baseUrl": "src",
-        "rootDir": "src",
-        "outDir": "scripts",
-        "allowJs": true,
-        "removeComments": true,
+		"baseUrl": "src",
+		"rootDir": "src",
+		"outDir": "scripts",
+		"allowJs": true,
+		"removeComments": true,
 
-        "strict": true,
-        "noImplicitThis": true,
-        "noUncheckedIndexedAccess": true,
-        "noUnusedLocals": true
-    },
-    "include": ["src", "../globaltypes"]
+		"strict": true,
+		"noImplicitThis": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true
+	},
+	"include": ["src", "../globaltypes"]
 }

@@ -1,6 +1,7 @@
 # Dot files
 .*
 !.gitignore
+!.vscode
 
 # Generated files
 /app/scripts

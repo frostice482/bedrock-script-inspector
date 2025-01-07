@@ -1,7 +1,7 @@
 .ji-string {
-    color: lime;
-    overflow-wrap: break-word;
-    white-space: pre-wrap;
+	color: lime;
+	overflow-wrap: break-word;
+	white-space: pre-wrap;
 }
 .ji-string-escape { color: yellow; }
 .ji-number { color: greenyellow }
@@ -17,21 +17,21 @@
 .ji-error-nothrow { color: lightcoral }
 .ji-function { color: yellow }
 .ji-function-code {
-    width: 800px;
-    height: 500px;
-    overflow: auto;
-    resize: both;
+	width: 800px;
+	height: 500px;
+	overflow: auto;
+	resize: both;
 }
 .ji-class { color: cyan }
 .ji-circular { color: coral }
 
 .ji-stack {
-    margin-left: 10px;
-    padding-left: 10px;
-    border-left: 1px solid var(--border-strong);
+	margin-left: 10px;
+	padding-left: 10px;
+	border-left: 1px solid var(--border-strong);
 }
 .ji-stack-close > :not(:first-child) {
-    display: none;
+	display: none;
 }
 .ji-stack > .ji-stack-native { color: darkslateblue; }
 .ji-stack > .ji-stack-inspector { color: gray; }

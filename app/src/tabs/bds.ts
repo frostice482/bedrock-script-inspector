@@ -35,9 +35,9 @@ initFilter('bds-fi-displays', fiDisplayPref, logTable)
 
 const bdsFilterCategory = getIdThrow('bds-fi-cat', HTMLInputElement)
 initFilterText(
-    bdsFilterCategory,
-    fiCategoryAttrName,
-    textApplier(v => v ? `#bds-log > tbody > tr${v} { display: none; }` : '', document.head.appendChild(document.createElement('style')))
+	bdsFilterCategory,
+	fiCategoryAttrName,
+	textApplier(v => v ? `#bds-log > tbody > tr${v} { display: none; }` : '', document.head.appendChild(document.createElement('style')))
 )
 
 new RelativePopupHandle(new RelativePopup(bdsFilterCategory, filterTooltip.cloneNode(true), bdsFilterCategory.parentElement!, 'bottomcenter'), 'focus')
@@ -45,36 +45,36 @@ new RelativePopupHandle(new RelativePopup(bdsFilterCategory, filterTooltip.clone
 //// function ////
 
 function row(data: BedrockInterpreterType.BDSLog) {
-    const { date, time, level, message, category } = data
+	const { date, time, level, message, category } = data
 
-    // row
-    const row = document.createElement('tr')
-    row.classList.add(fiLevelPref + level) // level
-    row.setAttribute(fiCategoryAttrName, category ?? 'Unknown') // category
+	// row
+	const row = document.createElement('tr')
+	row.classList.add(fiLevelPref + level) // level
+	row.setAttribute(fiCategoryAttrName, category ?? 'Unknown') // category
 
-    // timestamp
-    const tsCell = row.insertCell()
-    if (date || time) tsCell.append(date + ' ' + time)
+	// timestamp
+	const tsCell = row.insertCell()
+	if (date || time) tsCell.append(date + ' ' + time)
 
-    // level
-    const levelCell = row.insertCell()
-    levelCell.classList.add('text-level-' + level)
-    levelCell.append(level)
+	// level
+	const levelCell = row.insertCell()
+	levelCell.classList.add('text-level-' + level)
+	levelCell.append(level)
 
-    // category
-    const catCell = row.insertCell()
-    if (category) catCell.append(category)
+	// category
+	const catCell = row.insertCell()
+	if (category) catCell.append(category)
 
-    // message
-    row.insertCell().append(message)
+	// message
+	row.insertCell().append(message)
 
-    return row
+	return row
 }
 
 function send() {
-    BedrockInspector.sendInt('command', cmdInput.value)
-    cmdInput.value = ''
-    logContainer.scroll(0, logContainer.scrollHeight)
+	BedrockInspector.sendInt('command', cmdInput.value)
+	cmdInput.value = ''
+	logContainer.scroll(0, logContainer.scrollHeight)
 }
 
 //// info ////
@@ -90,17 +90,17 @@ const infoBtnHide = getIdThrow('bds-i-hide', HTMLButtonElement)
 const infoBtnKill = getIdThrow('bds-kill-res', HTMLButtonElement)
 
 infoBtnHide.addEventListener('click', () => {
-    info.hidden = !info.hidden
+	info.hidden = !info.hidden
 
-    const arr = infoBtnHide.firstElementChild?.classList
-    if (arr) {
-        arr.add(info.hidden ? 'fa-angles-up' : 'fa-angles-down')
-        arr.remove(info.hidden ? 'fa-angles-down' : 'fa-angles-up')
-    }
+	const arr = infoBtnHide.firstElementChild?.classList
+	if (arr) {
+		arr.add(info.hidden ? 'fa-angles-up' : 'fa-angles-down')
+		arr.remove(info.hidden ? 'fa-angles-down' : 'fa-angles-up')
+	}
 })
 
 infoBtnKill.addEventListener('click', () => {
-    BedrockInspector.sendInt(bdsStatus ? 'kill' : 'restart', null)
+	BedrockInspector.sendInt(bdsStatus ? 'kill' : 'restart', null)
 })
 
 //// process ////
@@ -110,20 +110,20 @@ if (initLog.length > logLimit) initLog.splice(logLimit)
 let bdsStatus = false
 
 {
-    const { bdsConnected, bdsExit, bdsPid } = BedrockInspector.initData
-    if (bdsPid) infoPid.textContent = String(bdsPid)
+	const { bdsConnected, bdsExit, bdsPid } = BedrockInspector.initData
+	if (bdsPid) infoPid.textContent = String(bdsPid)
 
-    if (bdsConnected) {
-        cmdInput.disabled = cmdSend.disabled = false
-        bdsStatus = true
-        infoStatus.textContent = 'connected'
-        infoBtnKill.textContent = 'end process'
-    }
-    else if (bdsExit !== undefined) {
-        infoCode.textContent = typeof bdsExit === 'number' ? bdsExit + ' hex 0x' + bdsExit.toString(16) : bdsExit
-        infoStatus.textContent = 'stopped'
-        infoBtnKill.textContent = 'restart'
-    }
+	if (bdsConnected) {
+		cmdInput.disabled = cmdSend.disabled = false
+		bdsStatus = true
+		infoStatus.textContent = 'connected'
+		infoBtnKill.textContent = 'end process'
+	}
+	else if (bdsExit !== undefined) {
+		infoCode.textContent = typeof bdsExit === 'number' ? bdsExit + ' hex 0x' + bdsExit.toString(16) : bdsExit
+		infoStatus.textContent = 'stopped'
+		infoBtnKill.textContent = 'restart'
+	}
 }
 
 const logQueue: BedrockInterpreterType.BDSLog[] = initLog
@@ -131,33 +131,33 @@ const logQueue: BedrockInterpreterType.BDSLog[] = initLog
 //// event ////
 
 {
-    BedrockInspector.events.addEventListener('bds_start', ({ detail: pid }) => {
-        logTbody.replaceChildren()
+	BedrockInspector.events.addEventListener('bds_start', ({ detail: pid }) => {
+		logTbody.replaceChildren()
 
-        cmdInput.disabled = cmdSend.disabled = false
-        bdsStatus = true
-        infoStatus.textContent = 'connected'
-        infoPid.textContent = String(pid)
-        infoCode.textContent = '...'
-        infoBtnKill.textContent = 'end process'
-    })
+		cmdInput.disabled = cmdSend.disabled = false
+		bdsStatus = true
+		infoStatus.textContent = 'connected'
+		infoPid.textContent = String(pid)
+		infoCode.textContent = '...'
+		infoBtnKill.textContent = 'end process'
+	})
 
-    BedrockInspector.events.addEventListener('bds_kill', ({ detail: code }) => {
-        cmdInput.disabled = cmdSend.disabled = true
-        bdsStatus = false
-        infoStatus.textContent = 'stopped'
-        infoCode.textContent = typeof code === 'number' ? code + ' hex 0x' + code.toString(16) : code
-        infoBtnKill.textContent = 'restart'
-    })
+	BedrockInspector.events.addEventListener('bds_kill', ({ detail: code }) => {
+		cmdInput.disabled = cmdSend.disabled = true
+		bdsStatus = false
+		infoStatus.textContent = 'stopped'
+		infoCode.textContent = typeof code === 'number' ? code + ' hex 0x' + code.toString(16) : code
+		infoBtnKill.textContent = 'restart'
+	})
 
-    BedrockInspector.events.addEventListener('log', ({ detail: log }) => {
-        pushLimit(logQueue, log, logLimit)
+	BedrockInspector.events.addEventListener('log', ({ detail: log }) => {
+		pushLimit(logQueue, log, logLimit)
 
-        if (tab.hidden) {
-            if (log.level === 'warn') notifWarnCount++
-            if (log.level === 'error') notifErrCount++
-        }
-    })
+		if (tab.hidden) {
+			if (log.level === 'warn') notifWarnCount++
+			if (log.level === 'error') notifErrCount++
+		}
+	})
 }
 
 //// updater ////
@@ -165,38 +165,38 @@ const logQueue: BedrockInterpreterType.BDSLog[] = initLog
 let notifErrCount = 0
 let notifWarnCount = 0
 {
-    const navtab = querySelectorThrow('#nav > button[tab="bds"]')
-    const notifErrElm = errNotif('error')
-    const notifWarnElm = errNotif('warn')
-    navtab.append(notifErrElm, ' ', notifWarnElm, ' ')
+	const navtab = querySelectorThrow('#nav > button[tab="bds"]')
+	const notifErrElm = errNotif('error')
+	const notifWarnElm = errNotif('warn')
+	navtab.append(notifErrElm, ' ', notifWarnElm, ' ')
 
-    setInterval(updateQueue, 150)
-    setInterval(updateNotif, 500)
+	setInterval(updateQueue, 150)
+	setInterval(updateNotif, 500)
 
-    tabchange.addEventListener('bds', () => {
-        updateQueue(true)
-        logContainer.scroll(0, logContainer.scrollHeight)
+	tabchange.addEventListener('bds', () => {
+		updateQueue(true)
+		logContainer.scroll(0, logContainer.scrollHeight)
 
-        notifWarnCount = notifErrCount = 0
-        updateNotif()
-    })
+		notifWarnCount = notifErrCount = 0
+		updateNotif()
+	})
 
-    function updateQueue(forceFocus = false) {
-        if (!logQueue.length || !forceFocus && (tab.hidden || document.hidden)) return
+	function updateQueue(forceFocus = false) {
+		if (!logQueue.length || !forceFocus && (tab.hidden || document.hidden)) return
 
-        // remove extra elements
-        for (let delCnt = logTbody.rows.length + logQueue.length - logLimit; delCnt > 0; delCnt--) logTbody.rows.item(0)?.remove()
-        // scroll
-        const scroll = logContainer.scrollTop + logContainer.clientHeight >= logContainer.scrollHeight
-        // append log & clear
-        logTbody.append.apply(logTbody, logQueue.map(row))
-        logQueue.splice(0)
-        // scroll
-        if (scroll) requestAnimationFrame(() => logContainer.scroll(0, logContainer.scrollHeight))
-    }
+		// remove extra elements
+		for (let delCnt = logTbody.rows.length + logQueue.length - logLimit; delCnt > 0; delCnt--) logTbody.rows.item(0)?.remove()
+		// scroll
+		const scroll = logContainer.scrollTop + logContainer.clientHeight >= logContainer.scrollHeight
+		// append log & clear
+		logTbody.append.apply(logTbody, logQueue.map(row))
+		logQueue.splice(0)
+		// scroll
+		if (scroll) requestAnimationFrame(() => logContainer.scroll(0, logContainer.scrollHeight))
+	}
 
-    function updateNotif() {
-        notifErrElm.textContent = notifErrCount ? notifErrCount >= 100 ? '99+' : notifErrCount + '' : ''
-        notifWarnElm.textContent = notifWarnCount ? notifWarnCount >= 100 ? '99+' : notifWarnCount + '' : ''
-    }
+	function updateNotif() {
+		notifErrElm.textContent = notifErrCount ? notifErrCount >= 100 ? '99+' : notifErrCount + '' : ''
+		notifWarnElm.textContent = notifWarnCount ? notifWarnCount >= 100 ? '99+' : notifWarnCount + '' : ''
+	}
 }

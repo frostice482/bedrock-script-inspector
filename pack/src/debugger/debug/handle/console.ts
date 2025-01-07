@@ -5,13 +5,13 @@ import { getStackTrace } from "@util.js"
 import DebugConsoleOverride from "$console.js"
 
 function emitter(level: BedrockType.Console.LogLevel) {
-    return (data: unknown[]) => {
-        DebugClient.send('console', {
-            data: data.map(v => typeof v === 'string' ? v : jsonInspect.inspect(v)),
-            stack: getStackTrace(4),
-            level: level
-        })
-    }
+	return (data: unknown[]) => {
+		DebugClient.send('console', {
+			data: data.map(v => typeof v === 'string' ? v : jsonInspect.inspect(v)),
+			stack: getStackTrace(4),
+			level: level
+		})
+	}
 }
 
 DebugConsoleOverride.events.addEventListener('log', emitter('log'))

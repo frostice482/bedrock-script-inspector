@@ -1,26 +1,26 @@
 {
-    "compilerOptions": {
-        "lib": ["esnext", "dom"],
-        "target": "esnext",
-        "module": "esnext",
+	"compilerOptions": {
+		"lib": ["esnext", "dom"],
+		"target": "esnext",
+		"module": "esnext",
 
-        "moduleResolution": "node",
-        "skipLibCheck": true,
-        "paths": {
-            "@globaltypes/*": ["../globaltypes/*"],
-            "@*": ["./src/lib/*"],
-            "#*": ["./src/*"],
-        },
+		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"paths": {
+			"@globaltypes/*": ["../globaltypes/*"],
+			"@*": ["./src/lib/*"],
+			"#*": ["./src/*"],
+		},
 
-        "rootDir": "src",
-        "outDir": "scripts",
-        "allowJs": true,
-        "removeComments": true,
+		"rootDir": "src",
+		"outDir": "scripts",
+		"allowJs": true,
+		"removeComments": true,
 
-        "strict": true,
-        "noImplicitThis": true,
-        "noUncheckedIndexedAccess": true,
-        "noUnusedLocals": true
-    },
-    "include": ["src", "../globaltypes"]
+		"strict": true,
+		"noImplicitThis": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true
+	},
+	"include": ["src", "../globaltypes"]
 }
