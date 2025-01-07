@@ -130,6 +130,25 @@ declare namespace BedrockType {
 	namespace Tick {
 		interface Data extends TimeData, TimingData {
 			run: TickRun
+			packets: PlayerPacket[]
+		}
+
+		interface PlayerPacket {
+			name: string
+			id: string
+			sends: PacketDesc[]
+			recv: PacketDescSize[]
+		}
+
+		interface PacketDesc {
+			count: number
+			blocked: number
+			type: string
+		}
+
+		interface PacketDescSize extends PacketDesc {
+			totalSize: number
+			totalBlockedSize: number
 		}
 
 		interface TickRun extends TimingData {
