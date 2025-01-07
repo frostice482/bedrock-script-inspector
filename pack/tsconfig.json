@@ -8,9 +8,9 @@
 		"skipLibCheck": true,
 		"paths": {
 			"@type/*": ["../../globaltypes/*"],
-			"@override": ["debugger/override/index"],
-			"@client": ["debugger/debug/client"],
-			"@/*": ["debugger/lib/*"],
+			"@override": ["override/index"],
+			"@client": ["debug/client"],
+			"@/*": ["lib/*"],
 		},
 
 		"baseUrl": "src",

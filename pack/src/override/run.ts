@@ -1,7 +1,6 @@
 import jsonInspect from "@/jsoninspect"
 import timing, { TimingResult } from "@/timing"
 import TypedEventEmitter from "@/typedevm"
-import { now } from "@/util"
 import { System } from "@minecraft/server"
 import BedrockType from "@type/bedrock"
 
@@ -37,7 +36,7 @@ namespace RunOverride {
 		constructor(fn: Fn, id = idNew++) {
 			this.fn = fn
 			this.id = id
-			this.lastTime = now()
+			this.lastTime = Date.now()
 
 			runList.set(id, this)
 		}
@@ -73,7 +72,7 @@ namespace RunOverride {
 		}
 
 		exec(update = true): ExecRunData {
-			const sleep = now() - this.lastTime
+			const sleep = Date.now() - this.lastTime
 			const res = timing(this.fn)
 
 			if (update) this._execUpdate()
@@ -102,7 +101,7 @@ namespace RunOverride {
 		readonly type: BedrockType.Run.Type = 'interval'
 
 		protected _execUpdate() {
-			this.lastTime = now()
+			this.lastTime = Date.now()
 			this.nextTick = this.interval + localTick
 		}
 	}
@@ -112,7 +111,7 @@ namespace RunOverride {
 			this.id = id
 			this.gen = gen
 			this.genNextBound = gen.next.bind(gen)
-			this.lastTime = now()
+			this.lastTime = Date.now()
 
 			jobList.set(id, this)
 		}
@@ -144,7 +143,7 @@ namespace RunOverride {
 		}
 
 		exec() {
-			this.lastTime = now()
+			this.lastTime = Date.now()
 			const res = timing(this.genNextBound)
 			if (res.errored) return (this.clear(res.value), false)
 			if (res.value.done) return (this.clear(), false)
@@ -177,7 +176,7 @@ namespace RunOverride {
 
 		const jobs: BedrockType.Tick.JobRunData[] = []
 		const activeJobs = new Map<RunJob, BedrockType.Tick.JobRunData>()
-		const t = now()
+		const t = Date.now()
 		for (const run of jobList.values()) {
 			if (run.suspended) continue
 			const d: BedrockType.Tick.JobRunData = {
@@ -190,8 +189,8 @@ namespace RunOverride {
 			activeJobs.set(run, d)
 		}
 
-		const maxTime = now() + jobTimeframe
-		while (activeJobs.size && now() <= maxTime) {
+		const maxTime = Date.now() + jobTimeframe
+		while (activeJobs.size && Date.now() <= maxTime) {
 			for (const [job, data] of activeJobs) {
 				const res = job.exec()
 				if (res === false) {

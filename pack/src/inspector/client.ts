@@ -2,7 +2,6 @@ import { encodeBase64 } from "@/base64"
 import HttpUtil from "@/http"
 import { encodeText } from "@/text_encoder"
 import TypedEventEmitter from "@/typedevm"
-import { now } from "@/util"
 import { ConsoleOverride } from "@override"
 import BedrockType from "@type/bedrock"
 import ClientType from "@type/client"
@@ -78,12 +77,12 @@ export namespace InspectorClient {
 						data = '[' + queue.join(',') + ']'
 
 					// transfer
-					const t = now()
+					const t = Date.now()
 
 					const transferres = await HttpUtil.post(connectURI + '/bedrock/transfer', data, { Authorization: authHash }).then(HttpUtil.throwIfError)
 					queue.splice(0, qlen)
 
-					const td = now() - t
+					const td = Date.now() - t
 					if (td > 2500) {
 						rc.rawWarn(`[inspector] Transfer time took so long! (${(td / 1000).toFixed(1)}s)`)
 						rc.rawWarn(`[inspector] Set script-watchdog-enable to false if persists`)

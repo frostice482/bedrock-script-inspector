@@ -1,4 +1,3 @@
-import { now } from "@/util"
 import InspectorClient from "@client"
 import { system, world } from "@minecraft/server"
 import { RunOverride } from "@override"
@@ -6,16 +5,16 @@ import BedrockType from "@type/bedrock"
 import { netstat } from "./packet"
 import { collectRuntimeStats } from "@minecraft/debug-utilities"
 
-let lt = now()
+let lt = Date.now()
 let runPrev: BedrockType.Tick.TickRun = { delta: 0, runs: [], jobs: [] }
 
 RunOverride.rawRunInterval.call(system, () => {
-	const ct = now(), dt = ct - lt
+	const ct = Date.now(), dt = ct - lt
 	lt = ct
 
-	const t0 = now()
+	const t0 = Date.now()
 	const { jobs, runs } = RunOverride.execAll()
-	const delta = now() - t0
+	const delta = Date.now() - t0
 
 	const packets: BedrockType.Tick.PlayerPacket[] = []
 	for (const player of world.getPlayers()) {
@@ -45,7 +44,7 @@ RunOverride.rawRunInterval.call(system, () => {
 
 	InspectorClient.send('tick', {
 		tick: system.currentTick,
-		time: now(),
+		time: Date.now(),
 		delta: dt,
 
 		run: runPrev,

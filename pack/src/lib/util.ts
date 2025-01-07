@@ -49,21 +49,16 @@ export function* getObjectProto(obj: unknown, includeInitial = false, includeNul
 export function getTimeData(): BedrockType.TimeData {
 	return {
 		tick: system.currentTick,
-		time: now()
+		time: Date.now()
 	}
 }
 
 export function getTraceData<T>(data: T, stackDel = 2): BedrockType.TraceData<T> {
 	return {
 		tick: system.currentTick,
-		time: now(),
+		time: Date.now(),
 		stack: getStackTrace(2),
 		data
 	}
 }
 
-var timeNow = typeof __date_clock !== 'undefined' ? __date_clock : () => Date.now() * 1000
-
-export function now() {
-	return timeNow() / 1000
-}

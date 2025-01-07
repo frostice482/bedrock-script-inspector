@@ -2,7 +2,6 @@ import getFid from "@/fid"
 import jsonInspect from "@/jsoninspect"
 import timing from "@/timing"
 import TypedEventEmitter from "@/typedevm"
-import { now } from "@/util"
 import { world, system } from "@minecraft/server"
 import * as net from "@minecraft/server-net"
 import BedrockType from "@type/bedrock"
@@ -181,7 +180,7 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
 		const optsFilter = this.optsFilter
 		const list: BedrockType.Events.DataFunctionExec[] = []
 
-		const t0 = now()
+		const t0 = Date.now()
 		for (const [listener, { options, disabled }] of this.listener) {
 			if (disabled) continue
 			if (!optsFilter(data, options, listener)) continue
@@ -194,7 +193,7 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
 				error: exec.errored ? jsonInspect.inspect(exec.value) : undefined
 			})
 		}
-		const td = now() - t0
+		const td = Date.now() - t0
 
 		this.emit('data', {
 			data,

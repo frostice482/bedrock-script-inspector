@@ -14,7 +14,7 @@
 	"modules": [
 		{
 			"type": "script",
-			"entry": "scripts/debugger/index.js",
+			"entry": "scripts/_inspector_index.js",
 			"uuid": "9e2c6491-2920-4af2-b0e3-10ab9a87c5cb",
 			"version": "2.0.0"
 		}
@@ -43,13 +43,6 @@
 		{
 			"module_name": "@minecraft/debug-utilities",
 			"version": "1.0.0-beta"
-		}
-	],
-	"subpacks": [
-		{
-			"name": "pack",
-			"folder_name": "subpack",
-			"memory_tier": 4
 		}
 	],
 	"capabilities": [

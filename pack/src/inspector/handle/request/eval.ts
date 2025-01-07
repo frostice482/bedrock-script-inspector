@@ -1,6 +1,6 @@
 import HttpUtil from '@/http'
 import jsonInspect, { JsonInspectInstance, RootRefInspector } from '@/jsoninspect'
-import { now, getStackTrace } from '@/util'
+import { getStackTrace } from '@/util'
 import InspectorClient from '@client'
 import * as mc from '@minecraft/server'
 import * as gt from '@minecraft/server-gametest'
@@ -21,20 +21,20 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
 	if (opts?.function) Object.assign(insp.functionOptions, opts.function)
 	if (opts?.object) Object.assign(insp.objectOptions, opts.object)
 
-	const t1 = now()
+	const t1 = Date.now()
 
 	try {
 		// execute
 		let out = isAsync
 			? await asyncFC(`with (this) {${code}}`).call(evalProxy)
 			: Function(`with (this) return eval(${JSON.stringify(code)})`).call(evalProxy)
-		const te = now()
+		const te = Date.now()
 
 		if (store) evalProps.$_ = out
 
 		// inspect & timing
 		const inspData = root ? insp.inspectRoot(out) : insp.inspect(out)
-		const ti = now()
+		const ti = Date.now()
 
 		// send
 		InspectorClient.resolve<'eval'>(id, {
@@ -45,11 +45,11 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
 		})
 	}
 	catch(e) {
-		const te = now()
+		const te = Date.now()
 
 		// inspect & timing
 		const inspData = insp.inspect(e)
-		const ti = now()
+		const ti = Date.now()
 
 		InspectorClient.resolve<'eval'>(id, {
 			error: true,

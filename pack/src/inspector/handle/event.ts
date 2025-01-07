@@ -1,5 +1,5 @@
 import jsonInspect from "@/jsoninspect"
-import { getTraceData, now } from "@/util"
+import { getTraceData } from "@/util"
 import InspectorClient from "@client"
 import { EventsOverride } from "@override"
 import BedrockType from "@type/bedrock"
@@ -25,9 +25,9 @@ function eventEmitter(event: EventsOverrideWrapper<any>, category: BedrockType.E
 		if (EventsOverride.ignoreInspect[ctypeId]?.has(name)) return
 		if (EventsOverride.inspectNullifyData[ctypeId]?.has(name)) data = null as never
 
-		const inst0 = now()
+		const inst0 = Date.now()
 		const insData = jsonInspect.inspect(EventsOverride.inspectEventData && data)
-		const instd = now() - inst0
+		const instd = Date.now() - inst0
 
 		InspectorClient.send('event', {
 			type, category, name,
