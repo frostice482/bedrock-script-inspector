@@ -1,4 +1,4 @@
-import { now } from "@util.js"
+import { now } from "@/util.js"
 
 /**
  * Executes function and outputs the execution time and the function result / error
@@ -7,7 +7,7 @@ import { now } from "@util.js"
  */
 export default function timing<T>(fn: () => T): TimingResult<T> {
 	const t0 = now()
-	
+
 	try {
 		const v = fn()
 		return {

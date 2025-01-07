@@ -1,15 +1,15 @@
-import DebugClient from "@client"
-import BedrockType from "@globaltypes/bedrock.js"
-import ClientType from "@globaltypes/client.js"
-import { Typeof } from "@globaltypes/types.js"
+import InspectorClient from "@client"
 import { world } from "@minecraft/server"
-import DebugDynamicPropertyOverride from "$dprop.js"
-import clientRequests from "./request.js"
+import { DynamicPropertyOverride } from "@override"
+import BedrockType from "@type/bedrock"
+import ClientType from "@type/client"
+import { Typeof } from "@type/types"
+import clientRequests from "./request"
 
 const ow = world.getDimension('overworld')
 
 clientRequests.addEventListener('dpList', ({ id }) => {
-	DebugClient.resolve<'dpList'>(id, {
+	InspectorClient.resolve<'dpList'>(id, {
 		world: {
 			properties: world.getDynamicPropertyIds().length,
 			bytes: world.getDynamicPropertyTotalByteCount()
@@ -27,10 +27,10 @@ clientRequests.addEventListener('dpList', ({ id }) => {
 clientRequests.addEventListener('dpOf', ({ id, data }) => {
 	const { filter = {}, nameFilter, entityId, limit = 200 } = data
 
-	let ref: DebugDynamicPropertyOverride.Host = world
+	let ref: DynamicPropertyOverride.Host = world
 	if (entityId && entityId !== 'world') {
 		const x = world.getEntity(entityId)
-		if (!x) return DebugClient.resolve<'dpOf'>(id, null)
+		if (!x) return InspectorClient.resolve<'dpOf'>(id, null)
 		ref = x
 	}
 
@@ -50,19 +50,19 @@ clientRequests.addEventListener('dpOf', ({ id, data }) => {
 		// push & break if overlength
 		if (list.push({ name: id, value: v }) >= limit) break
 	}
-	
-	DebugClient.resolve<'dpOf'>(id, list)
+
+	InspectorClient.resolve<'dpOf'>(id, list)
 })
 
-DebugClient.message.addEventListener('dp_set', ({ entityId, id, value }) => {
-	let ref: DebugDynamicPropertyOverride.Host = world
+InspectorClient.message.addEventListener('dp_set', ({ entityId, id, value }) => {
+	let ref: DynamicPropertyOverride.Host = world
 
 	if (entityId && entityId !== 'world') {
 		const x = world.getEntity(entityId)
 		if (!x) return
 		ref = x
 	}
-	
+
 	ref.setDynamicProperty(id, value)
 })
 

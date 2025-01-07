@@ -1,16 +1,16 @@
-import BedrockType from "@globaltypes/bedrock.js"
-import getFid from "@fid.js"
-import jsonInspect from "@jsoninspect.js"
-import timing from "@timing.js"
-import TypedEventEmitter from "@typedevm.js"
+import getFid from "@/fid"
+import jsonInspect from "@/jsoninspect"
+import timing from "@/timing"
+import TypedEventEmitter from "@/typedevm"
+import { now } from "@/util"
 import { world, system } from "@minecraft/server"
 import * as net from "@minecraft/server-net"
-import { now } from "@util.js"
+import BedrockType from "@type/bedrock"
 
 /**
  * Overrides events
  */
-export class EventsOverride<E extends Record<_K, EventSignalAny>, _K extends PropertyKey = keyof E> extends TypedEventEmitter<EventsOverrideEvents<E>> {
+export class EventsOverrideWrapper<E extends Record<_K, EventSignalAny>, _K extends PropertyKey = keyof E> extends TypedEventEmitter<EventsOverrideEvents<E>> {
 	constructor(events: E) {
 		super()
 		for (const k in events) {
@@ -251,14 +251,14 @@ export interface EventSignalData<T extends EventSignalAny = EventSignalAny> {
 	readonly data: Parameters<Parameters<T['subscribe']>[0]>[0]
 }
 
-namespace DebugEventsOverride {
-	export const worldBefore = new EventsOverride(world.beforeEvents)
-	export const worldAfter = new EventsOverride(world.afterEvents)
-	export const systemBefore = new EventsOverride(system.beforeEvents)
-	export const systemAfter = new EventsOverride(system.afterEvents)
-	export const netBefore = new EventsOverride(net.beforeEvents)
-	export const netAfter = new EventsOverride({})
+namespace EventsOverride {
+	export const worldBefore = new EventsOverrideWrapper(world.beforeEvents)
+	export const worldAfter = new EventsOverrideWrapper(world.afterEvents)
+	export const systemBefore = new EventsOverrideWrapper(system.beforeEvents)
+	export const systemAfter = new EventsOverrideWrapper(system.afterEvents)
+	export const netBefore = new EventsOverrideWrapper(net.beforeEvents)
+	export const netAfter = new EventsOverrideWrapper({})
 	export let inspectEventData = true
 }
 
-export default DebugEventsOverride
+export default EventsOverride

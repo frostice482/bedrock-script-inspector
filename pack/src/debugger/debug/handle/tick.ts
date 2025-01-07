@@ -1,17 +1,17 @@
-import DebugClient from "@client"
-import BedrockType from "@globaltypes/bedrock.js"
+import { now } from "@/util"
+import InspectorClient from "@client"
 import { system } from "@minecraft/server"
-import DebugRunOverride from "$run.js"
-import { now } from "@util.js"
+import { RunOverride } from "@override"
+import BedrockType from "@type/bedrock"
 
 let lt = now()
 let runPrev: BedrockType.Tick.TickRun = { delta: 0, runs: [], jobs: [] }
 
-DebugRunOverride.rawRunInterval.call(system, () => {
+RunOverride.rawRunInterval.call(system, () => {
 	const ct = now(), dt = ct - lt
 	lt = ct
 
-	DebugClient.send('tick', {
+	InspectorClient.send('tick', {
 		tick: system.currentTick,
 		time: now(),
 		delta: dt,
@@ -19,7 +19,7 @@ DebugRunOverride.rawRunInterval.call(system, () => {
 	}, true)
 
 	const t0 = now()
-	const { jobs, runs } = DebugRunOverride.execAll()
+	const { jobs, runs } = RunOverride.execAll()
 	const delta = now() - t0
 
 	runPrev = { delta, jobs, runs }

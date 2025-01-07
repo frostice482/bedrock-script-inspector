@@ -1,6 +1,6 @@
 import { HttpRequest, HttpRequestMethod, http, HttpResponse } from '@minecraft/server-net'
 import { iteratePair } from './util.js'
-import { DeepPartialReadonly } from '@globaltypes/types.js'
+import { DeepPartialReadonly } from '@type/types.js'
 
 namespace HttpUtil {
 	export function get(url: string, headers?: HeaderList) {
@@ -24,7 +24,7 @@ namespace HttpUtil {
 		req.setMethod(HttpRequestMethod.Post)
 		req.setBody(body)
 		if (headers) for (const [k, v] of iteratePair(headers)) if (v) req.addHeader(k, v)
-		
+
 		return http.request(req)
 	}
 
@@ -45,7 +45,7 @@ namespace HttpUtil {
 		if (res.status >= 400) throw new Error(req ? req.method + ' ' + req.uri + ' ' + res.status : 'HTTP status ' + res.status)
 		return res
 	}
-	
+
 	export interface FetchOptions {
 		headers: HeaderList
 		body: string

@@ -1,15 +1,15 @@
-import { World, Entity } from "@minecraft/server";
-import TypedEventEmitter from "@typedevm.js";
-import BedrockType from "@globaltypes/bedrock.js";
+import TypedEventEmitter from "@/typedevm"
+import { World, Entity } from "@minecraft/server"
+import BedrockType from "@type/bedrock"
 
-namespace DebugDynamicPropertyOverride {
+namespace DynamicPropertyOverride {
 	function override<T extends Host>(host: { prototype: T }) {
 		const proto = host.prototype
 
 		const { setDynamicProperty: rawSet, clearDynamicProperties: rawClear } = proto
 
 		const ev = new Wrap<T>(rawSet, rawClear)
-		
+
 		proto.setDynamicProperty = function(id, value) {
 			rawSet.call(this, id, value)
 			ev.emit('set', {
@@ -18,7 +18,7 @@ namespace DebugDynamicPropertyOverride {
 				value
 			})
 		}
-		
+
 		proto.clearDynamicProperties = function() {
 			rawClear.call(this)
 			ev.emit('clear', this)
@@ -40,7 +40,7 @@ namespace DebugDynamicPropertyOverride {
 
 	export const world = override(World)
 	export const entity = override(Entity)
-		
+
 	export interface WrapEvents<T extends Host> {
 		set: {
 			readonly inst: T
@@ -53,4 +53,4 @@ namespace DebugDynamicPropertyOverride {
 	export type Host = Pick<World, 'setDynamicProperty' | 'getDynamicProperty' | 'getDynamicPropertyIds' | 'getDynamicPropertyTotalByteCount' | 'clearDynamicProperties'>
 }
 
-export default DebugDynamicPropertyOverride
+export default DynamicPropertyOverride

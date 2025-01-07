@@ -3,14 +3,14 @@
 		"lib": ["ES2020"],
 		"target": "ES2022",
 		"module": "ES2022",
-		
+
 		"moduleResolution": "node",
 		"skipLibCheck": true,
 		"paths": {
-			"@globaltypes/*": ["../../globaltypes/*"],
-			"@*": ["debugger/lib/*"],
-			"$*": ["debugger/override/*"],
+			"@type/*": ["../../globaltypes/*"],
+			"@override": ["debugger/override/index"],
 			"@client": ["debugger/debug/client"],
+			"@/*": ["debugger/lib/*"],
 		},
 
 		"baseUrl": "src",

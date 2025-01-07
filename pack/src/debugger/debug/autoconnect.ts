@@ -1,8 +1,8 @@
-import DebugClient from "@client"
+import InspectorClient from "@client"
 import { variables } from "@minecraft/server-admin"
-import DebugConsoleOverride from "$console.js"
+import { ConsoleOverride } from "@override"
 
-var rc = DebugConsoleOverride
+var rc = ConsoleOverride
 
 const autoconnect = variables.get('debug_autoconnect')
 if (autoconnect) {
@@ -12,5 +12,5 @@ if (autoconnect) {
 	const username = autoconnect.username
 	const password = autoconnect.password
 
-	DebugClient.connect(address, username, password)
+	InspectorClient.connect(address, username, password)
 }

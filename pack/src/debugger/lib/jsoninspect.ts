@@ -1,7 +1,7 @@
-import JSONInspectData, { JsonInspectOptions } from "@globaltypes/jsoninspect.js"
-import DebugProxyOverride from "$proxy.js"
-import { encodeBase64 } from "./base64.js"
-import { getFunctionSource, getObjectProto } from "./util.js"
+import JSONInspectData, { JsonInspectOptions } from "@type/jsoninspect"
+import { encodeBase64 } from "./base64"
+import { getObjectProto, getFunctionSource } from "./util"
+import { ProxyOverride } from "@override"
 
 const { getOwnPropertyDescriptors, assign, getPrototypeOf } = Object
 
@@ -89,7 +89,7 @@ export class JsonInspectInstance {
 			if (obj === null) return { type: 'null' }
 
 			// proxy
-			if (DebugProxyOverride.proxyList.has(obj)) return this.proxy(obj, DebugProxyOverride.proxyList.get(obj)!, stack, refList)
+			if (ProxyOverride.proxyList.has(obj)) return this.proxy(obj, ProxyOverride.proxyList.get(obj)!, stack, refList)
 
 			// known object types
 			for (const proto of getObjectProto(obj)) {
@@ -210,7 +210,7 @@ export class JsonInspectInstance {
 					? undefined
 					: nextProto.constructor.name
 			: `[${tag ?? 'Object'}: null prototype]`
-		
+
 		return { properties: entries, name, proto: nextProtoInspect }
 	}
 
@@ -265,8 +265,8 @@ export class JsonInspectInstance {
 			extends: fExtends
 		}
 	}
-	
-	proxy(obj: unknown, data: DebugProxyOverride.Data<{}>, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Proxy {
+
+	proxy(obj: unknown, data: ProxyOverride.Data<{}>, stack: unknown[] = [], refList?: RootRefInspector): JSONInspectData.I_Proxy {
 		const newStack = stack.concat([obj])
 		return {
 			type: 'proxy',
@@ -317,7 +317,7 @@ export class JsonInspectInstance {
 		return {
 			type: 'array',
 			name: obj.constructor.name + '<' + obj.length + '>',
-			
+
 			length: len,
 			values,
 

@@ -1,15 +1,15 @@
-import BedrockType from "@globaltypes/bedrock.js"
-import ClientType from "@globaltypes/client.js"
-import { encodeBase64 } from "@base64.js"
-import HttpUtil from "@http.js"
-import { encodeText } from "@text_encoder.js"
-import TypedEventEmitter from "@typedevm.js"
-import DebugConsoleOverride from "$console.js"
-import { now } from "@util.js"
+import { encodeBase64 } from "@/base64"
+import HttpUtil from "@/http"
+import { encodeText } from "@/text_encoder"
+import TypedEventEmitter from "@/typedevm"
+import { now } from "@/util"
+import { ConsoleOverride } from "@override"
+import BedrockType from "@type/bedrock"
+import ClientType from "@type/client"
 
-var rc = DebugConsoleOverride
+var rc = ConsoleOverride
 
-export namespace DebugClient {
+export namespace InspectorClient {
 	export let connectURI = ''
 	export let authHash: string | undefined
 
@@ -76,7 +76,7 @@ export namespace DebugClient {
 					// data
 					const qlen = queue.length,
 						data = '[' + queue.join(',') + ']'
-					
+
 					// transfer
 					const t = now()
 
@@ -143,4 +143,4 @@ export namespace DebugClient {
 	export const message = new TypedEventEmitter<ClientType.CrossEvents>()
 }
 
-export default DebugClient
+export default InspectorClient

@@ -1,11 +1,11 @@
+import jsonInspect from "@/jsoninspect"
+import timing, { TimingResult } from "@/timing"
+import TypedEventEmitter from "@/typedevm"
+import { now } from "@/util"
 import { System } from "@minecraft/server"
-import BedrockType from "@globaltypes/bedrock.js"
-import timing, { TimingResult } from "@timing.js"
-import TypedEventEmitter from "@typedevm.js"
-import jsonInspect from "@jsoninspect.js"
-import { now } from "@util.js"
+import BedrockType from "@type/bedrock"
 
-namespace DebugRunOverride {
+namespace RunOverride {
 	const proto = System.prototype
 	const { run, runTimeout, runInterval, clearRun, runJob, clearJob } = proto
 	export const rawRun = run, rawRunTimeout = runTimeout, rawRunInterval = runInterval, rawClearRun = clearRun, rawRunJob = runJob, rawClearJob = clearJob
@@ -38,7 +38,7 @@ namespace DebugRunOverride {
 			this.fn = fn
 			this.id = id
 			this.lastTime = now()
-			
+
 			runList.set(id, this)
 		}
 
@@ -226,4 +226,4 @@ namespace DebugRunOverride {
 	}
 }
 
-export default DebugRunOverride
+export default RunOverride

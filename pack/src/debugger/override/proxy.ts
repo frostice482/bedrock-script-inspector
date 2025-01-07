@@ -1,4 +1,4 @@
-namespace DebugProxyOverride {
+namespace ProxyOverride {
 	export class ProxyWrapper<T extends object> {
 		static revocable<T extends object>(object: T, handler: ProxyHandler<T>) {
 			const { proxy, revoke: rawRevoke } = RawProxy.revocable(object, handler)
@@ -36,9 +36,9 @@ namespace DebugProxyOverride {
 		handler: ProxyHandler<T>
 		revoke?: () => void
 	}
-	
+
 	//@ts-ignore
 	Proxy = ProxyWrapper
 }
 
-export default DebugProxyOverride
+export default ProxyOverride

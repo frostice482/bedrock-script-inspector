@@ -1,5 +1,5 @@
 import { system } from "@minecraft/server"
-import BedrockType from "@globaltypes/bedrock.js"
+import BedrockType from "@type/bedrock.js"
 
 /**
  * Gets current stack trace

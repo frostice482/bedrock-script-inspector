@@ -1,15 +1,14 @@
+import HttpUtil from '@/http'
+import jsonInspect, { JsonInspectInstance, RootRefInspector } from '@/jsoninspect'
+import { now, getStackTrace } from '@/util'
+import InspectorClient from '@client'
 import * as mc from '@minecraft/server'
-
-import DebugClient from '@client'
-import HttpUtil from '@http.js'
-import jsonInspect, { JsonInspectInstance, RootRefInspector } from '@jsoninspect.js'
-import { getStackTrace, now } from '@util.js'
-import DebugConsoleOverride from '$console.js'
-import DebugDynamicPropertyOverride from '$dprop.js'
-import DebugEventsOverride from '$events.js'
-import DebugProxyOverride from '$proxy.js'
-import DebugRunOverride from '$run.js'
-import clientRequests from './request.js'
+import * as gt from '@minecraft/server-gametest'
+import * as ui from '@minecraft/server-ui'
+import * as net from '@minecraft/server-net'
+import * as admin from '@minecraft/server-admin'
+import { ConsoleOverride, EventsOverride, ProxyOverride, RunOverride, DynamicPropertyOverride } from '@override'
+import clientRequests from './request'
 
 const asyncFC = (async function() {}).constructor as FunctionConstructor
 
@@ -29,7 +28,7 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
 			? await asyncFC(`with (this) {${code}}`).call(evalProxy)
 			: Function(`with (this) return eval(${JSON.stringify(code)})`).call(evalProxy)
 		const te = now()
-		
+
 		if (store) evalProps.$_ = out
 
 		// inspect & timing
@@ -37,7 +36,7 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
 		const ti = now()
 
 		// send
-		DebugClient.resolve<'eval'>(id, {
+		InspectorClient.resolve<'eval'>(id, {
 			error: false,
 			data: inspData,
 			execTime: te - t1,
@@ -51,7 +50,7 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
 		const inspData = insp.inspect(e)
 		const ti = now()
 
-		DebugClient.resolve<'eval'>(id, {
+		InspectorClient.resolve<'eval'>(id, {
 			error: true,
 			data: inspData,
 			execTime: te - t1,
@@ -63,28 +62,15 @@ clientRequests.addEventListener('eval', async ({ id, data: { 'async': isAsync, c
 const evalSetVars = Object.create(null)
 
 const evalContext = new Map<PropertyKey, any>([
-	['vars'     , evalSetVars],
-	['mc'        , mc],
-	['global'    , globalThis],
-	['globalThis', globalThis]
+	['vars', evalSetVars],
+	['mc', mc],
+	['global', globalThis],
+	['globalThis', globalThis],
+	['gt', gt],
+	['ui', ui],
+	['net', net],
+	['admin', admin],
 ])
-
-import('@minecraft/server-gametest').then(gt => {
-	evalContext.set('gt', gt)
-	evalContext.set('gametest', gt)
-}, () => {})
-import('@minecraft/server-ui').then(ui => {
-	evalContext.set('ui', ui)
-	evalContext.set('mcui', ui)
-}, () => {})
-import('@minecraft/server-net').then(net => {
-	evalContext.set('net', net)
-	evalContext.set('mcnet', net)
-}, () => {})
-import('@minecraft/server-admin').then(admin => {
-	evalContext.set('admin', admin)
-	evalContext.set('mcadmin', admin)
-}, () => {})
 
 const overworld = mc.world.getDimension('overworld')
 const nether = mc.world.getDimension('nether')
@@ -93,17 +79,17 @@ const end = mc.world.getDimension('the_end')
 const dims = [overworld, nether, end]
 
 const evalOverridesObj: any = {
-	console: DebugConsoleOverride,
-	events: DebugEventsOverride,
-	proxy: DebugProxyOverride,
-	run: DebugRunOverride,
-	prop: DebugDynamicPropertyOverride,
+	console: ConsoleOverride,
+	events: EventsOverride,
+	proxy: ProxyOverride,
+	run: RunOverride,
+	prop: DynamicPropertyOverride,
 }
 Object.setPrototypeOf(evalOverridesObj, null)
 
 export const evalProps: any = {
-	debugOverrides: evalOverridesObj,
-	DebugClient: DebugClient,
+	Overrides: evalOverridesObj,
+	DebugClient: InspectorClient,
 
 	setInterval: mc.system.runInterval.bind(mc.system),
 	setTimeout: mc.system.runTimeout.bind(mc.system),

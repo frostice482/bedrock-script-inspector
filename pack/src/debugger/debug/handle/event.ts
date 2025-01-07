@@ -1,21 +1,22 @@
-import DebugClient from "@client"
-import BedrockType from "@globaltypes/bedrock.js"
-import jsonInspect from "@jsoninspect.js"
-import { getTraceData, now } from "@util.js"
-import DebugEventsOverride, { EventsOverride } from "$events.js"
+import jsonInspect from "@/jsoninspect"
+import { getTraceData, now } from "@/util"
+import InspectorClient from "@client"
+import { EventsOverride } from "@override"
+import BedrockType from "@type/bedrock"
+import { EventsOverrideWrapper } from "debugger/override/events"
 
-function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
+function eventEmitter(event: EventsOverrideWrapper<any>, category: BedrockType.Events.Category, type: BedrockType.Events.Type) {
 	event.addEventListener('subscribe', ({ name, fid, listener }) =>
-		DebugClient.send('event_listener_subscribe', getTraceData({ type, category, name, fid, fn: jsonInspect.fn(listener as Function) }, 8))
+		InspectorClient.send('event_listener_subscribe', getTraceData({ type, category, name, fid, fn: jsonInspect.fn(listener as Function) }, 8))
 	)
 	event.addEventListener('unsubscribe', ({ name, fid }) =>
-		DebugClient.send('event_listener_unsubscribe', getTraceData({ type, category, name, fid }, 8))
+		InspectorClient.send('event_listener_unsubscribe', getTraceData({ type, category, name, fid }, 8))
 	)
 	event.addEventListener('disable', ({ name, fid }) =>
-		DebugClient.send('event_listener_disable', { type, category, name, fid })
+		InspectorClient.send('event_listener_disable', { type, category, name, fid })
 	)
 	event.addEventListener('enable', ({ name, fid }) =>
-		DebugClient.send('event_listener_enable', { type, category, name, fid })
+		InspectorClient.send('event_listener_enable', { type, category, name, fid })
 	)
 
 	event.addEventListener('data', ({ name, data, list, delta }) => {
@@ -29,10 +30,10 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
 		}
 
 		const inst0 = now()
-		const insData = jsonInspect.inspect(DebugEventsOverride.inspectEventData && data)
+		const insData = jsonInspect.inspect(EventsOverride.inspectEventData && data)
 		const instd = now() - inst0
 
-		DebugClient.send('event', {
+		InspectorClient.send('event', {
 			type, category, name,
 			data: insData,
 			delta: instd + delta,
@@ -41,26 +42,26 @@ function eventEmitter(event: EventsOverride<any>, category: BedrockType.Events.C
 	})
 }
 
-eventEmitter(DebugEventsOverride.worldBefore, 'world', 'before')
-eventEmitter(DebugEventsOverride.worldAfter, 'world', 'after')
-eventEmitter(DebugEventsOverride.systemBefore, 'system', 'before')
-eventEmitter(DebugEventsOverride.systemAfter, 'system', 'after')
-eventEmitter(DebugEventsOverride.netBefore, 'net', 'before')
-eventEmitter(DebugEventsOverride.netAfter, 'net', 'after')
+eventEmitter(EventsOverride.worldBefore, 'world', 'before')
+eventEmitter(EventsOverride.worldAfter, 'world', 'after')
+eventEmitter(EventsOverride.systemBefore, 'system', 'before')
+eventEmitter(EventsOverride.systemAfter, 'system', 'after')
+eventEmitter(EventsOverride.netBefore, 'net', 'before')
+eventEmitter(EventsOverride.netAfter, 'net', 'after')
 
-DebugClient.message.addEventListener('event_action', ({ action, id: { category, fid, name, type } }) => {
-	const eo: EventsOverride<any> =
+InspectorClient.message.addEventListener('event_action', ({ action, id: { category, fid, name, type } }) => {
+	const eo: EventsOverrideWrapper<any> =
 		category === 'world'
 			? type === 'before'
-				? DebugEventsOverride.worldBefore
-				: DebugEventsOverride.worldAfter
+				? EventsOverride.worldBefore
+				: EventsOverride.worldAfter
 		: category === 'system'
 			? type === 'before'
-				? DebugEventsOverride.systemBefore
-				: DebugEventsOverride.systemAfter
+				? EventsOverride.systemBefore
+				: EventsOverride.systemAfter
 		:   type === 'before'
-				? DebugEventsOverride.netBefore
-				: DebugEventsOverride.netAfter
+				? EventsOverride.netBefore
+				: EventsOverride.netAfter
 
 	const ev = eo.events[name]
 	if (!ev) return

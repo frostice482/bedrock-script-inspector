@@ -1,6 +1,6 @@
-import TypedEventEmitter from "@typedevm.js"
+import TypedEventEmitter from "@/typedevm"
 
-namespace DebugConsoleOverride {
+namespace ConsoleOverride {
 	const { log, info, warn, error } = console, _print = print
 	export const rawLog = log, rawInfo = info, rawWarn = warn, rawError = error, rawPrint = _print
 
@@ -9,7 +9,7 @@ namespace DebugConsoleOverride {
 	console.warn = (...data) => events.emit('warn', data)
 	console.error = (...data) => events.emit('error', data)
 
-	export const events = new TypedEventEmitter<DebugConsoleOverride.Events>
+	export const events = new TypedEventEmitter<ConsoleOverride.Events>
 
 	export interface Events {
 		log: any[]
@@ -19,4 +19,4 @@ namespace DebugConsoleOverride {
 	}
 }
 
-export default DebugConsoleOverride
+export default ConsoleOverride

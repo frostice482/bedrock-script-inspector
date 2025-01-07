@@ -1,3 +1,3 @@
-import DebugClient from "@client";
+import InspectorClient from "@client";
 
-DebugClient.message.addEventListener('disconnect', () => DebugClient.disconnect())
+InspectorClient.message.addEventListener('disconnect', () => InspectorClient.disconnect())

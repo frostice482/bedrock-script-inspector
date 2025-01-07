@@ -1,8 +1,8 @@
-import DebugClient from "@client"
-import ClientType from "@globaltypes/client.js"
-import TypedEventEmitter from "@typedevm.js"
+import TypedEventEmitter from "@/typedevm"
+import InspectorClient from "@client"
+import ClientType from "@type/client"
 
 const clientRequests = new TypedEventEmitter<{ [K in ClientType.Request.Values]: ClientType.Request<K> }>()
-DebugClient.message.addEventListener('req', (req) => clientRequests.emit(req.name, req))
+InspectorClient.message.addEventListener('req', (req) => clientRequests.emit(req.name, req))
 
 export default clientRequests
