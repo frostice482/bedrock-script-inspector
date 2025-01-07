@@ -264,10 +264,10 @@ namespace EventsOverride {
 	export let inspectEventData = true
 	export let ignoreInspect: Record<string, Set<string>> = Object.setPrototypeOf({
 		'world/before': new Set(['effectAdd', 'playerGameModeChange']),
+		'net/before': new Set(['packetSend', 'packetReceive']),
 	}, null)
 	export let inspectNullifyData: Record<string, Set<string>> = Object.setPrototypeOf({
 		'world/after': new Set(['playerInputPermissionCategoryChange']),
-		'net/before': new Set(['packetSend', 'packetReceive']),
 	}, null)
 }
 
