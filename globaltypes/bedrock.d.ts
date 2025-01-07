@@ -9,7 +9,7 @@ declare namespace BedrockType {
         event_listener_disable: Events.ListenerWithId
         event_listener_enable: Events.ListenerWithId
         event: Events.Data
-        
+
         run_add: TraceData<Run.InfoWithFn>
         run_clear: TraceData<number>
         run_suspend: number
@@ -41,14 +41,14 @@ declare namespace BedrockType {
             dpOf: null | BedrockPropertyPair[]
             _: null
         }
-        
+
         type Values = keyof List
 
         type BedrockPropertyPair = {
             name: string,
             value: DynamicProperty.Values
         }
-    
+
         interface EvalData {
             error?: boolean
             data: JSONInspectData
@@ -75,7 +75,7 @@ declare namespace BedrockType {
             data: (JSONInspectData | string)[]
             stack: string
         }
-    
+
         type LogLevel = 'log' | 'info' | 'warn' | 'error'
     }
     type Console = Console.Data
@@ -87,10 +87,10 @@ declare namespace BedrockType {
             category: Category
             type: Type
         }
-    
-        type Category = 'world' | 'system'
+
+        type Category = 'world' | 'system' | 'net'
         type Type = 'before' | 'after'
-    
+
         interface ListenerWithId extends Identifier, FunctionIdInfo {}
         interface Listener extends Identifier, FunctionInfo {}
 
@@ -98,7 +98,7 @@ declare namespace BedrockType {
             data: JSONInspectData
             functions: DataFunctionExec[]
         }
-    
+
         interface DataFunctionExec extends FunctionInfo {
             delta: number
             error?: JSONInspectData
@@ -116,11 +116,11 @@ declare namespace BedrockType {
             type: Type
             interval: number
         }
-        
+
         interface InfoWithFn extends Info, FunctionInfo {}
-    
+
         type Type = 'interval' | 'timeout' | 'run' | 'job'
-        
+
         type ActionTrack = 'add' | 'clear'
         type ClientAction = 'clear' | 'suspend' | 'resume'
         type Action = 'add' | 'clear' | 'suspend' | 'resume'
@@ -163,13 +163,13 @@ declare namespace BedrockType {
         interface Clear {
             entityId?: string
         }
-    
+
         interface Vector3 {
             x: number
             y: number
             z: number
         }
-    
+
         type Values = string | number | boolean | Vector3
     }
 

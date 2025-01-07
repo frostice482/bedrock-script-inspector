@@ -45,16 +45,23 @@ eventEmitter(DebugEventsOverride.worldBefore, 'world', 'before')
 eventEmitter(DebugEventsOverride.worldAfter, 'world', 'after')
 eventEmitter(DebugEventsOverride.systemBefore, 'system', 'before')
 eventEmitter(DebugEventsOverride.systemAfter, 'system', 'after')
+eventEmitter(DebugEventsOverride.netBefore, 'net', 'before')
+eventEmitter(DebugEventsOverride.netAfter, 'net', 'after')
 
 DebugClient.message.addEventListener('event_action', ({ action, id: { category, fid, name, type } }) => {
-    const eo: EventsOverride<any> = category === 'world'
-        ? type === 'before'
-            ? DebugEventsOverride.worldBefore
-            : DebugEventsOverride.worldAfter
-        : type === 'before'
-            ? DebugEventsOverride.systemBefore
-            : DebugEventsOverride.systemAfter
- 
+    const eo: EventsOverride<any> =
+        category === 'world'
+            ? type === 'before'
+                ? DebugEventsOverride.worldBefore
+                : DebugEventsOverride.worldAfter
+        : category === 'system'
+            ? type === 'before'
+                ? DebugEventsOverride.systemBefore
+                : DebugEventsOverride.systemAfter
+        :   type === 'before'
+                ? DebugEventsOverride.netBefore
+                : DebugEventsOverride.netAfter
+
     const ev = eo.events[name]
     if (!ev) return
 
@@ -62,11 +69,11 @@ DebugClient.message.addEventListener('event_action', ({ action, id: { category, 
         case 'enable':
             ev.enableListener(fid)
             break
-        
+
         case 'disable':
             ev.disableListener(fid)
             break
-        
+
         case 'unsubscribe':
             ev.unsubscribe(fid)
             break

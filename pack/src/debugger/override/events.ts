@@ -4,6 +4,7 @@ import jsonInspect from "@jsoninspect.js"
 import timing from "@timing.js"
 import TypedEventEmitter from "@typedevm.js"
 import { world, system } from "@minecraft/server"
+import * as net from "@minecraft/server-net"
 import { now } from "@util.js"
 
 /**
@@ -255,6 +256,8 @@ namespace DebugEventsOverride {
     export const worldAfter = new EventsOverride(world.afterEvents)
     export const systemBefore = new EventsOverride(system.beforeEvents)
     export const systemAfter = new EventsOverride(system.afterEvents)
+    export const netBefore = new EventsOverride(net.beforeEvents)
+    export const netAfter = new EventsOverride({})
     export let inspectEventData = true
 }
 
