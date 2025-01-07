@@ -1,63 +1,49 @@
 import chalk from "chalk";
 import fsp from "fs/promises";
-import semver from "semver";
-import { debugManifest } from "#debug_manifest.js";
-import { resolveDirManifest } from "#bedrock-pack/resolve_dir.js";
+import path from "path";
 import { DeepPartialReadonly } from "@globaltypes/types.js";
+import BedrockManifestJson from "#lib/manifest";
+import { getManifest, versionStr } from "#lib/util";
 
-function versionStr(v: string | number[]) {
-	return typeof v === 'string' ? v : v.join('.')
-}
-
-export async function cliAddPack(dir: string, opts?: DeepPartialReadonly<CLIAddPackOptions> | null) {
+export async function cliAddPack(dir = '.', opts?: DeepPartialReadonly<CLIAddPackOptions> | null) {
 	const { copy } = opts ?? {}
+	const inspectorPackDir = import.meta.dirname + '/../../../../../pack'
 
-	// get pack
-	const pack = await resolveDirManifest(dir, { stopAfterFound: true })
-	if (!pack) throw 'Manifest not found'
+	const manifestStr = await fsp.readFile(dir + '/manifest.json', 'utf8').catch(() => undefined)
+	if (!manifestStr) throw `manifest.json not found in ${path.resolve(dir)}`
 
-	console.log(pack.name, chalk.gray(pack.uuid), chalk.greenBright(versionStr(pack.version)))
+	const backupManifestStat = await fsp.stat(dir + '/manifest_original.json').catch(() => undefined)
+	if (backupManifestStat) throw `manifest_original.json already exists in ${path.resolve(dir)}`
 
-	// script module
-	const scriptModule = pack.manifest.modules.get('script')
+	const manifest = JSON.parse(manifestStr) as BedrockManifestJson
+	const { header: { name, uuid, version }, modules } = manifest
+	const scriptModule = modules.find(v => v.type === 'script')
 	if (!scriptModule) throw 'Pack is not a script module'
 
-	// validate
-	for (const dependency of pack.manifest.dependencies.modules()) {
-		const { module_name: module, version: versionRaw } = dependency
+	console.log(name, chalk.gray(uuid), chalk.greenBright(versionStr(version)))
+	console.log('Entry:', scriptModule.entry)
 
-		// pack requires the module while inspector does not
-		const debDependency = debugManifest.dependencies.get(module)
-		if (!debDependency) throw `Version validation failed: Module ${module} v${versionRaw} is required while not used by the inspector`
+	console.log('Adding script entry')
+	await fsp.writeFile(dir + '/scripts/_inspector_index.js', `import "_inspector_bundle.js"; import ${JSON.stringify(scriptModule.entry.substring(8))}`)
 
-		const version = versionStr(versionRaw), debVersion = versionStr(debDependency.version)
+	console.log('Backing up manifest.json')
+	await fsp.rename(dir + '/manifest.json', dir + '/manifest_original.json')
 
-		if (version.includes('beta')) {
-			// pack uses beta version while inspector does not
-			if (!debVersion.includes('beta'))
-				throw `Version validation failed: Pack requires module ${module} v${versionRaw} while inspector does not use beta version`
+	console.log('Copying manifest.json')
+	const inspectorManifest = await getManifest()
+	Object.assign(inspectorManifest.header, {
+		name: '(Inspector) ' + name,
+		description: manifest.header.description,
+	})
+	await fsp.writeFile(dir + '/manifest.json', JSON.stringify(inspectorManifest, null, '\t'))
 
-			// both uses beta version but version is different
-			else if (version !== debVersion)
-				throw `Version validation failed: Pack requires module ${module} v${versionRaw} while inspector uses different beta version v${debVersion}`
-		}
-
-		// pack uses higher version
-		else if (semver.compare(version, debVersion) === 1)
-			throw `Version validation failed: Pack requires module ${module} v${versionRaw} while inspector uses older version v${debVersion}`
-	}
-
-	// copy
 	console.log(copy ? 'Copying' : 'Linking')
+	const subpackDir = dir + '/subpacks/inspector'
 
-	const copyTarget = import.meta.dirname + '/../../../../../pack/subpacks/subpack'
-	await fsp.rm(copyTarget, { force: true })
-	await pack.copyTo(copyTarget, copy ? 'copy' : 'symlink')
-
-	// dropper
-	const fileEntry = scriptModule.entry.substring(8).replace(/\\/g, '/')
-	console.log('Adding file entry', fileEntry)
-	await fsp.writeFile(import.meta.dirname + '/../../../../../pack/scripts/debugger/dropper.js', `import "${fileEntry}"`)
+	await fsp.mkdir(dir + '/subpacks', { recursive: true })
+	await fsp.rm(inspectorPackDir, { recursive: true, force: true })
+	if (copy) await fsp.cp(inspectorPackDir, subpackDir, { recursive: true, force: true })
+	else await fsp.symlink(inspectorPackDir, subpackDir, 'dir')
 
 	console.log('Finished')
 }

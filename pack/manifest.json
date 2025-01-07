@@ -45,6 +45,13 @@
 			"version": "1.0.0-beta"
 		}
 	],
+	"subpacks": [
+		{
+			"name": "pack",
+			"folder_name": "inspector",
+			"memory_tier": 4
+		}
+	],
 	"capabilities": [
 		"script_eval"
 	]

@@ -15,20 +15,21 @@ program
 	.description('CLI for Minecraft Bedrock Script API Inspector')
 	.version('v1.3.0')
 
-program.command('add-pack')
+program.command('attach-pack')
 	.aliases(['ap'])
-	.description('Adds a pack to be debugged')
-	.argument('<dir>', 'Directory to the origin path to be added')
-	.option('-c, --copy', 'Copies the pack instead of creating symlink')
+	.description('Attach inspector to a pack')
+	.argument('[dir]', 'Pack directory')
+	.option('-c, --copy', 'Copies inspector pack instead of linking')
 	.action(async (path, opts) => {
 		exec(await import('./commands/pack/add.js').then(f => f.cliAddPack), [path, opts])
 	})
 
-program.command('remove-pack')
-	.aliases(['rp'])
-	.description('Removes debugged pack')
-	.action(async () => {
-		exec(await import('./commands/pack/rm.js').then(f => f.cliAddPack), [])
+program.command('detach-pack')
+	.aliases(['dp'])
+	.description('Detach inspector from a pack')
+	.argument('[dir]', 'Pack directory')
+	.action(async (path) => {
+		exec(await import('./commands/pack/rm.js').then(f => f.cliRemovePack), [path])
 	})
 
 program.command('server')
@@ -44,34 +45,37 @@ program.command('server')
 program.command('add-bds')
 	.aliases(['ab'])
 	.description('Adds pack to BDS')
-	.argument('<dir>', 'BDS Directory')
-	.argument('[level]', 'World level-name to use')
+	.argument('<packDir>', 'Pack Directory')
+	.argument('[dir]', 'BDS Directory')
 	.option('-c, --copy', 'Copies the pack instead of creating symlink')
-	.action(async (dir, level, opts) => {
-		exec(await import('./commands/bds/add.js').then(f => f.cliAddBds), [dir, level, opts])
+	.option('-l, --level <uuid>', 'Level name')
+	.action(async (packDir, dir, opts) => {
+		exec(await import('./commands/bds/add.js').then(f => f.cliAddBds), [packDir, dir, opts])
 	})
 
 program.command('remove-bds')
 	.aliases(['rb'])
-	.description('Removes pack to BDS')
-	.argument('<dir>', 'BDS Directory')
-	.argument('[level]', 'World level-name to use')
-	.action(async (dir, level) => {
-		exec(await import('./commands/bds/rm.js').then(f => f.cliRmBds), [dir, level])
+	.description('Removes pack from BDS')
+	.argument('[dir]', 'BDS Directory')
+	.option('-l, --level <uuid>', 'Level name')
+	.option('-pu, --puuid <uuid>', 'Pack UUID')
+	.option('-su, --suuid <uuid>', 'Script module UUID')
+	.action(async (dir, opts) => {
+		exec(await import('./commands/bds/rm.js').then(f => f.cliRmBds), [dir, opts])
 	})
 
 program.command('start-bds')
 	.aliases(['sb'])
 	.description('Starts BDS inspector server')
-	.argument('<dir>', 'BDS Directory')
 	.argument('<port>', 'Server port')
+	.argument('[dir]', 'BDS Directory')
 	.option('-a, --add', 'Adds pack to BDS before starting')
 	.option('-aC, --add-copy', 'Copies the pack instead of creating symlink')
 	.option('-r, --remove', 'Removes pack from BDS atter close')
 	.addOption(optAuthUser)
 	.addOption(optAuthPass)
-	.action(async (dir, port, opts) => {
-		exec(await import('./commands/bds/start.js').then(f => f.startBdsServer), [dir, port, opts])
+	.action(async (port, dir, opts) => {
+		exec(await import('./commands/bds/start.js').then(f => f.startBdsServer), [port, dir, opts])
 	})
 
 program.parse()

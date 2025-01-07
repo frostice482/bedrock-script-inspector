@@ -3,11 +3,12 @@ import fsp from "fs/promises";
 import path from "path";
 import interpreter from "#interpreter";
 import BDS from "#bds_inspector.js";
-import { debugManifestScriptModule } from "#debug_manifest.js";
 import { listenServer } from "#server.js";
 import Client from "#routes/client";
 import { DeepPartialReadonly } from "@globaltypes/types.js";
 import BedrockInterpreterType from "@globaltypes/interpreter.js";
+
+const sUuidKnown = '9e2c6491-2920-4af2-b0e3-10ab9a87c5cb'
 
 const elipsis = chalk.gray('...')
 const bdsTag = chalk.magentaBright('[BDS]')
@@ -54,12 +55,12 @@ async function startBds(bdsDir: string, opts?: StartBDSOptions) {
 	return bds
 }
 
-export async function startBdsServer(dir: string, serverPort: number, opts: DeepPartialReadonly<CLIStartBDSOptions>) {
+export async function startBdsServer(serverPort: number, dir = '.', opts: DeepPartialReadonly<CLIStartBDSOptions>) {
 	const { authUser, authPass } = opts ?? {}
 
 	// add pack config
 	// add autoconnect variables
-	const debugConfig = path.join(dir, 'config', debugManifestScriptModule.uuid)
+	const debugConfig = path.join(dir, 'config', sUuidKnown)
 	await fsp.mkdir(debugConfig, { recursive: true })
 	await fsp.writeFile(debugConfig + '/variables.json', JSON.stringify({
 		debug_autoconnect: {

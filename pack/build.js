@@ -7,7 +7,7 @@ await fsp.rm(base + '/scripts', { recursive: true, force: true })
 
 await esbuild.build({
 	entryPoints: [base + '/src/index.ts'],
-	outfile: base + '/scripts/bundle.js',
+	outfile: base + '/scripts/_inspector_bundle.js',
 
 	format: 'esm',
 	platform: 'neutral',
