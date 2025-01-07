@@ -19,15 +19,11 @@ function eventEmitter(event: EventsOverrideWrapper<any>, category: BedrockType.E
 		InspectorClient.send('event_listener_enable', { type, category, name, fid })
 	)
 
-	event.addEventListener('data', ({ name, data, list, delta }) => {
-		// drop spam event data
-		if (type === 'after' && name === 'playerInputPermissionCategoryChange') return
+	const ctypeId = category + '/' + type
 
-		// drpo event data that can cause crash
-		if (type === 'before' && (name === 'effectAdd' || name === 'playerGameModeChange')) {
-			//@ts-ignore
-			data = null
-		}
+	event.addEventListener('data', ({ name, data, list, delta }) => {
+		if (EventsOverride.ignoreInspect[ctypeId]?.has(name)) return
+		if (EventsOverride.inspectNullifyData[ctypeId]?.has(name)) data = null as never
 
 		const inst0 = now()
 		const insData = jsonInspect.inspect(EventsOverride.inspectEventData && data)

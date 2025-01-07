@@ -44,8 +44,8 @@ export class EventsOverrideSignal<S extends EventSignalAny, _D extends EventSign
 		this.signal = signal
 
 		const protoSignal = Object.getPrototypeOf(signal) as S
-		this.rawSubscribe = protoSignal.subscribe
-		this.rawUnsubscribe = protoSignal.subscribe
+		this.rawSubscribe = protoSignal.subscribe.bind(protoSignal)
+		this.rawUnsubscribe = protoSignal.subscribe.bind(protoSignal)
 
 		signal.subscribe(data => this.dispatch(data))
 
@@ -258,7 +258,15 @@ namespace EventsOverride {
 	export const systemAfter = new EventsOverrideWrapper(system.afterEvents)
 	export const netBefore = new EventsOverrideWrapper(net.beforeEvents)
 	export const netAfter = new EventsOverrideWrapper({})
+
 	export let inspectEventData = true
+	export let ignoreInspect: Record<string, Set<string>> = Object.setPrototypeOf({
+		'world/before': ['effectAdd', 'playerGameModeChange'],
+	}, null)
+	export let inspectNullifyData: Record<string, Set<string>> = Object.setPrototypeOf({
+		'world/after': ['playerInputPermissionCategoryChange'],
+		'net/before': ['packetSend', 'packetReceive'],
+	}, null)
 }
 
 export default EventsOverride

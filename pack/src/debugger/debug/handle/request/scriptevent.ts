@@ -2,8 +2,7 @@ import InspectorClient from "@client"
 import { ScriptEventSource } from "@minecraft/server"
 import { EventsOverride } from "@override"
 
-const sig = EventsOverride.systemAfter.events.scriptEventReceive
-sig.rawSubscribe.call(sig.signal, ({ id, message, sourceType }) => {
+EventsOverride.systemAfter.events.scriptEventReceive.rawSubscribe(({ id, message, sourceType }) => {
 	if (sourceType !== ScriptEventSource.Server) return
 	const data = JSON.parse(message)
 
