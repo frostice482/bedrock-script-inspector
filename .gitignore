@@ -3,10 +3,14 @@
 !.gitignore
 
 # Generated files
-node_modules
 /app/scripts
 /pack/subpacks
 /pack/scripts
 /server/app
+
 build.zip
+
+node_modules
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
